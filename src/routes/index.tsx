@@ -10,7 +10,7 @@ function index() {
       <Routes>
 
         {/* Guest Routes */}
-        <Route path="/" element={<GuestRoutes />} />
+        <Route path="/auth/*" element={<GuestRoutes />} />
       </Routes>
     </Router>
   )

@@ -1,8 +1,11 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { InputGroup, InputGroupInput, InputGroupAddon } from "@/components/ui/input-group";
+import { Mail, Eye, EyeOff, Lock, ArrowRight, Loader2 } from "lucide-react";
 
-
-// 1. Define the shape of your form fields
 interface LoginFormInputs {
   email: string;
   password: string;
@@ -17,20 +20,24 @@ function LoginForm({ onSubmit }: LoginFormProps) {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
-  // 2. Initialize useForm
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isValid, isDirty, isSubmitting },
   } = useForm<LoginFormInputs>({
     defaultValues: {
       email: "",
       password: "",
       rememberMe: false,
     },
+    mode: "onChange",
+    reValidateMode: "onChange",
+    criteriaMode: "all",
+    shouldUnregister: false,
+    shouldUseNativeValidation: false,
+    shouldFocusError: true
   });
 
-  // 3. Wrapper for the parent onSubmit to handle local loading state
   const onInternalSubmit = async (data: LoginFormInputs) => {
     setLoading(true);
     try {
@@ -42,104 +49,99 @@ function LoginForm({ onSubmit }: LoginFormProps) {
 
   return (
     <form onSubmit={handleSubmit(onInternalSubmit)} className="px-8 pb-10 space-y-6">
-      {/* Email */}
-      <div className="space-y-1">
-        <UnderlineField
-          id="email"
-          label="Email Address"
-          type="email"
-          placeholder="name@adun.edu.ng"
-          iconName="mail"
-          // 4. Spread the register function instead of manual value/onChange
-          {...register("email", {
-            required: "Email is required",
-            pattern: {
-              value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-              message: "Invalid email address",
-            },
-          })}
-        />
+      {/* Email Field */}
+      <div className="space-y-2">
+        <Label htmlFor="email">Email Address</Label>
+        <div className="relative">
+          <Input
+            id="email"
+            type="email"
+            placeholder="name@adun.edu.ng"
+            className="pl-10" // Space for the icon
+            {...register("email", {
+              required: "Email is required",
+              pattern: {
+                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                message: "Invalid email address",
+              },
+            })}
+          />
+          <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+        </div>
         {errors.email && (
-          <span className="text-xs text-red-500 ml-1">{errors.email.message}</span>
+          <p className="text-xs font-medium text-destructive">{errors.email.message}</p>
         )}
       </div>
 
-      {/* Password */}
-      <div className="space-y-1">
-        <UnderlineField
-          id="password"
-          label="Password"
-          type={showPassword ? "text" : "password"}
-          placeholder="••••••••"
-          iconName="lock"
-          {...register("password", {
-            required: "Password is required",
-            minLength: {
-              value: 6,
-              message: "Password must be at least 6 characters",
-            },
-          })}
-          rightSlot={
-            <button
-              type="button"
-              onClick={() => setShowPassword((v) => !v)}
-              className={`flex items-center transition-colors ${
-                showPassword ? "text-primary" : "text-outline-variant hover:text-primary"
-              }`}
-            >
-              <span className="material-symbols-outlined text-sm">
-                {showPassword ? "visibility_off" : "visibility"}
-              </span>
-            </button>
-          }
-        />
+      {/* Password Field using InputGroup */}
+      <div className="space-y-2">
+        <Label htmlFor="password">Password</Label>
+        <InputGroup>
+          <InputGroupAddon>
+            <Lock className="h-4 w-4" />
+          </InputGroupAddon>
+          <InputGroupInput
+            id="password"
+            type={showPassword ? "text" : "password"}
+            placeholder="••••••••"
+            {...register("password", {
+              required: "Password is required",
+              minLength: {
+                value: 6,
+                message: "Minimum 6 characters",
+              },
+            })}
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className="px-3 flex items-center text-muted-foreground hover:text-primary transition-colors"
+          >
+            {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+          </button>
+        </InputGroup>
         {errors.password && (
-          <span className="text-xs text-red-500 ml-1">{errors.password.message}</span>
+          <p className="text-xs font-medium text-destructive">{errors.password.message}</p>
         )}
       </div>
 
-      {/* Remember me + Forgot password */}
-      <div className="flex items-center justify-between pt-2">
-        <label className="flex items-center gap-2 cursor-pointer group">
-          <div className="relative flex items-center">
-            <input
-              type="checkbox"
-              {...register("rememberMe")}
-              className="peer h-5 w-5 rounded border-outline-variant text-primary focus:ring-primary/20 transition-all cursor-pointer"
-            />
-            <span className="material-symbols-outlined absolute opacity-0 peer-checked:opacity-100 text-white text-[16px] pointer-events-none left-0.5">
-              check
-            </span>
-          </div>
-          <span className="text-sm font-medium text-on-surface-variant group-hover:text-primary transition-colors">
+      {/* Remember Me & Forgot Password */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center space-x-2">
+          <input
+            type="checkbox"
+            id="rememberMe"
+            {...register("rememberMe")}
+            className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+          />
+          <Label htmlFor="rememberMe" className="text-sm cursor-pointer">
             Remember Me
-          </span>
-        </label>
+          </Label>
+        </div>
 
-        <a
-          href="#"
-          className="text-sm font-semibold text-secondary hover:text-on-secondary-container transition-colors"
-        >
+        <a href="#" className="text-sm font-medium text-primary hover:underline">
           Forgot Password?
         </a>
       </div>
 
-      {/* Submit */}
-      <button
-        type="submit"
-        disabled={loading}
-        className={`w-full py-4 px-6 text-white font-bold rounded-lg flex items-center justify-center gap-2 transition-all duration-150
-          ${
-            loading
-              ? "bg-outline cursor-not-allowed"
-              : "bg-primary-container shadow-lg shadow-primary/30 hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] cursor-pointer"
-          }`}
+      {/* Submit Button */}
+      <Button 
+        type="submit" 
+        className="w-full h-12 text-base font-bold shadow-lg" 
+        disabled={loading || !isValid || !isDirty || isSubmitting}
       >
-        {loading ? "Signing in…" : "Login"}
-        {!loading && (
-          <span className="material-symbols-outlined text-sm">arrow_forward</span>
+        {loading ? (
+          <>
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            Signing in...
+          </>
+        ) : (
+          <>
+            Login
+            <ArrowRight className="ml-2 h-4 w-4" />
+          </>
         )}
-      </button>
+      </Button>
     </form>
   );
 }

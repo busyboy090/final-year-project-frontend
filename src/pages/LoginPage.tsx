@@ -1,5 +1,6 @@
 import LoginForm from "../components/forms/LoginForm";
 import ADUNLOGO from "../assets/logo.png";
+import Copyright from "../components/ui/copyright";
 
 // ── Background watermark ──────────────────────────────────────────────────────
 function BackgroundDecoration() {
@@ -15,7 +16,7 @@ function BackgroundDecoration() {
   );
 }
 
-// ── Brand header ──────────────────────────────────────────────────────────────
+
 function BrandHeader() {
   return (
     <div className="px-8 pt-10 pb-6 text-center">
@@ -23,7 +24,7 @@ function BrandHeader() {
         <img
           src={ADUNLOGO}
           alt="Admiralty University of Nigeria Logo"
-          className="w-14 h-14 object-contain"
+          className="w-18 h-18 object-contain"
         />
       </div>
       <h1 className="text-2xl font-extrabold tracking-tight text-primary font-headline">
@@ -46,7 +47,7 @@ function CardFooter() {
         Don't have an account?{" "}
         <a
           href="#"
-          className="font-bold text-primary hover:text-secondary underline decoration-2 underline-offset-4 transition-colors"
+          className="font-bold text-primary hover:text-muted-foreground underline decoration-2 underline-offset-4 transition-colors"
         >
           Register here
         </a>
@@ -55,18 +56,6 @@ function CardFooter() {
   );
 }
 
-// ── Credential footer ─────────────────────────────────────────────────────────
-function CredentialFooter() {
-  return (
-    <div className="mt-8 text-center px-4">
-      <p className="text-[10px] font-label uppercase tracking-[0.2em] text-on-surface-variant/60 leading-relaxed">
-        © 2024 Admiralty University of Nigeria
-        <br />
-        Secured Academic Gateway • Event Management Unit
-      </p>
-    </div>
-  );
-}
 
 // ── LoginPage (default export) ────────────────────────────────────────────────
 export default function LoginPage() {
@@ -80,17 +69,16 @@ export default function LoginPage() {
     <main className="grow flex items-center justify-center p-6 bg-[#F4F6F9] min-h-screen font-body">
       <div className="relative w-full max-w-md">
         {/* Glow blobs */}
-        <div className="absolute -top-12 -left-12 w-32 h-32 bg-linear-to-br from-primary to-primary-container opacity-10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-12 -right-12 w-48 h-48 bg-linear-to-br from-secondary to-secondary-container opacity-10 rounded-full blur-3xl pointer-events-none" />
+        
 
         {/* Card */}
-        <div className="relative bg-surface-container-lowest shadow-[0px_20px_40px_rgba(0,30,64,0.06)] rounded-xl overflow-hidden">
+        <div className="relative bg-surface-container-lowest shadow-xl border rounded-xl overflow-hidden">
           <BrandHeader />
           <LoginForm onSubmit={handleLogin} />
           <CardFooter />
         </div>
 
-        <CredentialFooter />
+        <Copyright />
       </div>
 
       <BackgroundDecoration />
