@@ -51,7 +51,7 @@ function LoginForm({ onSubmit }: LoginFormProps) {
     <form onSubmit={handleSubmit(onInternalSubmit)} className="px-8 pb-10 space-y-6">
       {/* Email Field */}
       <div className="space-y-2">
-        <Label htmlFor="email">Email Address</Label>
+        <Label htmlFor="email" className="text-[10px] font-bold uppercase tracking-widest text-[#001e40]">Email Address</Label>
         <div className="relative">
           <Input
             id="email"
@@ -75,7 +75,7 @@ function LoginForm({ onSubmit }: LoginFormProps) {
 
       {/* Password Field using InputGroup */}
       <div className="space-y-2">
-        <Label htmlFor="password">Password</Label>
+        <Label htmlFor="password" className="text-[10px] font-bold uppercase tracking-widest text-[#001e40]">Password</Label>
         <InputGroup>
           <InputGroupAddon>
             <Lock className="h-4 w-4" />

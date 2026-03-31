@@ -46,7 +46,7 @@ function CardFooter() {
       <p className="text-sm text-on-surface-variant">
         Don't have an account?{" "}
         <a
-          href="#"
+          href="/auth/signup"
           className="font-bold text-primary hover:text-muted-foreground underline decoration-2 underline-offset-4 transition-colors"
         >
           Register here
