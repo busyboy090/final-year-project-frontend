@@ -34,12 +34,12 @@ function CardFooter() {
     <div className="px-8 py-6 bg-surface-container-low border-t border-outline-variant/10 text-center">
       <p className="text-sm text-on-surface-variant">
         Don't have an account?{" "}
-        <a
-          href="/auth/signup"
+        <Link
+          to="/auth/signup"
           className="font-bold text-primary hover:text-muted-foreground underline decoration-2 underline-offset-4 transition-colors"
         >
           Register here
-        </a>
+        </Link>
       </p>
     </div>
   );

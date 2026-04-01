@@ -1,7 +1,7 @@
 import { Menu } from 'lucide-react';
 import ADUNLOGO from '@/assets/logo.png';
 import { Link } from 'react-router-dom';
-import { Button } from '../ui/button';
+import { Button } from '../components/ui/button';
 
 const Navbar = () => {
     return (

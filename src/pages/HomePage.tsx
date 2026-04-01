@@ -1,8 +1,8 @@
-import Navbar from '@/components/layouts/Navbar';
+import Navbar from '@/layouts/Navbar';
 import Hero from '@/features/home/Hero';
 import Stats from '@/features/home/Stats';
 import Features from '@/features/home/Features';
-import Footer from '@/components/layouts/Footer';
+import Footer from '@/layouts/Footer';
 import About from '@/features/home/About';
 
 function HomePage() {
