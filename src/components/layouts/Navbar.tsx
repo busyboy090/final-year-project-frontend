@@ -32,7 +32,7 @@ const Navbar = () => {
                     className="bg-[#fec657] text-[#735200] hover:bg-[#fec657]/90 font-black px-6 shadow-lg shadow-black/10 active:scale-95 transition-all" 
                     asChild
                 >
-                    <Link to="/auth/register">
+                    <Link to="/auth/signup">
                         Get Started
                     </Link>
                 </Button>

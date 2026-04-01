@@ -18,7 +18,9 @@ function SignupPage() {
         <div className="hidden md:flex flex-col justify-between p-10 bg-linear-to-br from-[#001e40] to-[#003366] w-1/3 text-white">
           <div>
             <div className="flex items-center gap-2 mb-8">
-              <img src={ADUNLOGO} alt="ADUN-EMS" className="h-10 w-10 bg-white rounded-full p-1" />
+              <Link to="/">
+                <img src={ADUNLOGO} alt="ADUN-EMS" className="h-10 w-10 bg-white rounded-full p-1" />
+              </Link>
               <span className="font-bold text-xl tracking-tighter">ADUN-EMS</span>
             </div>
             <h2 className="text-2xl font-bold leading-tight mb-4 text-white">Join the Admiralty Community</h2>
@@ -46,7 +48,7 @@ function SignupPage() {
 
           <footer className="mt-8 pt-6 border-t text-center text-sm">
             Already have an account?{" "}
-            <Link to="/auth/login" className="text-[#7b5800] font-bold hover:underline">
+            <Link to="/auth/login" className="font-bold text-primary hover:text-muted-foreground underline decoration-2 underline-offset-4 transition-colors">
               Sign in
             </Link>
           </footer>

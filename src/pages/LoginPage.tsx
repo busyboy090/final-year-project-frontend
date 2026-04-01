@@ -1,6 +1,7 @@
 import LoginForm from "../components/forms/LoginForm";
 import ADUNLOGO from "../assets/logo.png";
 import Copyright from "../components/ui/copyright";
+import { Link } from "react-router-dom";
 
 // ── Background watermark ──────────────────────────────────────────────────────
 function BackgroundDecoration() {
@@ -21,11 +22,13 @@ function BrandHeader() {
   return (
     <div className="px-8 pt-10 pb-6 text-center">
       <div className="inline-flex items-center justify-center w-20 h-20 mb-6 bg-primary-container rounded-lg shadow-xl shadow-primary/20">
-        <img
-          src={ADUNLOGO}
-          alt="Admiralty University of Nigeria Logo"
-          className="w-18 h-18 object-contain"
-        />
+        <Link to="/">
+          <img
+            src={ADUNLOGO}
+            alt="Admiralty University of Nigeria Logo"
+            className="w-18 h-18 object-contain"
+          />
+        </Link>
       </div>
       <h1 className="text-2xl font-extrabold tracking-tight text-primary font-headline">
         Sign In to ADUN-EMS

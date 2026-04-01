@@ -6,9 +6,15 @@ import GuestRoutes from './GuestRoutes';
 // Pages
 import HomePage from '@/pages/home/HomePage';
 
+// Components
+import ScrollTop from '@/components/ScrollTop';
+
 function index() {
+
+
   return (
     <Router>
+      <ScrollTop />
       <Routes>
         <Route path="/" element={<HomePage />} />
 
