@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Library, ShieldCheck } from "lucide-react";
+import { ShieldCheck } from "lucide-react";
 import SignupForm from "../components/forms/SignupForm";
 import Copyright from "../components/ui/copyright";
 import ADUNLOGO from "../assets/logo.png";

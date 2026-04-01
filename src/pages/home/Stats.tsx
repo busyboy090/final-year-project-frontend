@@ -1,4 +1,4 @@
-import React from 'react';
+// import React from 'react';
 import { Calendar, Landmark, UserCheck } from 'lucide-react';
 
 const Stats = () => {
@@ -14,7 +14,7 @@ const Stats = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {stats.map((stat, idx) => (
             <div key={idx} className={`${stat.color} p-10 rounded-xl flex flex-col justify-between shadow-xl transition-colors`}>
-              <div className="text-5xl mb-6">{React.cloneElement(stat.icon as React.ReactElement, { size: 48 })}</div>
+              {/* <div className="text-5xl mb-6">{React.cloneElement(stat.icon as React.ReactElement, { size: 48 })}</div> */}
               <div>
                 <h3 className="text-6xl font-black tracking-tighter mb-2">{stat.value}</h3>
                 <p className="opacity-70 font-bold uppercase tracking-widest text-sm">{stat.label}</p>

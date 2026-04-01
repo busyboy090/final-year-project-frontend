@@ -1,4 +1,3 @@
-import React from 'react';
 import { Shield, Share2, Globe } from 'lucide-react';
 
 const Footer = () => {
