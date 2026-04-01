@@ -1,15 +1,15 @@
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, CalendarCheck } from 'lucide-react';
 
 const Hero = () => {
   return (
-    <section className="relative min-h-[850px] flex items-center overflow-hidden bg-gradient-to-br from-[#001e40] to-[#003366]">
+    <section className="relative min-h-[850px] md:min-h-[700px] flex items-center overflow-hidden bg-gradient-to-br from-[#001e40] to-[#003366]">
       <div 
         className="absolute inset-0 opacity-10 bg-cover bg-center"
         style={{ backgroundImage: "url('https://images.unsplash.com/photo-1541339907198-e08756ebafe3?q=80&w=2070')" }}
       />
       <div className="container mx-auto px-8 relative z-10 flex flex-col md:flex-row items-center gap-12">
         <div className="w-full md:w-1/2">
-          <h1 className="text-5xl md:text-7xl font-black text-white leading-[1.1] mb-6 tracking-tighter">
+          <h1 className="text-3xl md:text-6xl font-black text-white leading-[1.1] mb-6 tracking-tighter">
             Admiralty University <br/>
             <span className="text-[#fec657]">Event Management System</span>
           </h1>
@@ -37,11 +37,11 @@ const Hero = () => {
           <div className="absolute -bottom-10 -left-10 z-20 backdrop-blur-xl bg-white/10 p-6 rounded-xl border border-white/10 shadow-2xl hidden lg:block">
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 bg-[#fec657] rounded-full flex items-center justify-center">
-                {/* <EventAvailable className="text-[#735200] w-6 h-6" /> */}
+                <CalendarCheck className="text-[#735200] w-6 h-6" />
               </div>
               <div>
                 <p className="text-white text-xs uppercase tracking-widest font-bold">Upcoming Event</p>
-                <p className="text-white font-medium">Founder's Day Gala 2024</p>
+                <p className="text-white font-medium">Founder's Day Gala 2026</p>
               </div>
             </div>
           </div>
