@@ -3,25 +3,11 @@ import ADUNLOGO from "../assets/logo.png";
 import Copyright from "../components/ui/copyright";
 import { Link } from "react-router-dom";
 
-// ── Background watermark ──────────────────────────────────────────────────────
-function BackgroundDecoration() {
-  return (
-    <div className="fixed inset-0 -z-10 pointer-events-none overflow-hidden">
-      <div className="absolute top-[10%] left-[5%] text-[12rem] font-black text-primary/[0.02] select-none rotate-12 leading-none">
-        ADUN
-      </div>
-      <div className="absolute bottom-[10%] right-[5%] text-[12rem] font-black text-secondary/[0.02] select-none -rotate-12 leading-none">
-        EMS
-      </div>
-    </div>
-  );
-}
-
 
 function BrandHeader() {
   return (
     <div className="px-8 pt-10 pb-6 text-center">
-      <div className="inline-flex items-center justify-center w-20 h-20 mb-6 bg-primary-container rounded-lg shadow-xl shadow-primary/20">
+      <div className="inline-flex items-center justify-center w-20 h-20 mb-6 bg-primary-container rounded-lg">
         <Link to="/">
           <img
             src={ADUNLOGO}
@@ -71,11 +57,8 @@ export default function LoginPage() {
   return (
     <main className="grow flex items-center justify-center p-6 bg-[#F4F6F9] min-h-screen font-body">
       <div className="relative w-full max-w-md">
-        {/* Glow blobs */}
-        
-
         {/* Card */}
-        <div className="relative bg-surface-container-lowest shadow-xl border rounded-xl overflow-hidden">
+        <div className="relative bg-white shadow-xl border rounded-xl overflow-hidden">
           <BrandHeader />
           <LoginForm onSubmit={handleLogin} />
           <CardFooter />
@@ -83,8 +66,6 @@ export default function LoginPage() {
 
         <Copyright />
       </div>
-
-      <BackgroundDecoration />
     </main>
   );
 }

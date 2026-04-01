@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { InputGroup, InputGroupInput, InputGroupAddon } from "@/components/ui/input-group";
 import { Mail, Eye, EyeOff, Lock, ArrowRight, Loader2 } from "lucide-react";
+import { Link } from "react-router-dom";
 
 interface LoginFormInputs {
   email: string;
@@ -127,9 +128,9 @@ function LoginForm({ onSubmit }: LoginFormProps) {
           </Label>
         </div>
 
-        <a href="#" className="text-sm font-medium text-primary hover:underline">
+        <Link to="/auth/forgot-password" className="text-sm font-medium text-primary hover:underline">
           Forgot Password?
-        </a>
+        </Link>
       </div>
 
       {/* Submit Button */}

@@ -1,10 +1,16 @@
-import { Routes } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
+
+// Middlewares
+import Protected from '@/middlewares/Protected';
+
 
 
 function ProtectedRoutes() {
   return (
     <Routes>
-      {/* <Route path="/" element={<Dashboard />} /> */}
+      <Route path="/" element={<Protected />} >
+        {/* <Route path="/dashboard" element={<Dashboard />} /> */}
+      </Route>
     </Routes>
   )
 }

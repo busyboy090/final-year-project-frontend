@@ -9,7 +9,7 @@ const Footer = () => {
             <Shield className="text-amber-500 w-5 h-5" />
             ADUN-EMS
           </div>
-          <p className="lowercase tracking-normal text-white/60">© 2024 Admiralty University of Nigeria. All rights reserved.</p>
+          <p className="lowercase tracking-normal text-white/60">© { new Date().getFullYear() } Admiralty University of Nigeria. All rights reserved.</p>
         </div>
         <div className="flex flex-wrap justify-center gap-8">
           <a className="hover:text-amber-400 hover:underline" href="#">Privacy Policy</a>

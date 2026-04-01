@@ -8,6 +8,7 @@ import HomePage from '@/pages/home/HomePage';
 
 // Components
 import ScrollTop from '@/components/ScrollTop';
+import PageNotFound from '@/components/PageNotFound';
 
 function index() {
 
@@ -20,6 +21,9 @@ function index() {
 
         {/* Guest Routes */}
         <Route path="/auth/*" element={<GuestRoutes />} />
+
+        {/* 404 Route */}
+        <Route path="*" element={<PageNotFound />} />
       </Routes>
     </Router>
   )
