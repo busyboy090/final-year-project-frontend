@@ -64,7 +64,7 @@ function EmailVerificationPage() {
                                 Verify Your Email
                             </h2>
                             <p className="text-slate-500 text-sm leading-relaxed">
-                                Enter the 6-digit code sent to your university email.
+                                Enter the 6-digit code sent to your email address.
                             </p>
                         </div>
 
