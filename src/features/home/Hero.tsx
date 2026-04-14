@@ -1,4 +1,5 @@
 import { ArrowRight, CalendarCheck } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const Hero = () => {
   return (
@@ -17,13 +18,13 @@ const Hero = () => {
             Plan, schedule, and track university events — all in one place. Experience professional coordination designed for academic excellence.
           </p>
           <div className="flex flex-wrap gap-4">
-            <button className="bg-[#fec657] text-[#735200] px-8 py-4 rounded-lg font-bold text-lg hover:brightness-110 transition-all flex items-center gap-2 shadow-lg shadow-black/20">
+            <Link to="/auth/signup" className="bg-[#fec657] text-[#735200] px-8 py-4 rounded-lg font-bold text-lg hover:brightness-110 transition-all flex items-center gap-2 shadow-lg shadow-black/20">
               Get Started
               <ArrowRight className="w-5 h-5" />
-            </button>
-            <button className="border-2 border-white/30 text-white px-8 py-4 rounded-lg font-bold text-lg hover:bg-white/10 transition-all backdrop-blur-md">
+            </Link>
+            <Link to="/auth/login" className="border-2 border-white/30 text-white px-8 py-4 rounded-lg font-bold text-lg hover:bg-white/10 transition-all backdrop-blur-md">
               Sign In
-            </button>
+            </Link>
           </div>
         </div>
         <div className="w-full md:w-1/2 relative">

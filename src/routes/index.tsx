@@ -1,13 +1,12 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
-// Guest Routes
+// Routes
 import GuestRoutes from './GuestRoutes';
+import PublicRoutes from './PublicRoutes';
+import DashboardRoutes from './DashboardRoutes';
 
-// Pages
-import HomePage from '@/pages/HomePage';
 
 // Components
-import PageNotFound from '@/components/PageNotFound';
 import AppLayout from '@/layouts/AppLayout';
 
 function index() {
@@ -17,13 +16,13 @@ function index() {
     <Router>
       <AppLayout>
         <Routes>
-          <Route path="/" element={<HomePage />} />
+          <Route path="/*" element={<PublicRoutes />} />
 
           {/* Guest Routes */}
           <Route path="/auth/*" element={<GuestRoutes />} />
 
-          {/* 404 Route */}
-          <Route path="*" element={<PageNotFound />} />
+          {/* Dashboard Routes */}
+          <Route path="/dashboard/*" element={<DashboardRoutes />} />
         </Routes>
       </AppLayout>
     </Router>
