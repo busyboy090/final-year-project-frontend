@@ -22,7 +22,7 @@ function MfaForm({ onSubmit, otp, setOtp, loading }: MfaFormProps) {
     }
 
     return (
-        <form onSubmit={handleSubmit} className="px-8 pb-10 space-y-8 animate-in fade-in duration-300 my-3">
+        <form onSubmit={handleSubmit} className="px-8 space-y-8 animate-in fade-in duration-300">
             <div className="space-y-2">
                 <Label className="text-[11px] font-bold uppercase tracking-widest block text-center">
                     Verification Code

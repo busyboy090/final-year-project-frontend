@@ -40,7 +40,8 @@ export default function LoginPage() {
         return navigate("/auth/verify-email");
       }
 
-      toast.error("Something went wrong.")
+      if(error?.response.status === 500) toast.error("Something went wrong.")
+      else toast.error(error?.response.data.message)
     } finally {
       setLoading(false)
     }

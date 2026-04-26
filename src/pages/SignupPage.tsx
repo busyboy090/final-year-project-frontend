@@ -3,30 +3,39 @@ import { ShieldCheck } from "lucide-react";
 import SignupForm from "../components/forms/SignupForm";
 import Copyright from "../components/ui/copyright";
 import ADUNLOGO from "../assets/logo.png";
-import { registerUser } from "@/store/authSlice";
-import { dashboardPathForRole } from "@/types/auth";
-import useAuth from "@/hooks/useAuth";
+import { useState } from "react";
+import { apiClient as api } from "@/apis/axios";
+import { toast } from "sonner";
 
 function SignupPage() {
   const navigate = useNavigate();
-  const { isLoading, clearError, register } = useAuth();
+  const [loading, setLoading] = useState<boolean>(false)
 
-  const handleRegister = async (data: {
-    fullName: string;
-    email: string;
-    role: string;
-    department: string;
-    password: string;
-    confirmPassword: string;
-  }) => {
-    clearError()
-    const action = await register(data);
-    if (registerUser.fulfilled.match(action)) {
-      navigate(dashboardPathForRole(action.payload.user.role), {
-        replace: true,
+  const handleRegister = async (data: { firstName: string; lastName: string; email: string; password: string; confirmPassword: string; }) => {
+    if(loading) return 
+    setLoading(true)
+    try {
+      const res = await api.post("/v1/auth/register", {
+        first_name: data.firstName,
+        last_name: data.lastName,
+        email: data.email,
+        password: data.password,
+        confirm_password: data.confirmPassword
       });
+
+      // show a success message
+      toast.success("Account successfully created");
+
+      // check if email verification is required and navigate to the right route
+      if (res?.data?.requireEmailVerification) {
+        return navigate("/auth/verify-email");
+      }
+    } catch (error: any){
+      toast.error(error?.response?.data?.message || "Something went wrong");
+    } finally {
+      setLoading(false)
     }
-  };
+  }
 
   return (
     <main className="min-h-screen flex items-center flex-col justify-center p-6 md:p-12 relative bg-[#F4F6F9] font-body">
@@ -73,7 +82,7 @@ function SignupPage() {
 
           <SignupForm onSubmit={handleRegister} />
 
-          {isLoading && (
+          {loading && (
             <p className="mt-2 text-center text-xs text-muted-foreground">
               Creating your account…
             </p>

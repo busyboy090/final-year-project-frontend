@@ -23,7 +23,7 @@ import { userNavItems } from '@/configs/nav-config';
 import useAuth from '@/hooks/useAuth';
 
 function StudentDashboardLayout({ children }: { children?: React.ReactNode }) {
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -71,7 +71,7 @@ function StudentDashboardLayout({ children }: { children?: React.ReactNode }) {
                         <AvatarFallback className="bg-[#001e40] text-white">BA</AvatarFallback>
                       </Avatar>
                       <div className="text-left hidden lg:block">
-                        <p className="text-xs font-bold text-[#001e40]">Busayo Ale</p>
+                        <p className="text-xs font-bold text-[#001e40]">{ user?.first_name + " " + user?.last_name }</p>
                         <p className="text-[10px] text-slate-500 uppercase font-medium">STUDENT</p>
                       </div>
                     </button>
@@ -80,8 +80,8 @@ function StudentDashboardLayout({ children }: { children?: React.ReactNode }) {
                   <DropdownMenuContent className="w-56 mt-2" align="end">
                     <DropdownMenuLabel className="font-normal">
                       <div className="flex flex-col space-y-1">
-                        <p className="text-sm font-bold text-[#001e40]">Busayo Ale</p>
-                        <p className="text-xs text-slate-500">busayojosiah@gmail.com</p>
+                        <p className="text-sm font-bold text-[#001e40]">{ user?.first_name + " " + user?.last_name }</p>
+                        <p className="text-xs text-slate-500">{ user?.email }</p>
                       </div>
                     </DropdownMenuLabel>
                     <DropdownMenuSeparator />

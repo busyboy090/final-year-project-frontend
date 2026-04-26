@@ -9,24 +9,25 @@ import { Button } from "@/components/ui/button";
 //   SelectTrigger, 
 //   SelectValue 
 // } from "@/components/ui/select";
-import { 
-  InputGroup, 
-  InputGroupInput, 
-  InputGroupAddon 
+import {
+  InputGroup,
+  InputGroupInput,
+  InputGroupAddon
 } from "@/components/ui/input-group";
-import { 
-  Mail, 
-  Lock, 
-  User, 
+import {
+  Mail,
+  Lock,
+  User,
   // Building, 
-  Eye, 
-  EyeOff, 
-  Loader2, 
-  ArrowRight 
+  Eye,
+  EyeOff,
+  Loader2,
+  ArrowRight
 } from "lucide-react";
 
 interface RegisterFormInputs {
-  fullName: string;
+  firstName: string;
+  lastName: string;
   email: string;
   role: string;
   department: string;
@@ -52,7 +53,8 @@ function SignupForm({ onSubmit }: SignupFormProps) {
   } = useForm<RegisterFormInputs>({
     mode: "onChange",
     defaultValues: {
-      fullName: "",
+      firstName: "",
+      lastName: "",
       email: "",
       password: "",
       confirmPassword: "",
@@ -72,21 +74,38 @@ function SignupForm({ onSubmit }: SignupFormProps) {
 
   return (
     <form onSubmit={handleSubmit(onInternalSubmit)} className="space-y-5">
-      
+
       {/* Full Name - InputGroup */}
-      <div className="space-y-1.5">
-        <Label htmlFor="fullName" className="text-[10px] font-bold uppercase tracking-widest text-[#001e40]">Full Name</Label>
-        <InputGroup className={errors.fullName ? "border-destructive ring-destructive" : ""}>
-          <InputGroupAddon className="border-r-0">
-            <User className="h-4 w-4 text-slate-400" />
-          </InputGroupAddon>
-          <InputGroupInput 
-            placeholder="Johnathan Doe" 
-            id="fullName"
-            {...register("fullName", { required: "Name is required" })} 
-          />
-        </InputGroup>
-        {errors.fullName && <p className="text-[10px] text-red-500 font-bold uppercase">{errors.fullName.message}</p>}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="space-y-1.5">
+          <Label htmlFor="firstName" className="text-[10px] font-bold uppercase tracking-widest text-[#001e40]">First Name</Label>
+          <InputGroup className={errors.firstName ? "border-destructive ring-destructive" : ""}>
+            <InputGroupAddon className="border-r-0">
+              <User className="h-4 w-4 text-slate-400" />
+            </InputGroupAddon>
+            <InputGroupInput
+              placeholder="Johnathan"
+              id="firstName"
+              {...register("firstName", { required: "First Name is required" })}
+            />
+          </InputGroup>
+          {errors.firstName && <p className="text-[10px] text-red-500 font-bold uppercase">{errors.firstName.message}</p>}
+        </div>
+
+        <div className="space-y-1.5">
+          <Label htmlFor="lastName" className="text-[10px] font-bold uppercase tracking-widest text-[#001e40]">Last Name</Label>
+          <InputGroup className={errors.lastName ? "border-destructive ring-destructive" : ""}>
+            <InputGroupAddon className="border-r-0">
+              <User className="h-4 w-4 text-slate-400" />
+            </InputGroupAddon>
+            <InputGroupInput
+              placeholder="Doe"
+              id="lastName"
+              {...register("lastName", { required: "Last Name is required" })}
+            />
+          </InputGroup>
+          {errors.lastName && <p className="text-[10px] text-red-500 font-bold uppercase">{errors.lastName.message}</p>}
+        </div>
       </div>
 
       {/* Email Address - InputGroup */}
@@ -96,14 +115,14 @@ function SignupForm({ onSubmit }: SignupFormProps) {
           <InputGroupAddon className="border-r-0">
             <Mail className="h-4 w-4 text-slate-400" />
           </InputGroupAddon>
-          <InputGroupInput 
+          <InputGroupInput
             type="email"
-            placeholder="j.doe@adun.edu.ng" 
+            placeholder="j.doe@adun.edu.ng"
             id="email"
-            {...register("email", { 
+            {...register("email", {
               required: "Email is required",
               pattern: { value: /^\S+@\S+$/i, message: "Invalid email" }
-            })} 
+            })}
           />
         </InputGroup>
         {errors.email && <p className="text-[10px] text-red-500 font-bold uppercase">{errors.email.message}</p>}
@@ -118,13 +137,24 @@ function SignupForm({ onSubmit }: SignupFormProps) {
             <InputGroupAddon className="border-r-0">
               <Lock className="h-4 w-4 text-slate-400" />
             </InputGroupAddon>
-            <InputGroupInput 
+            <InputGroupInput
               type={showPassword ? "text" : "password"}
               placeholder="••••••••"
               id="password"
-              {...register("password", { required: "Required", minLength: 8 })}
+              {...register("password", { 
+                required: "Password is required",
+                minLength: {
+                  value: 8,
+                  message: "Password must be at least 8 characters"
+                },
+                pattern: {
+                  // Combined regex to check for A-Z, a-z, and 0-9
+                  value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/,
+                  message: "Password Must include uppercase, lowercase, and a number"
+                } 
+              })}
             />
-            <button 
+            <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
               className="px-3 text-slate-400 hover:text-[#001e40] transition-colors"
@@ -142,16 +172,16 @@ function SignupForm({ onSubmit }: SignupFormProps) {
             <InputGroupAddon className="border-r-0">
               <Lock className="h-4 w-4 text-slate-400" />
             </InputGroupAddon>
-            <InputGroupInput 
+            <InputGroupInput
               type={showConfirmPassword ? "text" : "password"}
               id="confirmPassword"
               placeholder="••••••••"
-              {...register("confirmPassword", { 
+              {...register("confirmPassword", {
                 required: "Confirm your password",
                 validate: val => val === password || "Passwords do not match"
-              })} 
+              })}
             />
-            <button 
+            <button
               type="button"
               onClick={() => setShowConfirmPassword(!showConfirmPassword)}
               className="px-3 text-slate-400 hover:text-[#001e40] transition-colors"
@@ -164,9 +194,9 @@ function SignupForm({ onSubmit }: SignupFormProps) {
       </div>
 
       {/* Submit Button */}
-      <Button 
-        type="submit" 
-        disabled={loading || !isValid} 
+      <Button
+        type="submit"
+        disabled={loading || !isValid}
         className="w-full h-12 font-bold uppercase tracking-widest mt-4 transition-all active:scale-[0.95]"
       >
         {loading ? (
@@ -183,43 +213,43 @@ function SignupForm({ onSubmit }: SignupFormProps) {
 }
 
 
-    {/* Role & Department */}
-  //   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-  //   {/* Role - Standard Shadcn Select */}
-  //   <div className="space-y-1.5">
-  //     <Label htmlFor="role" className="text-[10px] font-bold uppercase tracking-widest text-[#001e40]">Role</Label>
-  //     <Controller
-  //       control={control}
-  //       name="role"
-  //       rules={{ required: "Select a role" }}
-  //       render={({ field }) => (
-  //         <Select onValueChange={field.onChange} value={field.value || undefined}>
-  //           <SelectTrigger className="h-11 w-full">
-  //             <SelectValue placeholder="Select Role" />
-  //           </SelectTrigger>
-  //           <SelectContent>
-  //             <SelectItem value="student">Student</SelectItem>
-  //             <SelectItem value="staff">Staff</SelectItem>
-  //           </SelectContent>
-  //         </Select>
-  //       )}
-  //     />
-  //     {errors.role && <p className="text-[10px] text-red-500 font-bold uppercase">{errors.role.message}</p>}
-  //   </div>
+{/* Role & Department */ }
+//   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+//   {/* Role - Standard Shadcn Select */}
+//   <div className="space-y-1.5">
+//     <Label htmlFor="role" className="text-[10px] font-bold uppercase tracking-widest text-[#001e40]">Role</Label>
+//     <Controller
+//       control={control}
+//       name="role"
+//       rules={{ required: "Select a role" }}
+//       render={({ field }) => (
+//         <Select onValueChange={field.onChange} value={field.value || undefined}>
+//           <SelectTrigger className="h-11 w-full">
+//             <SelectValue placeholder="Select Role" />
+//           </SelectTrigger>
+//           <SelectContent>
+//             <SelectItem value="student">Student</SelectItem>
+//             <SelectItem value="staff">Staff</SelectItem>
+//           </SelectContent>
+//         </Select>
+//       )}
+//     />
+//     {errors.role && <p className="text-[10px] text-red-500 font-bold uppercase">{errors.role.message}</p>}
+//   </div>
 
-  //   {/* Department - InputGroup */}
-  //   <div className="space-y-1.5">
-  //     <Label htmlFor="department" className="text-[10px] font-bold uppercase tracking-widest text-[#001e40]">Department</Label>
-  //     <InputGroup className={errors.department ? "border-destructive ring-destructive" : ""}>
-  //       <InputGroupAddon className="border-r-0">
-  //         <Building className="h-4 w-4 text-slate-400" />
-  //       </InputGroupAddon>
-  //       <InputGroupInput 
-  //         placeholder="Computing" 
-  //         id="department"
-  //         {...register("department", { required: "Required" })} 
-  //       />
-  //     </InputGroup>
-  //   </div>
-  // </div>
+//   {/* Department - InputGroup */}
+//   <div className="space-y-1.5">
+//     <Label htmlFor="department" className="text-[10px] font-bold uppercase tracking-widest text-[#001e40]">Department</Label>
+//     <InputGroup className={errors.department ? "border-destructive ring-destructive" : ""}>
+//       <InputGroupAddon className="border-r-0">
+//         <Building className="h-4 w-4 text-slate-400" />
+//       </InputGroupAddon>
+//       <InputGroupInput 
+//         placeholder="Computing" 
+//         id="department"
+//         {...register("department", { required: "Required" })} 
+//       />
+//     </InputGroup>
+//   </div>
+// </div>
 export default SignupForm;
