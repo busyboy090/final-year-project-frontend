@@ -1,17 +1,14 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 // Routes
-import GuestRoutes from './GuestRoutes';
-import PublicRoutes from './PublicRoutes';
-import DashboardRoutes from './DashboardRoutes';
-
+import GuestRoutes from "./GuestRoutes";
+import PublicRoutes from "./PublicRoutes";
+import DashboardRoutes from "./DashboardRoutes";
 
 // Components
-import AppLayout from '@/layouts/AppLayout';
+import AppLayout from "@/layouts/AppLayout";
 
 function index() {
-
-
   return (
     <Router>
       <AppLayout>

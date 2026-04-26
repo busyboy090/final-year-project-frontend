@@ -20,13 +20,15 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import { userNavItems } from '@/configs/nav-config';
+import useAuth from '@/hooks/useAuth';
 
 function StudentDashboardLayout({ children }: { children?: React.ReactNode }) {
+  const { logout } = useAuth();
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    // Clear auth logic here
-    navigate('/login');
+  const handleLogout = async () => {
+    await logout();
+    navigate('/auth/login');
   };
   return (
     <SidebarProvider>

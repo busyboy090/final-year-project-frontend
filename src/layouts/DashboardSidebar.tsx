@@ -75,7 +75,7 @@ export function DashboardSidebar({ navItems }: { navItems: NavItem[] }) {
                       className={cn(
                         "py-6 transition-all",
                         isActive 
-                          ? 'bg-amber-500/10! text-amber-500! border-r-4 border-amber-500 rounded-none' 
+                          ? 'bg-amber-500/10! text-amber-500! border-r-4 border-amber-500 rounded-none w-full' 
                           : 'text-slate-300 hover:bg-white/5! hover:text-white!'
                       )}
                     >

@@ -1,14 +1,14 @@
 import { useState } from "react";
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { 
-  Select, 
-  SelectContent, 
-  SelectItem, 
-  SelectTrigger, 
-  SelectValue 
-} from "@/components/ui/select";
+// import { 
+//   Select, 
+//   SelectContent, 
+//   SelectItem, 
+//   SelectTrigger, 
+//   SelectValue 
+// } from "@/components/ui/select";
 import { 
   InputGroup, 
   InputGroupInput, 
@@ -18,7 +18,7 @@ import {
   Mail, 
   Lock, 
   User, 
-  Building, 
+  // Building, 
   Eye, 
   EyeOff, 
   Loader2, 
@@ -47,10 +47,16 @@ function SignupForm({ onSubmit }: SignupFormProps) {
     register,
     handleSubmit,
     watch,
-    control,
+    // control,
     formState: { errors, isValid },
   } = useForm<RegisterFormInputs>({
     mode: "onChange",
+    defaultValues: {
+      fullName: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+    },
   });
 
   const password = watch("password");
@@ -101,46 +107,6 @@ function SignupForm({ onSubmit }: SignupFormProps) {
           />
         </InputGroup>
         {errors.email && <p className="text-[10px] text-red-500 font-bold uppercase">{errors.email.message}</p>}
-      </div>
-
-      {/* Role & Department */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {/* Role - Standard Shadcn Select */}
-        <div className="space-y-1.5">
-          <Label htmlFor="role" className="text-[10px] font-bold uppercase tracking-widest text-[#001e40]">Role</Label>
-          <Controller
-            control={control}
-            name="role"
-            rules={{ required: "Select a role" }}
-            render={({ field }) => (
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <SelectTrigger className="h-11 w-full">
-                  <SelectValue placeholder="Select Role" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="student">Student</SelectItem>
-                  <SelectItem value="staff">Staff</SelectItem>
-                </SelectContent>
-              </Select>
-            )}
-          />
-          {errors.role && <p className="text-[10px] text-red-500 font-bold uppercase">{errors.role.message}</p>}
-        </div>
-
-        {/* Department - InputGroup */}
-        <div className="space-y-1.5">
-          <Label htmlFor="department" className="text-[10px] font-bold uppercase tracking-widest text-[#001e40]">Department</Label>
-          <InputGroup className={errors.department ? "border-destructive ring-destructive" : ""}>
-            <InputGroupAddon className="border-r-0">
-              <Building className="h-4 w-4 text-slate-400" />
-            </InputGroupAddon>
-            <InputGroupInput 
-              placeholder="Computing" 
-              id="department"
-              {...register("department", { required: "Required" })} 
-            />
-          </InputGroup>
-        </div>
       </div>
 
       {/* Passwords */}
@@ -216,4 +182,44 @@ function SignupForm({ onSubmit }: SignupFormProps) {
   );
 }
 
+
+    {/* Role & Department */}
+  //   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+  //   {/* Role - Standard Shadcn Select */}
+  //   <div className="space-y-1.5">
+  //     <Label htmlFor="role" className="text-[10px] font-bold uppercase tracking-widest text-[#001e40]">Role</Label>
+  //     <Controller
+  //       control={control}
+  //       name="role"
+  //       rules={{ required: "Select a role" }}
+  //       render={({ field }) => (
+  //         <Select onValueChange={field.onChange} value={field.value || undefined}>
+  //           <SelectTrigger className="h-11 w-full">
+  //             <SelectValue placeholder="Select Role" />
+  //           </SelectTrigger>
+  //           <SelectContent>
+  //             <SelectItem value="student">Student</SelectItem>
+  //             <SelectItem value="staff">Staff</SelectItem>
+  //           </SelectContent>
+  //         </Select>
+  //       )}
+  //     />
+  //     {errors.role && <p className="text-[10px] text-red-500 font-bold uppercase">{errors.role.message}</p>}
+  //   </div>
+
+  //   {/* Department - InputGroup */}
+  //   <div className="space-y-1.5">
+  //     <Label htmlFor="department" className="text-[10px] font-bold uppercase tracking-widest text-[#001e40]">Department</Label>
+  //     <InputGroup className={errors.department ? "border-destructive ring-destructive" : ""}>
+  //       <InputGroupAddon className="border-r-0">
+  //         <Building className="h-4 w-4 text-slate-400" />
+  //       </InputGroupAddon>
+  //       <InputGroupInput 
+  //         placeholder="Computing" 
+  //         id="department"
+  //         {...register("department", { required: "Required" })} 
+  //       />
+  //     </InputGroup>
+  //   </div>
+  // </div>
 export default SignupForm;
