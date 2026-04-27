@@ -15,10 +15,10 @@ interface LoginFormInputs {
 
 interface LoginFormProps {
   onSubmit: (data: LoginFormInputs) => Promise<void> | void;
+  loading: boolean;
 }
 
-function LoginForm({ onSubmit }: LoginFormProps) {
-  const [loading, setLoading] = useState(false);
+function LoginForm({ onSubmit, loading }: LoginFormProps) {
   const [showPassword, setShowPassword] = useState(false);
 
   const {
@@ -36,17 +36,11 @@ function LoginForm({ onSubmit }: LoginFormProps) {
   });
 
   const onInternalSubmit = async (data: LoginFormInputs) => {
-    setLoading(true);
-    try {
-      await onSubmit(data);
-    } finally {
-      setLoading(false);
-    }
+    await onSubmit(data);
   };
 
   return (
     <form onSubmit={handleSubmit(onInternalSubmit)} className="px-8 pb-10 space-y-6">
-      
       {/* Email Field - Now using InputGroup */}
       <div className="space-y-2">
         <Label htmlFor="email" className="text-[10px] font-bold uppercase tracking-widest text-[#001e40]">
@@ -89,10 +83,7 @@ function LoginForm({ onSubmit }: LoginFormProps) {
             placeholder="••••••••"
             {...register("password", {
               required: "Password is required",
-              minLength: {
-                value: 6,
-                message: "Minimum 6 characters",
-              },
+              minLength: { value: 1, message: "Password is required" },
             })}
           />
           <button
@@ -134,9 +125,9 @@ function LoginForm({ onSubmit }: LoginFormProps) {
       </div>
 
       {/* Submit Button */}
-      <Button 
-        type="submit" 
-        className="w-full h-12 text-base font-bold shadow-lg" 
+      <Button
+        type="submit"
+        className="w-full h-12 text-base font-bold shadow-lg"
         disabled={loading || !isValid || !isDirty || isSubmitting}
       >
         {loading ? (

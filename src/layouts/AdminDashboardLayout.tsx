@@ -14,10 +14,17 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import type { ReactNode } from 'react';
+import useAuth from '@/hooks/useAuth';
+
 
 function AdminDashboardLayout({ children }: { children?: ReactNode }) {
+  const { logout } = useAuth();
   const navigate = useNavigate();
-  const handleLogout = () => navigate('/login');
+
+  const handleLogout = async () => {
+    await logout();
+    navigate('/auth/login');
+  };
 
   return (
     <SidebarProvider>

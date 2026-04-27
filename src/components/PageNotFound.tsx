@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 function PageNotFound() {
   return (
     <>
-      <main className="grid min-h-dvh place-items-center px-6 py-24 sm:py-32 lg:px-8">
+      <main className="grid w-screen min-h-dvh place-items-center px-6 py-24 sm:py-32 lg:px-8">
         <div className="text-center">
           <p className="text-lg font-semibold">404</p>
           <h1 className="mt-4 text-5xl font-semibold tracking-tight text-balance sm:text-7xl">

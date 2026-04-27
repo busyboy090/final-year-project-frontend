@@ -28,9 +28,9 @@ export const adminNavItems: NavItem[] = [
 ];
 
 export const userNavItems = [
-    { icon: LayoutDashboard, label: 'Dashboard', path: '/dashboard/user', active: true },
-    { icon: CalendarDays, label: 'Calendar', path: '/dashboard/user/calendar' },
-    { icon: CalendarCheck, label: 'My Events', path: '/dashboard/user/my-events' },
-    { icon: ChartNoAxesColumn, label: 'Analytics', path: '/dashboard/user/analytics' },
-    { icon: Settings, label: 'Settings', path: '/dashboard/user/settings' }
+    { icon: LayoutDashboard, label: 'Dashboard', path: '/dashboard/student', active: true },
+    { icon: CalendarDays, label: 'Calendar', path: '/dashboard/student/calendar' },
+    { icon: CalendarCheck, label: 'My Events', path: '/dashboard/student/my-events' },
+    { icon: ChartNoAxesColumn, label: 'Analytics', path: '/dashboard/student/analytics' },
+    { icon: Settings, label: 'Settings', path: '/dashboard/student/settings' }
   ];

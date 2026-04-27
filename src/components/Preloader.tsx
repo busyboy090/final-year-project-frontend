@@ -57,7 +57,7 @@ function Preloader() {
   return (
     <main 
       ref={containerRef}
-      className="relative flex flex-col items-center justify-center min-h-screen overflow-hidden bg-[#f6faff] font-body text-[#141d23]"
+      className="relative w-screen flex flex-col items-center justify-center h-dvh box-border overflow-hidden bg-[#f6faff] font-body text-[#141d23]"
     >
       {/* Watermark Background */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.03]">
