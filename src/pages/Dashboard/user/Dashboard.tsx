@@ -2,14 +2,17 @@ import { Calendar, Clock, MapPin, GraduationCap, Beaker, Trophy, Info, QrCode } 
 import AttendanceItem from '@/features/dashboard/components/AttendanceItem';
 import MilestoneItem from '@/features/dashboard/components/MilestoneItem';
 import RegisteredEvents from '@/features/dashboard/RegisteredEvents';
+import useAuth from "@/hooks/useAuth";
 
 
 function StudentDashboard() {
+  const { user } = useAuth();
+
   return (
     <div className="max-w-7xl mx-auto">
       <div className='mb-6 flex max-lg:flex-col justify-between gap-4 lg:items-center'>
         <div>
-          <h2 className="text-3xl font-extrabold tracking-tight text-[#001e40]">Welcome, Busayo Ale</h2>
+          <h2 className="text-3xl font-extrabold tracking-tight text-[#001e40]">Welcome, { user?.first_name + " " + user?.last_name }</h2>
           <p className="text-slate-500 text-sm mt-1 font-medium">Curating Your Academic Experience.</p>
         </div>
 
