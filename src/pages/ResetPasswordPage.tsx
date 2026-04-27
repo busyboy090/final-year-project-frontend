@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { apiClient as api } from "@/apis/axios";
 import { 
   LockKeyhole, Eye, EyeOff, CheckCircle2, 
-  Circle, ArrowRight, Loader2 
+  Circle, Loader2 
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -19,7 +19,6 @@ interface ResetPasswordInputs {
 
 function ResetPasswordPage() {
   const navigate = useNavigate();
-  const location = useLocation();
   
   const [loading, setLoading] = useState(false);
   const [isVerifying, setIsVerifying] = useState(true);
