@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import { apiClient as api } from "@/apis/axios";
 import MfaForm from "@/components/forms/MfaForm";
 import useAuth from "@/hooks/useAuth";
-import { dashboardPathForRole } from "@/types/auth";
+import { dashboardPathForRole } from "@/utils/route";
 import ADUNLOGO from "../assets/logo.png";
 import { ArrowLeft } from "lucide-react";
 import Copyright from "../components/ui/copyright";

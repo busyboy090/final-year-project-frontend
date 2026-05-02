@@ -6,14 +6,14 @@ import SignupPage from "../pages/SignupPage";
 import ForgotPasswordPage from "../pages/ForgotPassword";
 import EmailVerificationPage from "@/pages/EmailVerificationPage";
 import ResetPasswordPage from "@/pages/ResetPasswordPage";
+import MfaPage from "@/pages/MfaPage";
+import VerifyEmailPage from "@/pages/VerifyEmailPage";
 
 // Components
 import PageNotFound from "@/components/PageNotFound";
 
 // Middlewares
 import Guest from "@/middlewares/Guest";
-import MfaPage from "@/pages/MfaPage";
-import VerifyEmailPage from "@/pages/VerifyEmailPage";
 
 function GuestRoutes() {
   return (

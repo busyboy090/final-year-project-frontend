@@ -7,7 +7,7 @@ import CheckUserRole from '@/middlewares/CheckUserRole';
 import UserDashboard from '@/pages/Dashboard/user/Dashboard';
 
 // Layouts
-import UserDashboardLayout from '@/layouts/UserDashboardLayout';
+import DashboardLayout from '@/layouts/DashboardLayout';
 
 // Components
 import PageNotFound from '@/components/PageNotFound';
@@ -16,7 +16,7 @@ function UserDashboardRoutes() {
   return (
     <Routes>
       <Route path="/" element={<CheckUserRole role="user" />} >
-        <Route element={<UserDashboardLayout />} >
+        <Route element={<DashboardLayout />} >
           <Route index element={<UserDashboard />} />
         </Route>
       </Route>

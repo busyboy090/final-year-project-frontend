@@ -1,11 +1,11 @@
 import { useSelector, useDispatch } from "react-redux";
 import { 
   clearAuthError, 
-  bootstrapAuth, 
   registerUser,
   refreshAccessToken, 
   logoutUser,
-  login
+  login,
+  setAccessToken
 } from "@/store/authSlice";
 import type { RootState, AppDispatch } from "@/store";
 import type { RegisterFormPayload } from "@/store/authSlice";
@@ -20,11 +20,6 @@ function useAuth() {
         login: ({ accessToken, user }: { accessToken: string, user: string }) => dispatch(login({ accessToken, user })),
 
         // --- Auth Methods (Thunks) ---
-        
-        /**
-         * Runs the full startup sequence: Ping -> CSRF -> Refresh
-         */
-        bootstrap: () => dispatch(bootstrapAuth()),
 
         /**
          * Handles full registration flow including role mapping
@@ -46,6 +41,8 @@ function useAuth() {
          * Clear UI error messages (useful for Sonner/Toasts)
          */
         clearError: () => dispatch(clearAuthError()),
+
+        setAccessToken: (accessToken: string) => dispatch(setAccessToken({ accessToken }))
     };
 }
 

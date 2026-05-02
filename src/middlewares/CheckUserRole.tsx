@@ -1,12 +1,13 @@
 import { Navigate, Outlet } from "react-router-dom";
 import { useAppSelector } from "@/store/hooks";
-import type { ApiRole } from "@/types/auth";
-import { dashboardPathForRole } from "@/types/auth";
+import { dashboardPathForRole } from "@/utils/route";
+import type { UserRole } from "@/types/user";
 
-const routeRoleToApiRoles: Record<string, ApiRole[]> = {
-  admin: ["administrator"],
-  user: ["user"],
-  "event-organiser": ["organiser"],
+// Mapping frontend route categories to backend UserRole codes
+const routeRoleToApiRoles: Record<string, UserRole[]> = {
+  admin: ["super-admin"],
+  user: ["student", "staff"],
+  eventOrganiser: ["faculty-admin", "department-admin", "src-exec", "event-organiser"] // Added event-organiser
 };
 
 function CheckUserRole({
@@ -18,13 +19,29 @@ function CheckUserRole({
 }) {
   const user = useAppSelector((s) => s.auth.user);
 
+  // 1. Redirect to login if no user is found
   if (!user) {
     return <Navigate to="/auth/login" replace />;
   }
 
-  const allowed = routeRoleToApiRoles[role];
-  if (!allowed || !allowed.includes(user.role)) {
-    return <Navigate to={dashboardPathForRole(user.role)} replace />;
+  // 2. Identify roles allowed for this specific route segment
+  const allowedApiRoles = routeRoleToApiRoles[role];
+
+  /**
+   * 3. Check for Intersection:
+   * Does the user have AT LEAST ONE of the roles required for this route?
+   */
+  const hasAccess = user.roles.some((userRole:UserRole) => 
+    allowedApiRoles?.includes(userRole)
+  );
+
+  if (!hasAccess) {
+    /**
+     * Fallback: Redirect to their primary dashboard. 
+     * dashboardPathForRole should be updated to accept the roles array
+     */
+    const primaryRole = user.roles[0] || "student";
+    return <Navigate to={dashboardPathForRole(primaryRole)} replace />;
   }
 
   return <>{children ?? <Outlet />}</>;
