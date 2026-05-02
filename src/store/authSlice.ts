@@ -1,17 +1,8 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { apiClient as api } from "@/apis/axios";
-import { API_BASE_URL } from "@/configs/api";
-import axios from "axios";
+import type { User } from "@/types/user";
 
 /* -------------------- TYPES -------------------- */
-
-export interface AuthUser {
-    id: number;
-    first_name: string;
-    last_name: string;
-    email: string;
-    role: "administrator" | "organiser" | "user";
-}
 
 export interface AuthError {
     message: string;
@@ -31,12 +22,10 @@ export interface RegisterFormPayload {
 }
 
 interface AuthState {
-    initialized: boolean;       // True once the bootstrap check is done
-    user: AuthUser | null;
+    user: User | null;
     accessToken: string | null;
     csrfToken: string | null;
     isAuthenticated: boolean;
-    serverState: "up" | "down" | null;
     isLoading: boolean;
     isError: boolean;
     error: AuthError | null;
@@ -59,32 +48,17 @@ function mapUiRoleToApiRole(ui: string): "user" | "organiser" {
 /* -------------------- INITIAL STATE -------------------- */
 
 const initialState: AuthState = {
-    initialized: false,
     user: null,
     accessToken: null,
     csrfToken: null,
     isAuthenticated: false,
     isLoading: false,
-    serverState: null,
     isError: false,
     error: null,
     mfaPendingEmail: null,
 };
 
 /* -------------------- THUNKS -------------------- */
-
-// 1. Health Check
-export const pingServer = createAsyncThunk<boolean, void, { rejectValue: AuthError }>(
-    "auth/pingServer",
-    async (_, { rejectWithValue }) => {
-        try {
-            await axios.get(`${API_BASE_URL}/health`);
-            return true;
-        } catch (err: any) {
-            return rejectWithValue({ message: "Server is offline" });
-        }
-    }
-);
 
 // Check if user is Authenticated before fetching access token
 export const checkIfAuthenticated = createAsyncThunk<
@@ -103,7 +77,7 @@ export const checkIfAuthenticated = createAsyncThunk<
 // Refresh Token / Session Recovery
 // This replaces localStorage. It asks the server: "Who am I based on my cookie?"
 export const refreshAccessToken = createAsyncThunk<
-    { accessToken: string; user: AuthUser },
+    { accessToken: string; user: User },
     void,
     { rejectValue: AuthError }
 >("auth/refreshAccessToken", async (_, { rejectWithValue }) => {
@@ -111,29 +85,12 @@ export const refreshAccessToken = createAsyncThunk<
         const { data } = await api.get("/v1/auth/refresh-token");
         return {
             accessToken: data.accessToken,
-            user: data.user, // Server must return user object here
+            user: data.user
         };
     } catch (err: any) {
         return rejectWithValue({ message: "No active session" });
     }
 });
-
-// 4. Main Bootstrap Sequence
-export const bootstrapAuth = createAsyncThunk<void, void>(
-    "auth/bootstrap",
-    async (_, { dispatch }) => {
-        try {
-            await dispatch(pingServer()).unwrap();
-            const isAuthenticated = await dispatch(checkIfAuthenticated()).unwrap();
-
-            if(isAuthenticated) {
-                await dispatch(refreshAccessToken()).unwrap();
-            }
-        } catch (error) {
-            console.warn("Bootstrap: User not authenticated.");
-        }
-    }
-);
 
 // Login
 export const logoutUser = createAsyncThunk<boolean, void, { rejectValue: AuthError }>(
@@ -189,6 +146,10 @@ const authSlice = createSlice({
             state.mfaPendingEmail = null;
             // Note: Call the API logout separately to clear the HTTP-only cookie
         },
+        setAccessToken: (state, action) => {
+            state.accessToken = action.payload.accessToken;
+            state.isAuthenticated = true;
+        },
         clearAuthError: (state) => {
             state.isError = false;
             state.error = null;
@@ -199,13 +160,6 @@ const authSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
-            // Bootstrap
-            .addCase(bootstrapAuth.fulfilled, (state) => { state.initialized = true; })
-            .addCase(bootstrapAuth.rejected, (state) => { state.initialized = true; })
-
-            // Ping
-            .addCase(pingServer.fulfilled, (state) => { state.serverState = "up"; })
-            .addCase(pingServer.rejected, (state) => { state.serverState = "down"; })
 
             // Refresh / Session Recovery
             .addCase(refreshAccessToken.fulfilled, (state, action) => {
@@ -238,5 +192,5 @@ const authSlice = createSlice({
     },
 });
 
-export const { logout, clearAuthError, clearMfaChallenge, login } = authSlice.actions;
+export const { logout, clearAuthError, clearMfaChallenge, login, setAccessToken } = authSlice.actions;
 export default authSlice.reducer;

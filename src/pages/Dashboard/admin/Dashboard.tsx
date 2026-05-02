@@ -1,3 +1,4 @@
+import WelcomeBack from '@/components/ui/welcome-back';
 import StatCard from '@/features/dashboard/components/StatCard';
 import { Calendar, CalendarDays, Mail, Users, MoreVertical, Clock, ChevronRight } from 'lucide-react';
 
@@ -5,7 +6,7 @@ function AdminDashboard() {
     return (
         <div className="px-2 pb-12">
             <div className='mb-4'>
-                <h2 className="text-3xl font-extrabold tracking-tight text-[#001e40]">Welcome, Prof. Adeyemi</h2>
+                <WelcomeBack />
                 <p className="text-slate-500 text-sm mt-1 font-medium">Monitoring the pulse of Admiralty University Events.</p>
             </div>
 

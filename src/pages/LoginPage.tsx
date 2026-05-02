@@ -4,7 +4,7 @@ import LoginForm from "../components/forms/LoginForm";
 import ADUNLOGO from "../assets/logo.png";
 import Copyright from "../components/ui/copyright";
 import useAuth from "@/hooks/useAuth";
-import { dashboardPathForRole } from "@/types/auth";
+import { dashboardPathForRole } from "@/utils/route";
 import { useState } from "react";
 import { apiClient as api } from "@/apis/axios";
 
@@ -24,13 +24,13 @@ export default function LoginPage() {
       // check if mfa is required
       if (res.status === 200 && res.data.mfaRequired) {
         return navigate("/auth/verify-mfa", { state: { from: location.state?.from || "/" } });
-      }
+      };
 
       // Set Auth States
       login({
         accessToken: res.data.accessToken,
         user: res.data.user
-      })
+      });
 
       // Redirect to the intended page
       const dest = from?.startsWith("/dashboard") ? from : dashboardPathForRole(res.data.user.role);
