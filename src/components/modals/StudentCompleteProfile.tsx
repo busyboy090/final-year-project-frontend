@@ -31,7 +31,6 @@ import { apiClient } from "@/apis/axios";
 import { DepartmentSelect } from "../ui/department-select";
 import { LevelSelect } from "../ui/level-select"; 
 import GenderSelect from "../ui/gender-select";
-import useUser from "@/hooks/useUser";
 
 
 /**
@@ -47,9 +46,8 @@ interface StudentProfileForm {
 }
 
 
-function StudentProfileModal() {
+function StudentProfileModal({ onClose }: { onClose: () => void }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { setNeedsProfileCompletion } = useUser();
 
   const {
     register,
@@ -75,7 +73,7 @@ function StudentProfileModal() {
       if (response.data.success) {
         toast.success("Identity verified successfully!");
 
-        setNeedsProfileCompletion(false)
+        onClose();
       }
     } catch (error: any) {
       toast.error(error.response?.data?.message || "Failed to save profile");

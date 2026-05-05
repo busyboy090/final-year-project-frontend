@@ -1,40 +1,10 @@
 import { PlusCircle, DoorOpen, CheckCircle, Construction, Users } from 'lucide-react';
 import StatCard from "@/features/dashboard/components/StatCard";
 import VenueTable from '@/features/dashboard/admin/VenueTable';
-import { useState } from 'react';
-
+import { Link } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
 
 export default function VenueManagement() {
-  const [venues] = useState([
-    {
-      id: "1",
-      name: "Main Convocation Hall",
-      location: "Central Administration",
-      capacity: "1,200",
-      type: "Auditorium",
-      status: "Available",
-      image: "https://lh3.googleusercontent.com/aida-public/AB6AXuAwO9CtycES4gc0EtgdLiqqpSA05TpbqlsQKfLAJeNFubH_i7qMlhKov9NxeWX9GTqOU_hQyWoIHvi5TQI1iyed44mwfsACVZi1PyOJbPqgRh0-GJIctCZVgBzefsxpvPYJeplsLno_yb_7YCY_QhrjssOnq1OVjEX8Kjc2d-ioSAH2VHMtDDDQ6ZX3J3DE0KJnNP2FU0M2_SlumMf_EB_ZDYVCjTHFBRzFStNVIqqj0qX-3dulCdumHHvo5SBwlz8mhhXqaD1idpI", // Grand hall image
-    },
-    {
-      id: "2",
-      name: "Maritime Lab",
-      location: "Engineering Block, L3",
-      capacity: "45",
-      type: "Research Lab",
-      status: "Occupied",
-      image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80&w=200&h=200", // Lab setting
-    },
-    {
-      id: "3",
-      name: "Auditorium A",
-      location: "West Wing",
-      capacity: "250",
-      type: "Lecture Hall",
-      status: "Maintenance",
-      image: "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&q=80&w=200&h=200", // Modern lecture hall
-    },
-  ]);
-
   return (
     <div>
       {/* Header Section */}
@@ -48,10 +18,12 @@ export default function VenueManagement() {
             Oversee and coordinate all university spaces, from ceremonial halls to advanced maritime laboratories.
           </p>
         </div>
-        <button className="bg-amber-500 self-end text-white px-6 py-3 rounded-lg font-bold flex items-center gap-2 hover:scale-95 transition-all shadow-sm active:scale-95">
-          <PlusCircle size={20} />
-          Add New Venue
-        </button>
+        <Button asChild variant="default" className="bg-amber-500 h-[40px] hover:bg-amber-600 self-end text-white text-md font-bold px-6 py-3 rounded-lg flex items-center gap-2 hover:scale-95 transition-all shadow-sm active:scale-95">
+          <Link to="/dashboard/admin/venues/add">
+            <PlusCircle size={20} />
+            Add New Venue
+          </Link>
+        </Button>
       </div>
 
       {/* Stats Bar */}
@@ -69,7 +41,7 @@ export default function VenueManagement() {
       </div>
 
       {/* Venue Table */}
-      <VenueTable venues={venues} />
+      <VenueTable />
     </div>
   );
 }

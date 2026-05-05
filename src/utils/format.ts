@@ -49,3 +49,25 @@ export const formatName = (first_name: string, last_name: string, title?: string
     // If a title exists, prepend it. Otherwise, return just the full name.
     return title ? `${title} ${fName} ${lName}` : `${fName} ${lName}`;
 };
+
+export const capitalizeInitial = (word: string): string => {
+    if (!word) return ""; // Handle empty strings
+    return word.charAt(0).toUpperCase() + word.slice(1);
+};
+
+/**
+ * Formats numbers for UI display with locale-aware separators.
+ * Returns "0" for invalid inputs to prevent rendering issues.
+ */
+export const formatNumber = (
+    value: number | string,
+    options?: Intl.NumberFormatOptions,
+    locale: string = "en-US"
+): string => {
+    const numericValue = typeof value === "number" ? value : Number(value);
+
+    if (!Number.isFinite(numericValue)) return "0";
+
+    return new Intl.NumberFormat(locale, options).format(numericValue);
+};
+

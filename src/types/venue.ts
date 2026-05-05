@@ -5,7 +5,8 @@ export interface Venue {
     capacity?: string;
     type?: string;
     status: string;
-    image?: string; // Optional URL for the featured image
+    thumbnail?: string;
+    images?: string[];
     isMaintenance?: boolean;
     lastUpdated?: string;
     features?: string[]; // e.g., ["AV System", "Projector", "Maritime Simulators"]
