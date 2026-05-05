@@ -11,10 +11,12 @@ import Reports from '@/pages/Dashboard/admin/Reports';
 import Settings from '@/pages/Dashboard/admin/Settings';
 import Users from '@/pages/Dashboard/admin/Users';
 import Attendance from '@/pages/Dashboard/admin/Attendance';
+import AddVenuePage from '@/pages/Dashboard/admin/AddVenuePage';
+import EditVenuePage from '@/pages/Dashboard/admin/EditVenuePage';
 
 
 // Layouts
-import DashboardLayout from '@/layouts/AdminDashboardLayout';
+import DashboardLayout from '@/layouts/DashboardLayout';
 
 // Components
 import PageNotFound from '@/components/PageNotFound';
@@ -28,6 +30,8 @@ function AdminDashboardRoutes() {
           <Route index element={<Dashboard />} />
           <Route path="/events" element={<Events />} />
           <Route path="/venues" element={<Venues />} />
+          <Route path="/venues/add" element={<AddVenuePage />} />
+          <Route path="/venues/edit/:id" element={<EditVenuePage />} />
           <Route path="/reports" element={<Reports />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/attendance" element={<Attendance />} />

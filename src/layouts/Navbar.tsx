@@ -19,7 +19,7 @@ const Navbar = () => {
             <div className="flex gap-2 md:gap-4 items-center">
                 <Button 
                     variant="ghost" 
-                    className="text-white text-md p-4 hover:bg-white/10 hover:text-amber-400 font-bold" 
+                    className="text-white text-sm p-4 hover:bg-white/10 hover:text-amber-400 font-bold" 
                     asChild
                 >
                     <Link to="/auth/login">
@@ -28,7 +28,7 @@ const Navbar = () => {
                 </Button>
 
                 <Button 
-                    className="bg-[#fec657] text-md p-4 text-[#735200] hover:bg-[#fec657]/90 font-black px-6 shadow-lg shadow-black/10 active:scale-95 transition-all" 
+                    className="bg-[#fec657] text-sm p-4 text-[#735200] hover:bg-[#fec657]/90 font-black px-5 shadow-lg shadow-black/10 active:scale-95 transition-all" 
                     asChild
                 >
                     <Link to="/auth/signup">

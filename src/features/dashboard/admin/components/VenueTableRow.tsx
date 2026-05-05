@@ -12,6 +12,7 @@ import {
     DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
+import { capitalizeInitial, formatNumber } from "@/utils/format";
 
 function VenueTableRow({ venue, index }: { venue: Venue, index: number }) {
     return (
@@ -22,9 +23,9 @@ function VenueTableRow({ venue, index }: { venue: Venue, index: number }) {
             {/* 1. New Image Column */}
             <TableCell className="pl-6 py-4 w-[80px] gap-2">
                 <div className="size-12 rounded-lg bg-slate-100 border border-slate-200 overflow-hidden flex items-center justify-center shrink-0">
-                    {venue.image ? (
+                    {venue.thumbnail ? (
                         <img 
-                            src={venue.image} 
+                            src={venue.thumbnail} 
                             alt={venue.name} 
                             className="size-full object-cover transition-transform duration-500 group-hover:scale-110" 
                         />
@@ -41,11 +42,11 @@ function VenueTableRow({ venue, index }: { venue: Venue, index: number }) {
             </TableCell>
 
             <TableCell>
-                <span className="text-sm font-medium text-slate-600">{venue.type}</span>
+                <span className="text-sm font-medium text-slate-600">{capitalizeInitial(venue?.type || "")}</span>
             </TableCell>
 
             <TableCell>
-                <span className="text-sm font-bold text-[#001e40]">{venue.capacity} Seats</span>
+                <span className="text-sm font-bold text-[#001e40]">{formatNumber(venue?.capacity || 0)} Seats</span>
             </TableCell>
 
             <TableCell>

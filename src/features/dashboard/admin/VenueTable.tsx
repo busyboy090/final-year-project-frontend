@@ -1,18 +1,25 @@
 import {
     Table,
     TableBody,
+    TableCell,
     TableHead,
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import { Search, Filter } from "lucide-react";
+import { Search, Filter, Inbox } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import type { Venue } from "@/types/venue";
 import VenueTableRow from "./components/VenueTableRow";
+import { VenueTableRowSkeleton } from "./components/VenueTableRowSkeleton";
+import { useVenues } from "@/hooks/useVenue";
 
+function VenueTable() {
+    const { data: venues, isLoading } = useVenues();
+    
+    // Check if we have data and it's empty
+    const isEmpty = !isLoading && (!venues || venues.length === 0);
 
-function VenueTable({ venues }: { venues: Venue[] }) {
     return (
         <div className="space-y-4">
             <div className="flex items-center justify-between gap-4">
@@ -36,11 +43,36 @@ function VenueTable({ venues }: { venues: Venue[] }) {
                             <TableHead className="uppercase text-[11px] font-extrabold tracking-widest">Status</TableHead>
                             <TableHead className="uppercase text-[11px] font-extrabold tracking-widest px-6 text-center">Actions</TableHead>
                         </TableRow>
-                    </TableHeader>
+                    </TableHeader>  
                     <TableBody>
-                        {venues.map((venue, index) => (
-                            <VenueTableRow key={index} index={index} venue={venue} />
-                        ))}
+                        {isLoading ? (
+                            Array.from({ length: 5 }).map((_, i) => (
+                                <VenueTableRowSkeleton key={`skeleton-${i}`} />
+                            ))
+                        ) : isEmpty ? (
+                            // 1. Added Venue Not Found State
+                            <TableRow>
+                                <TableCell colSpan={6} className="h-64 text-center">
+                                    <div className="flex flex-col items-center justify-center space-y-3">
+                                        <div className="bg-slate-50 p-4 rounded-full">
+                                            <Inbox className="size-10 text-slate-300" />
+                                        </div>
+                                        <div className="space-y-1">
+                                            <p className="text-sm font-bold text-[#001e40]">No venues found</p>
+                                            <p className="text-xs text-slate-500">There are no venues registered in the ADUN system yet.</p>
+                                        </div>
+                                    </div>
+                                </TableCell>
+                            </TableRow>
+                        ) : (
+                            venues?.map((venue: Venue, index: number) => (
+                                <VenueTableRow
+                                    key={venue.id}
+                                    venue={venue}
+                                    index={index}
+                                />
+                            ))
+                        )}
                     </TableBody>
                 </Table>
             </div>
@@ -48,4 +80,4 @@ function VenueTable({ venues }: { venues: Venue[] }) {
     )
 }
 
-export default VenueTable
+export default VenueTable;
