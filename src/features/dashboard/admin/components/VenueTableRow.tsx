@@ -13,21 +13,24 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { capitalizeInitial, formatNumber } from "@/utils/format";
+import { useNavigate } from "react-router-dom";
 
 function VenueTableRow({ venue, index }: { venue: Venue, index: number }) {
+    const navigate = useNavigate();
+
     return (
         <TableRow key={venue.id} className="group hover:bg-slate-50/80 transition-colors">
-             <TableCell>
+            <TableCell>
                 <span className="text-sm font-bold px-6">{index + 1}</span>
             </TableCell>
             {/* 1. New Image Column */}
             <TableCell className="pl-6 py-4 w-[80px] gap-2">
                 <div className="size-12 rounded-lg bg-slate-100 border border-slate-200 overflow-hidden flex items-center justify-center shrink-0">
                     {venue.thumbnail ? (
-                        <img 
-                            src={venue.thumbnail} 
-                            alt={venue.name} 
-                            className="size-full object-cover transition-transform duration-500 group-hover:scale-110" 
+                        <img
+                            src={venue.thumbnail}
+                            alt={venue.name}
+                            className="size-full object-cover transition-transform duration-500 group-hover:scale-110"
                         />
                     ) : (
                         <ImageIcon className="size-5 text-slate-300" />
@@ -61,8 +64,13 @@ function VenueTableRow({ venue, index }: { venue: Venue, index: number }) {
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="w-32">
-                        <DropdownMenuItem className="text-xs cursor-pointer">View Info</DropdownMenuItem>
-                        <DropdownMenuItem className="text-xs cursor-pointer">Edit Space</DropdownMenuItem>
+                        <DropdownMenuItem onSelect={() => navigate(`/dashboard/admin/venues/${venue.id}`)} className="text-xs cursor-pointer">
+                            View Info
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onSelect={() => navigate(`/dashboard/admin/venues/edit/${venue.id}`)} className="text-xs cursor-pointer">
+                            Edit Space
+
+                        </DropdownMenuItem>
                         <DropdownMenuItem className="text-xs cursor-pointer">Schedule</DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>

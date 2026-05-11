@@ -38,6 +38,7 @@ export default function EditVenuePage() {
                 });
 
                 media.setThumbnailPreview(venue.thumbnail);
+                media.setGalleryPreviews(venue.images)
                 setIsLoading(false);
             } catch (err) {
                 toast.error("Venue not found");
@@ -61,10 +62,10 @@ export default function EditVenuePage() {
             if (values.thumbnail?.[0]) formData.append("thumbnail", values.thumbnail[0]);
             media.galleryFiles.forEach((file) => formData.append("images", file));
 
-            await api.patch(`/v1/venues/${id}`, formData);
+            await api.put(`/v1/venues/${id}`, formData);
 
             if (refetchVenues) refetchVenues();
-            toast.success("Registry updated successfully");
+            toast.success("Venue updated successfully");
             navigate("/dashboard/admin/venues");
         } catch (error: any) {
             toast.error("Failed to update venue");
