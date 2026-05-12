@@ -11,6 +11,7 @@ import DashboardLayout from '@/layouts/DashboardLayout';
 
 // Components
 import PageNotFound from '@/components/PageNotFound';
+import ProfileSettings from '@/pages/Dashboard/user/student/ProfileSettings';
 
 function UserDashboardRoutes() {
   return (
@@ -18,6 +19,7 @@ function UserDashboardRoutes() {
       <Route path="/" element={<CheckUserRole role="user" />} >
         <Route element={<DashboardLayout />} >
           <Route index element={<UserDashboard />} />
+          <Route path='/profile' element={<ProfileSettings />} />
         </Route>
       </Route>
 

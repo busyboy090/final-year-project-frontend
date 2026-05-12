@@ -8,7 +8,7 @@ import Dashboard from '@/pages/Dashboard/admin/Dashboard';
 import Venues from '@/pages/Dashboard/admin/Venues';
 import Events from '@/pages/Dashboard/admin/Events';
 import Reports from '@/pages/Dashboard/admin/Reports';
-import ProfileSettings from '@/pages/Dashboard/ProfileSettings';
+import ProfileSettings from '@/pages/Dashboard/user/student/ProfileSettings';
 import Attendance from '@/pages/Dashboard/admin/Attendance';
 import AddVenuePage from '@/pages/Dashboard/admin/AddVenuePage';
 import EditVenuePage from '@/pages/Dashboard/admin/EditVenuePage';
