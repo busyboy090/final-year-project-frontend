@@ -8,11 +8,11 @@ import Dashboard from '@/pages/Dashboard/admin/Dashboard';
 import Venues from '@/pages/Dashboard/admin/Venues';
 import Events from '@/pages/Dashboard/admin/Events';
 import Reports from '@/pages/Dashboard/admin/Reports';
-import Settings from '@/pages/Dashboard/admin/Settings';
-import Users from '@/pages/Dashboard/admin/Users';
+import ProfileSettings from '@/pages/Dashboard/ProfileSettings';
 import Attendance from '@/pages/Dashboard/admin/Attendance';
 import AddVenuePage from '@/pages/Dashboard/admin/AddVenuePage';
 import EditVenuePage from '@/pages/Dashboard/admin/EditVenuePage';
+import VenueDetailsPage from '@/pages/Dashboard/VenueDetailsPage';
 
 
 // Layouts
@@ -20,6 +20,7 @@ import DashboardLayout from '@/layouts/DashboardLayout';
 
 // Components
 import PageNotFound from '@/components/PageNotFound';
+import UserManagement from '@/pages/Dashboard/admin/UserManagementPage';
 
 function AdminDashboardRoutes() {
   return (
@@ -32,10 +33,13 @@ function AdminDashboardRoutes() {
           <Route path="/venues" element={<Venues />} />
           <Route path="/venues/add" element={<AddVenuePage />} />
           <Route path="/venues/edit/:id" element={<EditVenuePage />} />
+          <Route path="/venues/:id" element={<VenueDetailsPage />} />
           <Route path="/reports" element={<Reports />} />
-          <Route path="/settings" element={<Settings />} />
+          <Route path="/settings" element={<ProfileSettings />} />
           <Route path="/attendance" element={<Attendance />} />
-          <Route path="/users" element={<Users />} />
+          <Route path="/users" element={<CheckUserRole role="superAdmin" />}>
+            <Route index element={<UserManagement />} />
+          </Route>
         </Route>
       </Route>
 

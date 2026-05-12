@@ -19,7 +19,14 @@ function DashboardLayout({ children }: { children?: ReactNode }) {
     ["super-admin", "faculty-admin", "department-admin", "student-affairs"].includes(role)
   );
 
-  const activeNavItems = isAdminView ? adminNavItems : userNavItems;
+  const isSuperAdminAccount =
+    user?.roles?.includes("super-admin") && user?.is_super_admin === true;
+
+  const activeNavItems = isAdminView
+    ? adminNavItems.filter(
+        (item) => item.path !== "/dashboard/admin/users" || isSuperAdminAccount
+      )
+    : userNavItems;
 
   return (
     <DashboardProvider>

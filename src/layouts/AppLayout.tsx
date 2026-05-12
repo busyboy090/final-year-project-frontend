@@ -2,7 +2,6 @@ import { useState, useEffect, useRef } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { AxiosHeaders, type AxiosRequestConfig } from "axios";
 
-// Components
 import Preloader from '@/components/Preloader';
 import ScrollTop from '@/components/ScrollTop';
 import { apiClient } from "@/apis/axios";
@@ -12,92 +11,149 @@ import useUser from '@/hooks/useUser';
 
 function isMutatingRequest(config: AxiosRequestConfig): boolean {
   const method = config.method?.toUpperCase();
-  return method === "POST" || method === "PUT" || method === "PATCH" || method === "DELETE";
+  return ["POST", "PUT", "PATCH", "DELETE"].includes(method || "");
 }
 
-function AppLayout({ children }: { children: React.ReactNode }) {
-  const [loading, setLoading] = useState(true);
-  const { accessToken, login } = useAuth();
+let isRefreshing = false;
+let failedQueue: Array<{ resolve: (token: string) => void; reject: (err: any) => void }> = [];
+let csrfTokenCache: string | null = null;
+let csrfTokenRequest: Promise<string> | null = null;
+
+const processQueue = (error: any, token: string | null = null) => {
+  failedQueue.forEach((prom) => {
+    if (error) prom.reject(error);
+    else prom.resolve(token!);
+  });
+  failedQueue = [];
+};
+
+function AppLayout({ children }: { children?: React.ReactNode }) {
+  const [isBootstrapping, setIsBootstrapping] = useState(true);
+  const { accessToken, login, logout } = useAuth();
   const { setNeedsProfileCompletion } = useUser();
   const { bootstrap, initialized } = useApp();
-  const booted = useRef<boolean>(false);
+
+  // ✅ Refs so interceptors always read the latest values without re-registering
+  const accessTokenRef = useRef<string | null>(accessToken);
+  const initializedRef = useRef(initialized);
+  const loginRef = useRef(login);
+  const logoutRef = useRef(logout);
+
+  const booted = useRef(false);
   const navigate = useNavigate();
 
+
+  // Keep all refs in sync with latest values every render
+  useEffect(() => { accessTokenRef.current = accessToken; }, [accessToken]);
+  useEffect(() => { initializedRef.current = initialized; }, [initialized]);
+  useEffect(() => { loginRef.current = login; }, [login]);
+  useEffect(() => { logoutRef.current = logout; }, [logout]);
+
+  // 1. Bootstrap — runs exactly once
   useEffect(() => {
     if (booted.current) return;
     booted.current = true;
-    bootstrap();
-  }, []);
 
-  // Set loading to false once bootstrapped (adjusted from 5s to rely on logic if needed)
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 2000);
-    return () => clearTimeout(timer);
-  }, []);
-
-  useEffect(() => {
-    let csrfTokenCache: string | null = null;
-    let csrfTokenRequest: Promise<string> | null = null;
-
-    const getCsrfToken = async (): Promise<string> => {
-      if (csrfTokenCache) return csrfTokenCache;
-      if (!csrfTokenRequest) {
-        csrfTokenRequest = apiClient
-          .get<{ csrfToken?: string }>("/v1/auth/csrf-token")
-          .then((res) => {
-            if (!res.data.csrfToken) throw new Error("Invalid CSRF response");
-            csrfTokenCache = res.data.csrfToken;
-            return csrfTokenCache;
-          })
-          .finally(() => { csrfTokenRequest = null; });
+    const init = async () => {
+      try {
+        await bootstrap();
+      } finally {
+        setIsBootstrapping(false);
       }
-      return csrfTokenRequest;
     };
+    init();
+  }, [bootstrap]);
 
-    // --- Request Interceptor ---
+  // 2. Interceptors — registered once, refs keep values fresh
+  useEffect(() => {
     const requestInterceptorId = apiClient.interceptors.request.use(async (config) => {
-      const headers = AxiosHeaders.from(config.headers ?? {});
-      if (accessToken) headers.set("Authorization", `Bearer ${accessToken}`);
-      if (isMutatingRequest(config)) {
-        const csrfToken = await getCsrfToken();
-        headers.set("x-csrf-token", csrfToken);
+      // Wait for bootstrap to finish before sending data requests
+      if (!initializedRef.current) {
+        await new Promise<void>((resolve) => {
+          let attempts = 0;
+          const interval = setInterval(() => {
+            attempts++;
+            if (initializedRef.current || attempts > 20) {
+              clearInterval(interval);
+              resolve();
+            }
+          }, 100);
+        });
       }
+
+      const headers = AxiosHeaders.from(config.headers ?? {});
+
+      // ✅ Always reads the latest token via ref — no stale closure
+      const token = accessTokenRef.current;
+      if (token) headers.set("Authorization", `Bearer ${token}`);
+
+      if (isMutatingRequest(config)) {
+        if (!csrfTokenCache && !csrfTokenRequest) {
+          csrfTokenRequest = apiClient
+            .get("/v1/auth/csrf-token")
+            .then((res) => {
+              csrfTokenCache = res.data.csrfToken;
+              return csrfTokenCache!;
+            })
+            .finally(() => { csrfTokenRequest = null; });
+        }
+        const csrf = await (csrfTokenCache
+          ? Promise.resolve(csrfTokenCache)
+          : csrfTokenRequest!);
+        if (csrf) headers.set("x-csrf-token", csrf);
+      }
+
       config.headers = headers;
       return config;
     });
 
-    // --- Response Interceptor (REDIRECT LOGIC HERE) ---
     const responseInterceptorId = apiClient.interceptors.response.use(
-      (response) => {
-        if (response?.data?.accessToken && response?.data?.user) {
-          login({
-            accessToken: response.data.accessToken,
-            user: response.data.user
-          });
+      (res) => {
+        if (res.data?.accessToken) {
+          loginRef.current({ accessToken: res.data.accessToken, user: res.data.user });
         }
-
-        // Handle logic if backend returns 200 but includes the needsProfileCompletion
-        if (response.data?.needsProfileCompletion) {
-          setNeedsProfileCompletion(true)
-        }
-
-        return response;
+        if (res.data?.needsProfileCompletion) setNeedsProfileCompletion(true);
+        return res;
       },
-      async (error) => {
-        const data = error.response?.data;
+      async (err) => {
+        const originalRequest = err.config;
 
-        // Catch the specific ADUN "Incomplete Profile" error
-        if (data?.needsProfileCompletion) {
-          setNeedsProfileCompletion(true)
-          return Promise.reject(error);
+        if (err.response?.status === 401 && !originalRequest._retry) {
+          if (isRefreshing) {
+            return new Promise<string>((resolve, reject) => {
+              failedQueue.push({ resolve, reject });
+            }).then((token) => {
+              originalRequest.headers["Authorization"] = `Bearer ${token}`;
+              return apiClient(originalRequest);
+            });
+          }
+
+          originalRequest._retry = true;
+          isRefreshing = true;
+
+          try {
+            const res = await apiClient.post("/v1/auth/refresh-token");
+            const newToken = res.data.accessToken;
+
+            // ✅ Update ref immediately so queued requests get the token right away
+            accessTokenRef.current = newToken;
+            loginRef.current({ accessToken: newToken, user: res.data.user });
+
+            processQueue(null, newToken);
+            originalRequest.headers["Authorization"] = `Bearer ${newToken}`;
+            return apiClient(originalRequest);
+          } catch (reErr) {
+            processQueue(reErr, null);
+            csrfTokenCache = null; // invalidate CSRF on full logout
+            logoutRef.current();
+            navigate("/auth/login");
+            return Promise.reject(reErr);
+          } finally {
+            isRefreshing = false;
+          }
         }
 
-        if (error?.response?.status === 403 && isMutatingRequest(error.config ?? {})) {
-          csrfTokenCache = null;
-        }
-        return Promise.reject(error);
+        return Promise.reject(err);
       }
     );
 
@@ -105,21 +161,15 @@ function AppLayout({ children }: { children: React.ReactNode }) {
       apiClient.interceptors.request.eject(requestInterceptorId);
       apiClient.interceptors.response.eject(responseInterceptorId);
     };
-  }, [accessToken, navigate]);
+  }, []); // ✅ Empty deps — registers once, refs handle freshness
 
-  if (loading) return <Preloader />;
-
-  if (!initialized) return (
-    <div className="flex h-screen w-full items-center justify-center bg-[#F4F6F9]">
-      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-    </div>
-  )
+  // --- Rendering ---
+  if (isBootstrapping) return <Preloader />;
 
   return (
     <div className='flex flex-col min-h-screen'>
       <ScrollTop />
-
-      {children ? children : <Outlet />}
+      {children || <Outlet />}
     </div>
   );
 }
