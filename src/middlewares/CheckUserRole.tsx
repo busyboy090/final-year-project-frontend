@@ -6,6 +6,8 @@ import type { UserRole } from "@/types/user";
 // Mapping frontend route categories to backend UserRole codes
 const routeRoleToApiRoles: Record<string, UserRole[]> = {
   admin: ["super-admin"],
+  /** Registry / user management: super-admin role plus `is_super_admin` account flag */
+  superAdmin: ["super-admin"],
   user: ["student", "staff"],
   eventOrganiser: ["faculty-admin", "department-admin", "src-exec", "event-organiser"] // Added event-organiser
 };
@@ -31,9 +33,14 @@ function CheckUserRole({
    * 3. Check for Intersection:
    * Does the user have AT LEAST ONE of the roles required for this route?
    */
-  const hasAccess = user.roles.some((userRole:UserRole) => 
+  const hasRoleMatch = user.roles.some((userRole: UserRole) =>
     allowedApiRoles?.includes(userRole)
   );
+
+  const hasAccess =
+    role === "superAdmin"
+      ? hasRoleMatch && user.is_super_admin === true
+      : hasRoleMatch;
 
   if (!hasAccess) {
     /**

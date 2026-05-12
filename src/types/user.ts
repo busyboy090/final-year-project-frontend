@@ -34,4 +34,7 @@ export type User = {
   profile_picture_url: string | null;
   created_at: Date;
   updated_at: Date;
+
+  /** Set when the session user has `admin_profiles.is_super_admin` */
+  is_super_admin?: boolean;
 };

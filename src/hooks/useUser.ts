@@ -1,7 +1,8 @@
 import { useSelector, useDispatch } from "react-redux";
 import { 
   fetchUserProfile,
-  setNeedsProfileCompletion
+  setNeedsProfileCompletion,
+  updateLocalProfile
 } from "@/store/userSlice";
 import type { RootState, AppDispatch } from "@/store";
 
@@ -15,6 +16,8 @@ function useUser() {
         // --- Auth Methods (Thunks) ---
         
         fetchUserProfile: () => dispatch(fetchUserProfile()),
+
+        updateLocalProfile: (value :any) => dispatch(updateLocalProfile(value)),
 
         setNeedsProfileCompletion: (value:boolean) => dispatch(setNeedsProfileCompletion(value)),
     };

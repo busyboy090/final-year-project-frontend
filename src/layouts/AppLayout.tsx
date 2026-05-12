@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Outlet, useNavigate, useLocation } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
 import { AxiosHeaders, type AxiosRequestConfig } from "axios";
 
 import Preloader from '@/components/Preloader';
@@ -41,17 +41,13 @@ function AppLayout({ children }: { children?: React.ReactNode }) {
 
   const booted = useRef(false);
   const navigate = useNavigate();
-  const location = useLocation();
 
-  const isPublicRoute = ["/login", "/register", "/forgot-password"].includes(location.pathname);
-  const isPublicRouteRef = useRef(isPublicRoute);
 
   // Keep all refs in sync with latest values every render
   useEffect(() => { accessTokenRef.current = accessToken; }, [accessToken]);
   useEffect(() => { initializedRef.current = initialized; }, [initialized]);
   useEffect(() => { loginRef.current = login; }, [login]);
   useEffect(() => { logoutRef.current = logout; }, [logout]);
-  useEffect(() => { isPublicRouteRef.current = isPublicRoute; }, [isPublicRoute]);
 
   // 1. Bootstrap — runs exactly once
   useEffect(() => {
@@ -71,10 +67,8 @@ function AppLayout({ children }: { children?: React.ReactNode }) {
   // 2. Interceptors — registered once, refs keep values fresh
   useEffect(() => {
     const requestInterceptorId = apiClient.interceptors.request.use(async (config) => {
-      const isAuthPath = config.url?.includes('/auth/');
-
       // Wait for bootstrap to finish before sending data requests
-      if (!initializedRef.current && !isAuthPath) {
+      if (!initializedRef.current) {
         await new Promise<void>((resolve) => {
           let attempts = 0;
           const interval = setInterval(() => {
@@ -152,7 +146,7 @@ function AppLayout({ children }: { children?: React.ReactNode }) {
             processQueue(reErr, null);
             csrfTokenCache = null; // invalidate CSRF on full logout
             logoutRef.current();
-            if (!isPublicRouteRef.current) navigate("/login");
+            navigate("/auth/login");
             return Promise.reject(reErr);
           } finally {
             isRefreshing = false;
@@ -171,11 +165,6 @@ function AppLayout({ children }: { children?: React.ReactNode }) {
 
   // --- Rendering ---
   if (isBootstrapping) return <Preloader />;
-
-  if (!accessToken && !isPublicRoute) {
-    navigate("/login", { replace: true });
-    return <Preloader />;
-  }
 
   return (
     <div className='flex flex-col min-h-screen'>
