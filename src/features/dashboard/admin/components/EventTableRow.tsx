@@ -59,7 +59,7 @@ function EventTableRow({ event, index }: { event: Event, index: number }) {
             <TableCell className="text-right px-6">
                 <DropdownMenu>
                     <DropdownMenuTrigger className="w-full">
-                        <Button variant="ghost" size="icon" className="size-8 text-[#001e40] hover:bg-blue-50 mx-auto">
+                        <Button asChild variant="ghost" size="icon" className="size-8 text-[#001e40] hover:bg-blue-50 mx-auto">
                             <EllipsisVertical className="size-4" />
                         </Button>
                     </DropdownMenuTrigger>

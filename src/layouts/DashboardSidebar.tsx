@@ -15,10 +15,11 @@ import {
   SidebarRail,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { useEffect } from 'react';
 
 export function DashboardSidebar({ navItems }: { navItems: NavItem[] }) {
   const location = useLocation();
-  const { state, isMobile } = useSidebar();
+  const { state, isMobile, setOpenMobile } = useSidebar();
 
   /**
    * isRailMode is true ONLY when:
@@ -26,6 +27,10 @@ export function DashboardSidebar({ navItems }: { navItems: NavItem[] }) {
    * 2. The sidebar is explicitly collapsed
    */
   const isRailMode = state === "collapsed" && !isMobile;
+
+  useEffect(() => {
+    setOpenMobile(false)
+  }, [location.pathname, setOpenMobile])
 
   return (
     <Sidebar collapsible="icon" className="border-r-0 shadow-xl">

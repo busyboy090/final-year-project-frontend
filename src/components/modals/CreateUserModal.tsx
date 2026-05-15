@@ -25,7 +25,7 @@ export function CreateUserModal({ open, onOpenChange }: CreateUserModalProps) {
                    sm:max-w-137.5 
                    md:max-w-187.5
                    lg:max-w-212.5
-                   max-h-[90vh] md:max-h-125
+                   max-h-[90dvh] md:max-h-125
                    p-6 md:p-10
                   "
       >
