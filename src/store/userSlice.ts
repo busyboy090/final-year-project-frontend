@@ -42,7 +42,7 @@ const userSlice = createSlice({
       state.error = null;
     },
     updateLocalProfile: (state, action: PayloadAction<any>) => {
-      state.profile = { ...state.profile, ...action.payload };
+      state.profile = action.payload;
     },
     setNeedsProfileCompletion: (state, action) => {
       state.needsProfileCompletion = action.payload;

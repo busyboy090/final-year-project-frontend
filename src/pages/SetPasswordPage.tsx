@@ -1,55 +1,59 @@
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect, useRef } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 import { apiClient as api } from "@/apis/axios";
 import { LockKeyhole } from "lucide-react";
 import SetPasswordForm from "@/components/forms/SetPasswordForm";
 
-interface ResetPasswordInputs {
+interface PasswordInputs {
   password: string;
   confirmPassword: string;
 }
 
-function ResetPasswordPage() {
+function SetPasswordPage() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
   const [loading, setLoading] = useState(false);
   const [isVerifying, setIsVerifying] = useState(true);
+  const [sessionData, setSessionData] = useState<{ email: string } | null>(null);
 
-  // Data from the previous "Forgot Password" step
-  const [sessionData, setSessionData] = useState<{ email: string } | null>(
-    null,
-  );
+  // useRef — persists after URL is cleared, no re-render side effects
+  const tokenRef = useRef<string | null>(null);
 
-  // 1. Verify Session on Mount
   useEffect(() => {
+    const token = searchParams.get("token");
+
+    if (!token) {
+      navigate("/auth/forgot-password", { replace: true });
+      return;
+    }
+
+    tokenRef.current = token;
+
     const verifySession = async () => {
       try {
-        // This endpoint verifies the signed 'tempToken' cookie
-        const res = await api.post("/v1/auth/reset-password/session");
+        const res = await api.post(`/v1/auth/set-password/session?token=${token}`);
         setSessionData({ email: res.data.email });
-      } catch (err: any) {
-        // toast.error("Session expired. Please start the reset process again.");
+      } catch {
         navigate("/auth/forgot-password", { replace: true });
       } finally {
         setIsVerifying(false);
       }
     };
-    verifySession();
-  }, [navigate]);
 
-  // 2. Handle Password Reset Execution
-  const onSubmit = async (data: ResetPasswordInputs) => {
+    verifySession();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const onSubmit = async (data: PasswordInputs) => {
     setLoading(true);
     try {
-      await api.patch("/v1/auth/reset-password", {
+      await api.patch(`/v1/user/set-password?token=${tokenRef.current}`, {
         password: data.password,
         confirm_password: data.confirmPassword,
       });
 
       toast.success("Password updated successfully! You can now log in.");
-
-      // Clean redirect to login
       setTimeout(() => navigate("/auth/login", { replace: true }), 1500);
     } catch (error: any) {
       toast.error(
@@ -63,7 +67,7 @@ function ResetPasswordPage() {
   if (isVerifying) {
     return (
       <div className="flex h-screen w-full items-center justify-center bg-[#F4F6F9]">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
       </div>
     );
   }
@@ -77,10 +81,10 @@ function ResetPasswordPage() {
               <LockKeyhole className="text-white h-8 w-8" />
             </div>
             <h1 className="text-3xl font-extrabold tracking-tight text-[#001e40] mb-2">
-              New Password
+              Set Password
             </h1>
             <p className="text-slate-500 text-sm">
-              Resetting password for{" "}
+              Set password for{" "}
               <span className="font-bold text-slate-700">
                 {sessionData?.email}
               </span>
@@ -96,4 +100,4 @@ function ResetPasswordPage() {
   );
 }
 
-export default ResetPasswordPage;
+export default SetPasswordPage;

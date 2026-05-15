@@ -8,8 +8,11 @@ import PageNotFound from '@/components/PageNotFound';
 
 // Routes
 import AdminDashboardRoutes from './AdminDashboardRoutes';
-import StudentDashboardRoutes from './UserDashboardRoutes';
+import StudentDashboardRoutes from './StudentDashboardRoutes';
 import EventOrganiserDashboardRoutes from './EventOrganiserDashboardRoutes';
+import StaffDashboardRoutes from './StaffDashboardRoutes';
+
+// Provider
 import DashboardProvider from '@/contexts/DashboardProvider';
 
 function DashboardRoutes() {
@@ -19,6 +22,9 @@ function DashboardRoutes() {
         <Route element={<DashboardProvider />}>
           {/* Admin Dashboard Routes */}
           <Route path="/admin/*" element={<AdminDashboardRoutes />} />
+
+          {/* Admin Dashboard Routes */}
+          <Route path="/staff/*" element={<StaffDashboardRoutes />} />
 
           {/* Student Dashboard Routes */}
           <Route path="/student/*" element={<StudentDashboardRoutes />} />

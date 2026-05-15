@@ -8,18 +8,10 @@ export const convertRoleToTitle = (role: UserRole): string => {
     switch (role) {
         case "super-admin":
             return "System Administrator";
-        case "faculty-admin":
-            return "Faculty Administrator";
-        case "student-affairs":
-            return "Student Affairs Officer";
-        case "department-admin":
-            return "Departmental Admin / HOD";
         case "event-organiser":
             return "Event Organiser";
         case "staff":
             return "University Staff";
-        case "src-exec":
-            return "SRC Executive";
         case "student":
             return "Student";
         default:
@@ -47,7 +39,7 @@ export const formatName = (first_name: string, last_name: string, title?: string
     const lName = capitalize(last_name);
 
     // If a title exists, prepend it. Otherwise, return just the full name.
-    return title ? `${title} ${fName} ${lName}` : `${fName} ${lName}`;
+    return title ? `${title}. ${fName} ${lName}` : `${fName} ${lName}`;
 };
 
 export const capitalizeInitial = (word: string): string => {
@@ -70,4 +62,14 @@ export const formatNumber = (
 
     return new Intl.NumberFormat(locale, options).format(numericValue);
 };
+
+
+export const formatRole = (role: UserRole): string => {
+    switch(role) {
+        case "super-admin" :
+            return "admin"
+        default: 
+            return role
+    }
+}
 

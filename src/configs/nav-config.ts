@@ -8,7 +8,8 @@ import {
     Users,
     BarChart3,
     Settings,
-    type LucideIcon
+    type LucideIcon,
+    User
 } from 'lucide-react';
 
 export interface NavItem {
@@ -17,7 +18,7 @@ export interface NavItem {
     path: string;
 }
 
-export const adminNavItems: NavItem[] = [
+export const superAdminNavItems: NavItem[] = [
     { icon: LayoutDashboard, label: 'Dashboard', path: '/dashboard/admin' },
     { icon: CalendarDays, label: 'Events', path: '/dashboard/admin/events' },
     { icon: MapPin, label: 'Venues', path: '/dashboard/admin/venues' },
@@ -27,10 +28,29 @@ export const adminNavItems: NavItem[] = [
     { icon: Settings, label: 'Settings', path: '/dashboard/admin/settings' }
 ];
 
-export const userNavItems = [
+export const studentNavItems = [
     { icon: LayoutDashboard, label: 'Dashboard', path: '/dashboard/student', active: true },
     { icon: CalendarDays, label: 'Calendar', path: '/dashboard/student/calendar' },
     { icon: CalendarCheck, label: 'My Events', path: '/dashboard/student/my-events' },
     { icon: ChartNoAxesColumn, label: 'Analytics', path: '/dashboard/student/analytics' },
+    { icon: User, label: 'Profile', path: '/dashboard/student/profile' },
     { icon: Settings, label: 'Settings', path: '/dashboard/student/settings' }
+  ];
+
+export const staffNavItems = [
+    { icon: LayoutDashboard, label: 'Dashboard', path: '/dashboard/staff', active: true },
+    { icon: CalendarDays, label: 'Calendar', path: '/dashboard/staff/calendar' },
+    { icon: CalendarCheck, label: 'My Events', path: '/dashboard/staff/my-events' },
+    { icon: ChartNoAxesColumn, label: 'Analytics', path: '/dashboard/staff/analytics' },
+    { icon: User, label: 'Profile', path: '/dashboard/staff/profile' },
+    { icon: Settings, label: 'Settings', path: '/dashboard/staff/settings' }
+  ];
+
+export const eventOrganiserNavItems = [
+    { icon: LayoutDashboard, label: 'Dashboard', path: '/dashboard/staff', active: true },
+    { icon: CalendarDays, label: 'Calendar', path: '/dashboard/staff/calendar' },
+    { icon: CalendarCheck, label: 'My Events', path: '/dashboard/staff/my-events' },
+    { icon: ChartNoAxesColumn, label: 'Analytics', path: '/dashboard/staff/analytics' },
+    { icon: User, label: 'Profile', path: '/dashboard/staff/profile' },
+    { icon: Settings, label: 'Settings', path: '/dashboard/staff/settings' }
   ];

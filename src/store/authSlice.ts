@@ -67,7 +67,7 @@ export const checkIfAuthenticated = createAsyncThunk<
     { rejectValue: AuthError }
 >("auth/checkIfAuthenticated", async (_, { rejectWithValue }) => {
     try {
-        const { data } = await api.get("/v1/auth/session");
+        const { data } = await api.post("/v1/auth/session");
         return data.isAuthenticated
     } catch (err: any) {
         return rejectWithValue({ message: "No active session", isAuthenticated: false });
@@ -82,7 +82,7 @@ export const refreshAccessToken = createAsyncThunk<
     { rejectValue: AuthError }
 >("auth/refreshAccessToken", async (_, { rejectWithValue }) => {
     try {
-        const { data } = await api.get("/v1/auth/refresh-token");
+        const { data } = await api.post("/v1/auth/refresh-token");
         return {
             accessToken: data.accessToken,
             user: data.user
@@ -98,7 +98,7 @@ export const logoutUser = createAsyncThunk<boolean, void, { rejectValue: AuthErr
     async (_,{ rejectWithValue }) => {
         try {
             await api.post("/v1/auth/logout");
-
+            
             return true;
         } catch (err: any) {
             return rejectWithValue({ message: err.response?.data?.message || "Logout failed" });

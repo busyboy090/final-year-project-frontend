@@ -1,5 +1,6 @@
 import { useSelector, useDispatch } from "react-redux";
 import { 
+  clearProfile,
   fetchUserProfile,
   setNeedsProfileCompletion,
   updateLocalProfile
@@ -18,6 +19,8 @@ function useUser() {
         fetchUserProfile: () => dispatch(fetchUserProfile()),
 
         updateLocalProfile: (value :any) => dispatch(updateLocalProfile(value)),
+
+        clearProfile: () => dispatch(clearProfile()),
 
         setNeedsProfileCompletion: (value:boolean) => dispatch(setNeedsProfileCompletion(value)),
     };

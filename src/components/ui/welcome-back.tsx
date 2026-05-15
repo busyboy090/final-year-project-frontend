@@ -1,12 +1,17 @@
 import useUser from "@/hooks/useUser";
-import { formatName } from "@/utils/format";
+import { FormattedName } from "./formatted-name";
 
 function WelcomeBack() {
   const { profile } = useUser();
-  
+
   return (
     <h2 className="text-xl md:text-3xl font-extrabold tracking-tight text-[#001e40]">
-      Welcome back, { profile && profile?.first_name && profile?.last_name && formatName(profile.first_name, profile.last_name, profile?.title) }
+      Welcome back, {"  "}
+      <FormattedName
+        firstName={profile.first_name}
+        lastName={profile.last_name}
+        title={profile.title}
+      />
     </h2>
   )
 }

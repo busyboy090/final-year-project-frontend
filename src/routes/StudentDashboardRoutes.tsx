@@ -4,22 +4,24 @@ import { Routes, Route } from 'react-router-dom';
 import CheckUserRole from '@/middlewares/CheckUserRole';
 
 // Pages
-import UserDashboard from '@/pages/Dashboard/user/Dashboard';
+import Dashboard from '@/pages/Dashboard/user/Dashboard';
+import Profile from '@/pages/Dashboard/student/Profile';
+import Events from '@/pages/Dashboard/user/Events';
 
 // Layouts
 import DashboardLayout from '@/layouts/DashboardLayout';
 
 // Components
 import PageNotFound from '@/components/PageNotFound';
-import ProfileSettings from '@/pages/Dashboard/user/student/ProfileSettings';
 
 function UserDashboardRoutes() {
   return (
     <Routes>
-      <Route path="/" element={<CheckUserRole role="user" />} >
+      <Route path="/" element={<CheckUserRole role="student" />} >
         <Route element={<DashboardLayout />} >
-          <Route index element={<UserDashboard />} />
-          <Route path='/profile' element={<ProfileSettings />} />
+          <Route index element={<Dashboard />} />
+          <Route path='/profile' element={<Profile />} />
+          <Route path='/events' element={<Events />} />
         </Route>
       </Route>
 
