@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { User, Camera, Save, Loader2 } from "lucide-react";
+import { User, Save, Loader2 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -93,17 +93,7 @@ function PersonalInfoCard() {
                     {profile?.first_name?.[0]}{profile?.last_name?.[0]}
                   </AvatarFallback>
                 </Avatar>
-                <Button
-                  type="button"
-                  size="icon"
-                  className="absolute bottom-0 right-0 rounded-full bg-[#7b5800] hover:bg-[#5d4200] shadow-lg"
-                >
-                  <Camera className="w-4 h-4" />
-                </Button>
               </div>
-              <span className="text-[10px] font-bold uppercase text-[#001e40]">
-                Max 2MB (JPG/PNG)
-              </span>
             </div>
 
             {/* Name + Email */}
