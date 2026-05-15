@@ -33,7 +33,7 @@ function SetPasswordPage() {
 
     const verifySession = async () => {
       try {
-        const res = await api.post(`/v1/auth/set-password/session?token=${token}`);
+        const res = await api.get(`/v1/auth/set-password/session?token=${token}`);
         setSessionData({ email: res.data.email });
       } catch {
         navigate("/auth/forgot-password", { replace: true });

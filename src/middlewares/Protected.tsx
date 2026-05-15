@@ -1,18 +1,16 @@
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import useAuth from "@/hooks/useAuth";
-import useUser from "@/hooks/useUser";
 
 /**
  * Layout guard for authenticated-only pages (Dashboards, Settings, etc.).
  * Unauthenticated users are redirected to the login page.
  */
 function Protected({ children }: { children?: React.ReactNode }) {
-  const { isAuthenticated } = useAuth();
-  const { profile } = useUser();
+  const { isAuthenticated, user } = useAuth();
   const location = useLocation();
 
   // 2. Redirect to login if not authenticated
-  if (!isAuthenticated || !profile) {
+  if (!isAuthenticated || !user) {
     return (
       <Navigate
         to="/auth/login"
@@ -22,6 +20,9 @@ function Protected({ children }: { children?: React.ReactNode }) {
       />
     );
   }
+
+
+
 
   // 3. Render the protected content
   return <>{children ?? <Outlet />}</>;

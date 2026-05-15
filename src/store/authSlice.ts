@@ -67,7 +67,7 @@ export const checkIfAuthenticated = createAsyncThunk<
     { rejectValue: AuthError }
 >("auth/checkIfAuthenticated", async (_, { rejectWithValue }) => {
     try {
-        const { data } = await api.post("/v1/auth/session");
+        const { data } = await api.get("/v1/auth/session");
         return data.isAuthenticated
     } catch (err: any) {
         return rejectWithValue({ message: "No active session", isAuthenticated: false });

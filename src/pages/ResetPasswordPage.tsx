@@ -26,7 +26,7 @@ function ResetPasswordPage() {
     const verifySession = async () => {
       try {
         // This endpoint verifies the signed 'tempToken' cookie
-        const res = await api.post("/v1/auth/reset-password/session");
+        const res = await api.get("/v1/auth/reset-password/session");
         setSessionData({ email: res.data.email });
       } catch (err: any) {
         // toast.error("Session expired. Please start the reset process again.");

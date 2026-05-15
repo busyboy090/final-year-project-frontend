@@ -23,7 +23,7 @@ function VerifyEmailPage() {
     useEffect(() => {
         const checkSession = async () => {
             try {
-                const res = await api.post("/v1/auth/verify-email/session");
+                const res = await api.get("/v1/auth/verify-email/session");
                 setEmail(res.data.email);
                 
                 // If there's an active cooldown in Redis, sync it to our state

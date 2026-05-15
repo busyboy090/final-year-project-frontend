@@ -1,7 +1,7 @@
 import { Navigate, Outlet } from "react-router-dom";
+import useAuth from "@/hooks/useAuth";
 import { dashboardPathForRole } from "@/utils/route";
 import type { UserRole } from "@/types/user";
-import useUser from "@/hooks/useUser";
 
 // Maps route segment to the role that can access it
 const routeRoleMap: Record<string, UserRole> = {
@@ -18,20 +18,20 @@ function CheckUserRole({
   children?: React.ReactNode;
   role: string;
 }) {
-  const { profile } = useUser();
+  const { user } = useAuth();
 
   // 1. Redirect to login if no user
-  if (!profile) {
+  if (!user) {
     return <Navigate to="/auth/login" replace />;
   }
 
   // 2. Check if the user's single role matches the required route role
   const requiredRole = routeRoleMap[role];
-  const hasAccess = !!requiredRole && profile.role === requiredRole;
+  const hasAccess = !!requiredRole && user.role === requiredRole;
 
   if (!hasAccess) {
     // Redirect to their own dashboard
-    return <Navigate to={dashboardPathForRole(profile?.role as UserRole)} replace />;
+    return <Navigate to={dashboardPathForRole(user.role as UserRole)} replace />;
   }
 
   return <>{children ?? <Outlet />}</>;

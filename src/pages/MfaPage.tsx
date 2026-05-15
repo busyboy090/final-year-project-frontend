@@ -30,7 +30,7 @@ function MfaPage() {
         const checkMfaSession = async () => {
             try {
                 // Hits the controller that returns { email, cooldownRemaining }
-                const res = await api.post("/v1/auth/mfa/session");
+                const res = await api.get("/v1/auth/mfa/session");
                 setEmail(res.data.email);
 
                 // Sync the timer with the backend Redis state
