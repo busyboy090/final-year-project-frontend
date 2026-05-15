@@ -4,10 +4,10 @@ import { Routes, Route } from 'react-router-dom';
 import CheckUserRole from '@/middlewares/CheckUserRole';
 
 // Pages
-import EventOrganiserDashboard from '@/pages/Dashboard/event-organiser/Dashboard';
+import Dashboard from '@/pages/Dashboard/event-organiser/Dashboard';
 
 // Layouts
-import EventOrganiserDashboardLayout from '@/layouts/EventOrganiserDashboardLayout';
+import DashboardLayout from '@/layouts/DashboardLayout';
 
 // Components
 import PageNotFound from '@/components/PageNotFound';
@@ -16,8 +16,8 @@ function EventOrganiserDashboardRoutes() {
   return (
     <Routes>
       <Route path="/" element={<CheckUserRole role="event-organiser" />} >
-        <Route element={<EventOrganiserDashboardLayout />} >
-          <Route index element={<EventOrganiserDashboard />} />
+        <Route element={<DashboardLayout />} >
+          <Route index element={<Dashboard />} />
         </Route>
       </Route>
 

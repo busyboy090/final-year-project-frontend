@@ -1,15 +1,14 @@
 import { Navigate, Outlet } from "react-router-dom";
-import { useAppSelector } from "@/store/hooks";
 import { dashboardPathForRole } from "@/utils/route";
 import type { UserRole } from "@/types/user";
+import useUser from "@/hooks/useUser";
 
-// Mapping frontend route categories to backend UserRole codes
-const routeRoleToApiRoles: Record<string, UserRole[]> = {
-  admin: ["super-admin"],
-  /** Registry / user management: super-admin role plus `is_super_admin` account flag */
-  superAdmin: ["super-admin"],
-  user: ["student", "staff"],
-  eventOrganiser: ["faculty-admin", "department-admin", "src-exec", "event-organiser"] // Added event-organiser
+// Maps route segment to the role that can access it
+const routeRoleMap: Record<string, UserRole> = {
+  admin:          "super-admin",
+  "event-organiser": "event-organiser",
+  staff:          "staff",
+  student:        "student",
 };
 
 function CheckUserRole({
@@ -19,36 +18,20 @@ function CheckUserRole({
   children?: React.ReactNode;
   role: string;
 }) {
-  const user = useAppSelector((s) => s.auth.user);
+  const { profile } = useUser();
 
-  // 1. Redirect to login if no user is found
-  if (!user) {
+  // 1. Redirect to login if no user
+  if (!profile) {
     return <Navigate to="/auth/login" replace />;
   }
 
-  // 2. Identify roles allowed for this specific route segment
-  const allowedApiRoles = routeRoleToApiRoles[role];
-
-  /**
-   * 3. Check for Intersection:
-   * Does the user have AT LEAST ONE of the roles required for this route?
-   */
-  const hasRoleMatch = user.roles.some((userRole: UserRole) =>
-    allowedApiRoles?.includes(userRole)
-  );
-
-  const hasAccess =
-    role === "superAdmin"
-      ? hasRoleMatch && user.is_super_admin === true
-      : hasRoleMatch;
+  // 2. Check if the user's single role matches the required route role
+  const requiredRole = routeRoleMap[role];
+  const hasAccess = !!requiredRole && profile.role === requiredRole;
 
   if (!hasAccess) {
-    /**
-     * Fallback: Redirect to their primary dashboard. 
-     * dashboardPathForRole should be updated to accept the roles array
-     */
-    const primaryRole = user.roles[0] || "student";
-    return <Navigate to={dashboardPathForRole(primaryRole)} replace />;
+    // Redirect to their own dashboard
+    return <Navigate to={dashboardPathForRole(profile?.role as UserRole)} replace />;
   }
 
   return <>{children ?? <Outlet />}</>;

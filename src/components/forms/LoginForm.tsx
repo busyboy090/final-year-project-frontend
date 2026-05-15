@@ -83,7 +83,6 @@ function LoginForm({ onSubmit, loading }: LoginFormProps) {
             placeholder="••••••••"
             {...register("password", {
               required: "Password is required",
-              minLength: { value: 1, message: "Password is required" },
             })}
           />
           <button

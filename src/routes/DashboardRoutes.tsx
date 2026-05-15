@@ -8,21 +8,30 @@ import PageNotFound from '@/components/PageNotFound';
 
 // Routes
 import AdminDashboardRoutes from './AdminDashboardRoutes';
-import StudentDashboardRoutes from './UserDashboardRoutes';
+import StudentDashboardRoutes from './StudentDashboardRoutes';
 import EventOrganiserDashboardRoutes from './EventOrganiserDashboardRoutes';
+import StaffDashboardRoutes from './StaffDashboardRoutes';
+
+// Provider
+import DashboardProvider from '@/contexts/DashboardProvider';
 
 function DashboardRoutes() {
   return (
     <Routes>
       <Route element={<Protected />} >
-        {/* Admin Dashboard Routes */}
-        <Route path="/admin/*" element={<AdminDashboardRoutes />} />
+        <Route element={<DashboardProvider />}>
+          {/* Admin Dashboard Routes */}
+          <Route path="/admin/*" element={<AdminDashboardRoutes />} />
 
-        {/* Student Dashboard Routes */}
-        <Route path="/student/*" element={<StudentDashboardRoutes />} />
+          {/* Admin Dashboard Routes */}
+          <Route path="/staff/*" element={<StaffDashboardRoutes />} />
 
-        {/* Event Organiser Dashboard Routes */}
-        <Route path="/event-organiser/*" element={<EventOrganiserDashboardRoutes />} />
+          {/* Student Dashboard Routes */}
+          <Route path="/student/*" element={<StudentDashboardRoutes />} />
+
+          {/* Event Organiser Dashboard Routes */}
+          <Route path="/event-organiser/*" element={<EventOrganiserDashboardRoutes />} />
+        </Route>
 
         {/* 404 Route */}
         <Route path="*" element={<PageNotFound />} />

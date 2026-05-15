@@ -7,7 +7,7 @@ export const useLevels = (type: 'under-grade' | 'post-grade' | "alumni" | "pre-d
     queryKey: ['levels', type],
     queryFn: async () => {
       const response = await apiClient.get(`/v1/levels?type=${type}`);
-      return response.data;
+      return response.data.data;
     },
     staleTime: 1000 * 60 * 60, // Data is fresh for 1 hour (academic data doesn't change often)
   });
@@ -20,7 +20,19 @@ export const useDepartments = (facultyId?: number) => {
     queryFn: async () => {
       const url = facultyId ? `/v1/departments?faculty_id=${facultyId}` : '/v1/departments';
       const response = await apiClient.get(url);
-      return response.data;
+      return response.data.data;
     },
+    staleTime: 1000 * 60 * 60, // Data is fresh for 1 hour (academic data doesn't change often)
+  });
+};
+
+export const useFaculties = () => {
+  return useQuery({
+    queryKey: ['faculties'],
+    queryFn: async () => {
+      const response = await apiClient.get("/v1/faculties");
+      return response.data.data;
+    },
+    staleTime: 1000 * 60 * 60, // Data is fresh for 1 hour (academic data doesn't change often)
   });
 };

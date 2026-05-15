@@ -1,11 +1,7 @@
 export type UserRole = 
   | "super-admin" 
-  | "faculty-admin" 
-  | "student-affairs" 
-  | "department-admin" 
   | "event-organiser" 
   | "staff" 
-  | "src-exec" 
   | "student";
 
 /**
@@ -22,11 +18,7 @@ export type User = {
   last_name: string | null;  // Made optional per your schema update
   email: string;
   
-  // Transitioned to support multiple roles
-  roles: UserRole[]; 
-  
-  // Flattened permissions for easy frontend checks
-  permissions: string[]; 
+  role: UserRole; 
   
   email_verified: boolean;
   is_active: boolean;
@@ -34,7 +26,4 @@ export type User = {
   profile_picture_url: string | null;
   created_at: Date;
   updated_at: Date;
-
-  /** Set when the session user has `admin_profiles.is_super_admin` */
-  is_super_admin?: boolean;
 };

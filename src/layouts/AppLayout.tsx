@@ -118,6 +118,8 @@ function AppLayout({ children }: { children?: React.ReactNode }) {
       async (err) => {
         const originalRequest = err.config;
 
+        if (err.response?.status === 403 && err.response?.data?.needsProfileCompletion) setNeedsProfileCompletion(true)
+
         if (err.response?.status === 401 && !originalRequest._retry) {
           if (isRefreshing) {
             return new Promise<string>((resolve, reject) => {

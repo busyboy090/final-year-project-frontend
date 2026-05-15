@@ -18,7 +18,7 @@ export function LevelSelect<T extends FieldValues>({
   name = "level_id" as Path<T> // Cast default name as Path<T>
 }: LevelSelectProps<T>) {
   // Check your useLevels parameter - earlier we used 'undergrade' without the hyphen
-  const { data: levels, isLoading } = useLevels('under-grade');
+  const { data: levels = [], isLoading } = useLevels('under-grade');
 
   return (
     <div className="space-y-2">
@@ -43,7 +43,7 @@ export function LevelSelect<T extends FieldValues>({
                 <SelectValue placeholder={isLoading ? "Loading..." : "Choose Level"} />
               </SelectTrigger>
               <SelectContent>
-                {levels?.map((lvl: any) => (
+                {Array.isArray(levels) && levels?.map((lvl: any) => (
                   <SelectItem key={lvl.id} value={String(lvl.id)}>
                     {lvl.name}
                   </SelectItem>

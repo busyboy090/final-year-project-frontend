@@ -2,22 +2,20 @@ import { Controller, type Control, type FieldErrors, type FieldValues, type Path
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { BookOpen } from "lucide-react";
-import { useDepartments } from "@/hooks/useAcademicData";
+import { useFaculties } from "@/hooks/useAcademicData";
 
-interface DepartmentSelectProps<T extends FieldValues> {
+interface FacultySelectProps<T extends FieldValues> {
   control: Control<T>;
   errors: FieldErrors<T>;
   name?: Path<T>;
-  facultyId?: number;
 }
 
-export function DepartmentSelect<T extends FieldValues>({ 
+export function FacultySelect<T extends FieldValues>({ 
   control, 
   errors, 
-  name = "department_id" as Path<T>, 
-  facultyId 
-}: DepartmentSelectProps<T>) {
-  const { data: departments = [], isLoading } = useDepartments(facultyId);
+  name = "faculty_id" as Path<T>, 
+}: FacultySelectProps<T>) {
+  const { data: faculties = [], isLoading } = useFaculties();
 
   // Helper to extract nested errors (e.g., body.department_id)
   const getNestedError = (obj: any, path: string) => {
@@ -46,10 +44,10 @@ export function DepartmentSelect<T extends FieldValues>({
               disabled={isLoading}
             >
               <SelectTrigger className="rounded-l-none w-full">
-                <SelectValue placeholder={isLoading ? "Loading..." : "Choose Department"} />
+                <SelectValue placeholder={isLoading ? "Loading..." : "Choose Faculty"} />
               </SelectTrigger>
               <SelectContent>
-                {Array.isArray(departments) && departments?.map((dept: any) => (
+                {Array.isArray(faculties) && faculties?.map((dept: any) => (
                   <SelectItem key={dept.id} value={String(dept.id)}>
                     {dept.name}
                   </SelectItem>

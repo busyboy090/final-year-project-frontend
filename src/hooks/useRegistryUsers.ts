@@ -10,7 +10,7 @@ export type RegistryUserRow = {
   profile_picture_url: string | null;
   is_active: boolean;
   email_verified: boolean;
-  roles: { id: number; code: string; name: string }[];
+  role: UserRole;
   department_id: number | null;
   department_name: string;
 };
