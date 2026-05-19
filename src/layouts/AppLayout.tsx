@@ -120,7 +120,7 @@ function AppLayout({ children }: { children?: React.ReactNode }) {
 
         if (err.response?.status === 403 && err.response?.data?.needsProfileCompletion) setNeedsProfileCompletion(true)
 
-        if (err.response?.status === 401 && !originalRequest._retry) {
+        if (err.response?.status === 401 && err.response?.data?.code === "UNAUTHORIZED" && !originalRequest._retry) {
           if (isRefreshing) {
             return new Promise<string>((resolve, reject) => {
               failedQueue.push({ resolve, reject });
