@@ -1,18 +1,17 @@
-import { ShieldAlert, University, Building2, Briefcase, Plus, History } from "lucide-react";
+import { ShieldAlert, Plus, History } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import PersonalInfoCard from "@/components/profile/PersonalInfoCard";
-import StaffProfileCard from "@/components/profile/StaffProfileCard";
 import SecurityCard from "@/components/profile/SecurityCard";
+// import useUser from "@/hooks/useUser";
 import ChangePasswordCard from "@/components/profile/ChangePasswordCard";
-import useUser from "@/hooks/useUser";
 
 const strokeDasharray  = 251.2;
 const profileStrength  = 80;
 const strokeDashoffset = strokeDasharray - (strokeDasharray * profileStrength) / 100;
 
-function StaffProfilePage() {
-  const { profile } = useUser();
+function Profile() {
+//   const { profile } = useUser();
 
   return (
     <div className="mx-auto space-y-10">
@@ -29,7 +28,6 @@ function StaffProfilePage() {
         {/* Left column */}
         <div className="lg:col-span-8 space-y-8">
           <PersonalInfoCard />
-          <StaffProfileCard />
 
           {/* Credentials summary */}
           <Card className="border-none shadow-sm bg-white">
@@ -44,26 +42,8 @@ function StaffProfilePage() {
                   icon:   <ShieldAlert className="w-5 h-5 text-[#7b5800]" />,
                   border: "border-[#7b5800]",
                   label:  "Role",
-                  value:  "Staff",
-                },
-                {
-                  icon:   <University className="w-5 h-5 text-[#001e40]" />,
-                  border: "border-[#001e40]",
-                  label:  "Department",
-                  value:  profile?.department?.name || "N/A",
-                },
-                {
-                  icon:   <Building2 className="w-5 h-5 text-[#003366]" />,
-                  border: "border-[#003366]",
-                  label:  "Faculty",
-                  value:  profile?.faculty?.name || "N/A",
-                },
-                {
-                  icon:   <Briefcase className="w-5 h-5 text-amber-600" />,
-                  border: "border-amber-400",
-                  label:  "Position",
-                  value:  profile?.position || "N/A",
-                },
+                  value:  "Event Organiser",
+                }
               ].map(({ icon, border, label, value }) => (
                 <div key={label} className={`flex items-center gap-4 bg-[#f6faff] p-4 rounded-xl border-l-4 ${border}`}>
                   <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm">
@@ -142,4 +122,4 @@ function StaffProfilePage() {
   );
 }
 
-export default StaffProfilePage;
+export default Profile;

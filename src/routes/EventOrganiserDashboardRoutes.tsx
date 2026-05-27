@@ -5,6 +5,8 @@ import CheckUserRole from '@/middlewares/CheckUserRole';
 
 // Pages
 import Dashboard from '@/pages/Dashboard/event-organiser/Dashboard';
+import Profile from '@/pages/Dashboard/event-organiser/Profile';
+import EventCreationPage from '@/pages/Dashboard/event-organiser/EventCreationPage';
 
 // Layouts
 import DashboardLayout from '@/layouts/DashboardLayout';
@@ -18,6 +20,8 @@ function EventOrganiserDashboardRoutes() {
       <Route path="/" element={<CheckUserRole role="event-organiser" />} >
         <Route element={<DashboardLayout />} >
           <Route index element={<Dashboard />} />
+          <Route path='profile' element={<Profile />} />
+          <Route path='events/create' element={<EventCreationPage />} />
         </Route>
       </Route>
 
