@@ -4,6 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Info, Bold, Italic, List, ImageIcon, CloudUpload, ArrowRight } from 'lucide-react';
+import { DepartmentSelect } from '@/components/ui/department-select';
 
 export default function EventStepBasicDetails({ register, control, errors, onNext }: any) {
   return (
@@ -52,27 +53,7 @@ export default function EventStepBasicDetails({ register, control, errors, onNex
               </div>
 
               {/* Department Dropdown tracking */}
-              <div className="space-y-2">
-                <Label className="text-xs uppercase tracking-widest font-semibold text-slate-500">Department</Label>
-                <Controller
-                  name="department"
-                  control={control}
-                  rules={{ required: 'Organizer department is required' }}
-                  render={({ field }) => (
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <SelectTrigger className="w-full h-10!">
-                        <SelectValue placeholder="Select Department" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="Faculty of Sciences">Faculty of Sciences</SelectItem>
-                        <SelectItem value="Department of Arts">Department of Arts</SelectItem>
-                        <SelectItem value="University Administration">University Administration</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  )}
-                />
-                {errors.department && <p className="text-xs text-red-500 font-medium">{errors.department.message}</p>}
-              </div>
+              <DepartmentSelect className='h-11' control={control} errors={errors} />
             </div>
 
             {/* Event Description Text Area */}

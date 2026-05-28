@@ -21,7 +21,7 @@ export interface EventFormValues {
 }
 
 export default function EventCreationPage() {
-  const [currentStep, setCurrentStep] = useState<number>(3);
+  const [currentStep, setCurrentStep] = useState<number>(2);
 
   // 2. Initialize unified react-hook-form hub
   const {
@@ -108,7 +108,7 @@ export default function EventCreationPage() {
 
       {/* Dynamic Progress Indicator */}
       <div className="mb-12 relative flex justify-between px-2 isolate overflow-hidden">
-        <div className="absolute top-[45px] left-0 w-full h-[2px] bg-slate-200 dark:bg-slate-800 -z-10 -translate-y-1/2"></div>
+        <div className="absolute top-[45px] left-[80px] right-[80px] h-[2px] bg-slate-200 dark:bg-slate-800 -z-10 -translate-y-1/2"></div>
         {[
           { step: 1, label: 'Basic Details' },
           { step: 2, label: 'Venue & Schedule' },

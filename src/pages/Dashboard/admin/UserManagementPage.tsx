@@ -20,7 +20,7 @@ import {
 import {
   useRegistryUsers, useUpdateRegistryUser, type RegistryUserRow,
 } from "@/hooks/useRegistryUsers";
-import { useDepartments } from "@/hooks/useAcademicData";
+import { useDepartments } from "@/hooks/useDepartment";
 import useAuth from "@/hooks/useAuth";
 import { convertRoleToTitle } from "@/utils/format";
 import type { UserRole } from "@/types/user";
@@ -62,7 +62,8 @@ function UserManagement() {
   const [formEmail, setFormEmail] = useState("");
   const [formActive, setFormActive] = useState(true);
 
-  const { data: deptPayload = [] } = useDepartments();
+  const { data } = useDepartments();
+  const deptPayload = data?.departments ?? [];
   const departments = useMemo(() => {
     return deptPayload
   }, [deptPayload]);
@@ -84,11 +85,11 @@ function UserManagement() {
     department_id: Number.isFinite(departmentId) ? departmentId : undefined,
   };
 
-  const { data, isLoading, isError, error, refetch } = useRegistryUsers(listParams);
+  const { data: userData, isLoading, isError, error, refetch } = useRegistryUsers(listParams);
   const updateUser = useUpdateRegistryUser();
 
-  const users = data?.data ?? [];
-  const meta  = data?.meta ?? { page: 1, limit, total: 0, totalPages: 0 };
+  const users = userData?.data ?? [];
+  const meta  = userData?.meta ?? { page: 1, limit, total: 0, totalPages: 0 };
 
   const openEdit = useCallback((row: RegistryUserRow) => {
     setEditing(row);

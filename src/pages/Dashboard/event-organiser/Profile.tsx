@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import PersonalInfoCard from "@/components/profile/PersonalInfoCard";
 import SecurityCard from "@/components/profile/SecurityCard";
+import EventOrganiserProfileCard from "@/components/profile/EventOrganiserProfileCard";
 // import useUser from "@/hooks/useUser";
 import ChangePasswordCard from "@/components/profile/ChangePasswordCard";
 
@@ -28,6 +29,7 @@ function Profile() {
         {/* Left column */}
         <div className="lg:col-span-8 space-y-8">
           <PersonalInfoCard />
+          <EventOrganiserProfileCard />
 
           {/* Credentials summary */}
           <Card className="border-none shadow-sm bg-white">

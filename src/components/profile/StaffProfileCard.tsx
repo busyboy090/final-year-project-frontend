@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import {
-  Save, Loader2, Hash, Phone, Briefcase, BookOpen, Building2,
+  Save, Loader2, Hash, BookOpen, Building2,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -20,16 +20,11 @@ import { apiClient as api } from "@/apis/axios";
 import useUser from "@/hooks/useUser";
 
 interface StaffProfileForm {
-  title:        string;
   staff_id:     string;
-  phone?:       string;
   faculty_id?:  number;
   department_id?: number;
-  position:     string;
   staff_type:   "academic-staff" | "non-academic-staff";
 }
-
-const STAFF_TITLES = ["Mr", "Mrs", "Ms", "Dr", "Prof", "Engr"] as const;
 
 function StaffProfileCard() {
   const { profile, updateLocalProfile } = useUser();
@@ -43,10 +38,7 @@ function StaffProfileCard() {
     formState: { errors, isSubmitting },
   } = useForm<StaffProfileForm>({
     defaultValues: {
-      title:      "",
       staff_id:   "",
-      phone:      "",
-      position:   "",
       staff_type: undefined,
     },
   });
@@ -56,12 +48,9 @@ function StaffProfileCard() {
   useEffect(() => {
     if (profile) {
       reset({
-        title:         profile.title         || "",
         staff_id:      profile.staff_id      || "",
-        phone:         profile.phone         || "",
         faculty_id:    profile.faculty_id,
         department_id: profile.department_id,
-        position:      profile.position      || "",
         staff_type:    profile.staff_type,
       });
     }
@@ -111,33 +100,7 @@ function StaffProfileCard() {
           <Separator />
 
           {/* Row 1: Title, Staff ID, Phone */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="space-y-2">
-              <Label className="text-[10px] font-bold uppercase tracking-widest text-[#001e40]">
-                Title
-              </Label>
-              <Controller
-                name="title"
-                control={control}
-                rules={{ required: "Title is required" }}
-                render={({ field }) => (
-                  <Select onValueChange={field.onChange} value={field.value}>
-                    <SelectTrigger className="w-full bg-[#f6faff] border-none">
-                      <SelectValue placeholder="Select title" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {STAFF_TITLES.map((t) => (
-                        <SelectItem key={t} value={t}>{t}.</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                )}
-              />
-              {errors.title && (
-                <p className="text-xs text-destructive">{errors.title.message}</p>
-              )}
-            </div>
-
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
               <Label className="text-[10px] font-bold uppercase tracking-widest text-[#001e40]">
                 Staff ID
@@ -152,40 +115,6 @@ function StaffProfileCard() {
               </InputGroup>
               {errors.staff_id && (
                 <p className="text-xs text-destructive">{errors.staff_id.message}</p>
-              )}
-            </div>
-
-            <div className="space-y-2">
-              <Label className="text-[10px] font-bold uppercase tracking-widest text-[#001e40]">
-                Phone Number
-              </Label>
-              <InputGroup>
-                <InputGroupAddon><Phone className="h-4 w-4" /></InputGroupAddon>
-                <InputGroupInput
-                  placeholder="08123456789"
-                  className="bg-[#f6faff] border-none"
-                  {...register("phone")}
-                />
-              </InputGroup>
-            </div>
-          </div>
-
-          {/* Row 2: Position, Staff Type */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-2">
-              <Label className="text-[10px] font-bold uppercase tracking-widest text-[#001e40]">
-                Position / Designation
-              </Label>
-              <InputGroup>
-                <InputGroupAddon><Briefcase className="h-4 w-4" /></InputGroupAddon>
-                <InputGroupInput
-                  placeholder="e.g. Senior Lecturer"
-                  className="bg-[#f6faff] border-none"
-                  {...register("position", { required: "Position is required" })}
-                />
-              </InputGroup>
-              {errors.position && (
-                <p className="text-xs text-destructive">{errors.position.message}</p>
               )}
             </div>
 
@@ -224,6 +153,7 @@ function StaffProfileCard() {
               )}
             </div>
           </div>
+
 
           {/* Faculty + Department — conditional on staff type */}
           {staffType === "academic-staff" && (

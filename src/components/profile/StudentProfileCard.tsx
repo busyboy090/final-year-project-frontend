@@ -1,29 +1,21 @@
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import {
-    Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
-} from "@/components/ui/select";
-import {
     InputGroup, InputGroupAddon, InputGroupInput,
 } from "@/components/ui/input-group";
-import { Phone, Hash, Save, Loader2 } from "lucide-react";
+import { Hash, Save, Loader2 } from "lucide-react";
 import { DepartmentSelect } from "../ui/department-select";
 import { LevelSelect } from "../ui/level-select";
-import GenderSelect from "../ui/gender-select";
 import { apiClient as api } from "@/apis/axios";
 import useUser from "@/hooks/useUser";
 import { toast } from "sonner";
-import { capitalizeInitial } from "@/utils/format";
 
 interface StudentProfileForm {
-    title: string;
     matric_no: string;
-    phone: string;
     department_id: number;
     level_id: number;
-    gender: "Male" | "Female" | "Other";
 }
 
 function StudentProfileCard() {
@@ -37,12 +29,9 @@ function StudentProfileCard() {
     } = useForm<StudentProfileForm>({
         // Set default values from profile if they exist
         defaultValues: {
-            title: profile?.title || "",
             matric_no: profile?.matric_no || "",
-            phone: profile?.phone || "",
             department_id: profile?.department_id,
             level_id: profile?.level_id,
-            gender: capitalizeInitial(profile?.gender) as any,
         },
     });
 
@@ -51,7 +40,6 @@ function StudentProfileCard() {
         try {
             const { data: { data } } = await api.patch("/v1/user/profile/student/complete", {
                 ...values,
-                gender: values.gender.toLowerCase()
             });
 
             toast.success("Profile updated successfully!");
@@ -93,39 +81,6 @@ function StudentProfileCard() {
                     */}
                     <fieldset disabled={!needsProfileCompletion} className="space-y-6">
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            {/* Title */}
-                            <div className="space-y-2">
-                                <Label className="text-[10px] font-bold uppercase tracking-widest text-[#001e40]">
-                                    Title
-                                </Label>
-                                <Controller
-                                    name="title"
-                                    control={control}
-                                    rules={{ required: "Title is required" }}
-                                    render={({ field }) => (
-                                        <Select
-                                            onValueChange={field.onChange}
-                                            value={field.value}
-                                            disabled={!needsProfileCompletion}
-                                        >
-                                            <SelectTrigger className="w-full border-none disabled:opacity-70">
-                                                <SelectValue placeholder="Select title" />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                <SelectItem value="Mr">Mr.</SelectItem>
-                                                <SelectItem value="Mrs">Mrs.</SelectItem>
-                                                <SelectItem value="Ms">Ms.</SelectItem>
-                                                <SelectItem value="Dr">Dr.</SelectItem>
-                                                <SelectItem value="Prof">Prof.</SelectItem>
-                                            </SelectContent>
-                                        </Select>
-                                    )}
-                                />
-                                {errors.title && (
-                                    <p className="text-xs font-medium text-destructive">{errors.title.message}</p>
-                                )}
-                            </div>
-
                             {/* Matric No */}
                             <div className="space-y-2">
                                 <Label className="text-[10px] font-bold uppercase tracking-widest text-[#001e40]">
@@ -142,29 +97,11 @@ function StudentProfileCard() {
                                     />
                                 </InputGroup>
                             </div>
-
-                            {/* Phone */}
-                            <div className="space-y-2">
-                                <Label className="text-[10px] font-bold uppercase tracking-widest text-[#001e40]">
-                                    Phone Number
-                                </Label>
-                                <InputGroup>
-                                    <InputGroupAddon className={!needsProfileCompletion ? "opacity-50" : ""}>
-                                        <Phone className="h-4 w-4" />
-                                    </InputGroupAddon>
-                                    <InputGroupInput
-                                        placeholder="08123456789"
-                                        className="border-none"
-                                        {...register("phone", { required: "Required" })}
-                                    />
-                                </InputGroup>
-                            </div>
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                             <DepartmentSelect control={control} errors={errors} />
                             <LevelSelect control={control} errors={errors} />
-                            <GenderSelect control={control} errors={errors} />
                         </div>
                     </fieldset>
 
