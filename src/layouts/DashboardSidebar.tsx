@@ -104,7 +104,7 @@ export function DashboardSidebar({ navItems }: { navItems: NavItem[] }) {
             <p className="text-white/60 text-[10px] uppercase tracking-tighter mb-1">
               Academic Session
             </p>
-            <p className="text-amber-500 font-bold text-sm">2023/2024</p>
+            <p className="text-amber-500 font-bold text-sm">2025/2026</p>
           </div>
         )}
       </SidebarFooter>
