@@ -13,6 +13,7 @@ export type RegistryUserRow = {
   role: UserRole;
   department_id: number | null;
   department_name: string;
+  organisation_name: string;
 };
 
 export type RegistryUsersResponse = {

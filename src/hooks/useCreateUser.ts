@@ -7,6 +7,7 @@ export type CreateUserPayload = {
   last_name: string;
   email: string;
   role: UserRole;
+  organisation_id?: number;
 };
 
 export type CreateUserResponse = {

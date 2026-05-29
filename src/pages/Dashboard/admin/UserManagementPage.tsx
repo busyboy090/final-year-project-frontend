@@ -4,7 +4,7 @@ import {
   UserMinus, UserCheck, ChevronLeft, ChevronRight, Users, Search,
 } from "lucide-react";
 import {
-  Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
+  Table, TableBody, TableCell, TableHeader, TableRow, TableHead
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import {
@@ -21,18 +21,25 @@ import {
   useRegistryUsers, useUpdateRegistryUser, type RegistryUserRow,
 } from "@/hooks/useRegistryUsers";
 import { useDepartments } from "@/hooks/useDepartment";
+import { useFaculties } from "@/hooks/useFaculty";
+import { useOrganisations } from "@/hooks/useOrganisation";
 import useAuth from "@/hooks/useAuth";
 import { convertRoleToTitle } from "@/utils/format";
 import type { UserRole } from "@/types/user";
 import { toast } from "sonner";
 import { CreateUserModal } from "@/components/modals/CreateUserModal";
 
+interface FilterItem {
+  id: number;
+  name: string;
+}
+
 const ROLE_FILTER: { value: UserRole | "all"; label: string }[] = [
-  { value: "all",             label: "All University Roles" },
-  { value: "super-admin",     label: "Super Administrator" },
+  { value: "all", label: "All University Roles" },
+  { value: "super-admin", label: "Super Administrator" },
   { value: "event-organiser", label: "Event Organiser" },
-  { value: "staff",           label: "Staff" },
-  { value: "student",         label: "Student" },
+  { value: "staff", label: "Staff" },
+  { value: "student", label: "Student" },
 ];
 
 function displayName(u: RegistryUserRow): string {
@@ -40,56 +47,65 @@ function displayName(u: RegistryUserRow): string {
   return combined || u.email;
 }
 
-// ✅ role is now a plain string, not an array
 function roleLabel(u: RegistryUserRow): string {
   return u.role ? convertRoleToTitle(u.role) : "—";
 }
 
 function UserManagement() {
   const { user: authUser } = useAuth();
-  const [page, setPage]                     = useState(1);
-  const [limit]                             = useState(10);
-  const [roleFilter, setRoleFilter]         = useState<UserRole | "all">("all");
+  const [page, setPage] = useState(1);
+  const [limit] = useState(10);
+  const [roleFilter, setRoleFilter] = useState<UserRole | "all">("all");
   const [departmentFilter, setDepartmentFilter] = useState<string>("all");
-  const [searchInput, setSearchInput]       = useState("");
+  const [facultyFilter, setFacultyFilter] = useState<string>("all");
+  const [organisationFilter, setOrganisationFilter] = useState<string>("all");
+  const [searchInput, setSearchInput] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
 
   const [createModalOpen, setCreateModalOpen] = useState(false);
-  const [editOpen, setEditOpen]   = useState(false);
-  const [editing, setEditing]     = useState<RegistryUserRow | null>(null);
+  const [editOpen, setEditOpen] = useState(false);
+  const [editing, setEditing] = useState<RegistryUserRow | null>(null);
   const [formFirst, setFormFirst] = useState("");
-  const [formLast, setFormLast]   = useState("");
+  const [formLast, setFormLast] = useState("");
   const [formEmail, setFormEmail] = useState("");
   const [formActive, setFormActive] = useState(true);
 
-  const { data } = useDepartments();
-  const deptPayload = data?.departments ?? [];
-  const departments = useMemo(() => {
-    return deptPayload
-  }, [deptPayload]);
+  const { data: deptData } = useDepartments();
+  const { data: facultyData } = useFaculties();
+  const { data: orgData } = useOrganisations();
+
+  const departments = useMemo(() => (deptData?.departments as FilterItem[]) ?? [], [deptData]);
+  const faculties = useMemo(() => (facultyData?.data as FilterItem[]) ?? [], [facultyData]);
+  const organisations = useMemo(() => (orgData?.data as FilterItem[]) ?? [], [orgData]);
 
   useEffect(() => {
     const t = window.setTimeout(() => setDebouncedSearch(searchInput), 400);
     return () => window.clearTimeout(t);
   }, [searchInput]);
 
-  useEffect(() => { setPage(1); }, [roleFilter, departmentFilter, debouncedSearch]);
+  useEffect(() => {
+    setPage(1);
+  }, [roleFilter, departmentFilter, facultyFilter, organisationFilter, debouncedSearch]);
 
-  const departmentId = departmentFilter === "all" ? undefined : Number(departmentFilter);
+  const departmentId = departmentFilter !== "all" ? Number(departmentFilter) : undefined;
+  const facultyId = facultyFilter !== "all" ? Number(facultyFilter) : undefined;
+  const organisationId = organisationFilter !== "all" ? Number(organisationFilter) : undefined;
 
   const listParams = {
     page,
     limit,
-    search:        debouncedSearch || undefined,
-    role:          roleFilter,
-    department_id: Number.isFinite(departmentId) ? departmentId : undefined,
+    search: debouncedSearch || undefined,
+    role: roleFilter,
+    department_id: departmentId,
+    faculty_id: facultyId,
+    organisation_id: organisationId,
   };
 
   const { data: userData, isLoading, isError, error, refetch } = useRegistryUsers(listParams);
   const updateUser = useUpdateRegistryUser();
 
   const users = userData?.data ?? [];
-  const meta  = userData?.meta ?? { page: 1, limit, total: 0, totalPages: 0 };
+  const meta = userData?.meta ?? { page: 1, limit, total: 0, totalPages: 0 };
 
   const openEdit = useCallback((row: RegistryUserRow) => {
     setEditing(row);
@@ -109,12 +125,12 @@ function UserManagement() {
     if (!editing) return;
     const body: {
       first_name?: string;
-      last_name?:  string;
-      email?:      string;
-      is_active?:  boolean;
+      last_name?: string;
+      email?: string;
+      is_active?: boolean;
     } = {};
     if (formFirst.trim() !== (editing.first_name ?? "").trim()) body.first_name = formFirst.trim();
-    if (formLast.trim()  !== (editing.last_name  ?? "").trim()) body.last_name  = formLast.trim();
+    if (formLast.trim() !== (editing.last_name ?? "").trim()) body.last_name = formLast.trim();
     if (formEmail.trim().toLowerCase() !== editing.email.toLowerCase()) body.email = formEmail.trim();
     if (formActive !== editing.is_active) body.is_active = formActive;
 
@@ -127,8 +143,7 @@ function UserManagement() {
       toast.success("User updated");
       closeEdit();
     } catch (e: unknown) {
-      const msg = (e as { response?: { data?: { message?: string } } })
-        ?.response?.data?.message ?? "Update failed";
+      const msg = (e as { response?: { data?: { message?: string } } })?.response?.data?.message ?? "Update failed";
       toast.error(msg);
     }
   };
@@ -138,30 +153,34 @@ function UserManagement() {
       await updateUser.mutateAsync({ id: row.id, body: { is_active: !row.is_active } });
       toast.success(row.is_active ? "User deactivated" : "User reactivated");
     } catch (e: unknown) {
-      const msg = (e as { response?: { data?: { message?: string } } })
-        ?.response?.data?.message ?? "Could not update status";
+      const msg = (e as { response?: { data?: { message?: string } } })?.response?.data?.message ?? "Could not update status";
       toast.error(msg);
     }
   };
 
   const exportCsv = () => {
-    const header = ["id", "name", "email", "role", "department", "active"];
-    const lines  = users.map((u) =>
-      [
+    const header = ["id", "name", "email", "role", "assigned_unit", "active"];
+    const lines = users.map((u) => {
+      const unitName = u.role?.toLowerCase() === "event-organiser"
+        ? (u.organisation_name ?? "—")
+        : (u.department_name ?? "—");
+
+      return [
         u.id,
         displayName(u).replaceAll(",", " "),
         u.email,
-        u.role ?? "—",                            // ✅ single role string
-        u.department_name.replaceAll(",", " "),
+        u.role ?? "—",
+        unitName.replaceAll(",", " "),
         u.is_active ? "yes" : "no",
-      ].join(","),
-    );
+      ].join(",");
+    });
+
     const blob = new Blob([[header.join(","), ...lines].join("\n")], {
       type: "text/csv;charset=utf-8",
     });
     const url = URL.createObjectURL(blob);
-    const a   = document.createElement("a");
-    a.href     = url;
+    const a = document.createElement("a");
+    a.href = url;
     a.download = `users-page-${page}.csv`;
     a.click();
     URL.revokeObjectURL(url);
@@ -189,19 +208,23 @@ function UserManagement() {
       </div>
 
       <div className="grid grid-cols-12 gap-6">
-        <div className="col-span-12 lg:col-span-8 bg-[#ecf5fe] rounded-xl p-4 flex flex-col gap-4 border border-blue-100">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-            <div className="flex flex-wrap items-end gap-6">
-              <div className="space-y-1.5">
-                <span className="text-[10px] uppercase font-bold text-[#737780] tracking-wider ml-1">
-                  Filter by Role
+        <div className="col-span-12 lg:col-span-8 bg-[#ecf5fe] rounded-xl p-4 border border-blue-100">
+          <div className="flex flex-col gap-4">
+
+            {/* Complete, Persistent Filter Row Layout */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 items-end">
+
+              {/* Role */}
+              <div className="space-y-1.5 w-full">
+                <span className="text-[10px] uppercase font-bold text-[#737780] tracking-wider ml-1 block">
+                  Role
                 </span>
                 <Select
                   value={roleFilter}
                   onValueChange={(v) => setRoleFilter(v as UserRole | "all")}
                 >
-                  <SelectTrigger className="w-50 bg-white border border-slate-200 font-semibold text-[#001e40]">
-                    <SelectValue placeholder="Select Role" />
+                  <SelectTrigger className="w-full bg-white border border-slate-200 font-semibold text-[#001e40]">
+                    <SelectValue placeholder="All Roles" />
                   </SelectTrigger>
                   <SelectContent>
                     {ROLE_FILTER.map((r) => (
@@ -211,49 +234,89 @@ function UserManagement() {
                 </Select>
               </div>
 
-              <div className="w-px h-8 bg-[#c3c6d1]/40 hidden sm:block" />
-
-              <div className="space-y-1.5">
-                <span className="text-[10px] uppercase font-bold text-[#737780] tracking-wider ml-1">
+              {/* Department */}
+              <div className="space-y-1.5 w-full">
+                <span className="text-[10px] uppercase font-bold text-[#737780] tracking-wider ml-1 block">
                   Department
                 </span>
                 <Select value={departmentFilter} onValueChange={setDepartmentFilter}>
-                  <SelectTrigger className="w-55 bg-white border border-slate-200 font-semibold text-[#001e40]">
+                  <SelectTrigger className="w-full bg-white border border-slate-200 font-semibold text-[#001e40]">
                     <SelectValue placeholder="All Departments" />
                   </SelectTrigger>
                   <SelectContent className="max-h-64">
                     <SelectItem value="all">All Departments</SelectItem>
-                    { Array.isArray(departments) && departments.map((d:any) => (
+                    {departments.map((d) => (
                       <SelectItem key={d.id} value={String(d.id)}>{d.name}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
               </div>
+
+              {/* Faculty */}
+              <div className="space-y-1.5 w-full">
+                <span className="text-[10px] uppercase font-bold text-[#737780] tracking-wider ml-1 block">
+                  Faculty
+                </span>
+                <Select value={facultyFilter} onValueChange={setFacultyFilter}>
+                  <SelectTrigger className="w-full bg-white border border-slate-200 font-semibold text-[#001e40]">
+                    <SelectValue placeholder="All Faculties" />
+                  </SelectTrigger>
+                  <SelectContent className="max-h-64">
+                    <SelectItem value="all">All Faculties</SelectItem>
+                    {faculties.map((f) => (
+                      <SelectItem key={f.id} value={String(f.id)}>{f.name}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Organisation */}
+              <div className="space-y-1.5 w-full">
+                <span className="text-[10px] uppercase font-bold text-[#737780] tracking-wider ml-1 block">
+                  Organisation
+                </span>
+                <Select value={organisationFilter} onValueChange={setOrganisationFilter}>
+                  <SelectTrigger className="w-full bg-white border border-slate-200 font-semibold text-[#001e40]">
+                    <SelectValue placeholder="All Organisations" />
+                  </SelectTrigger>
+                  <SelectContent className="max-h-64">
+                    <SelectItem value="all">All Organisations</SelectItem>
+                    {organisations.map((o) => (
+                      <SelectItem key={o.id} value={String(o.id)}>{o.name}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
             </div>
 
-            <div className="flex items-center gap-2">
-              <div className="relative flex-1 min-w-50">
+            {/* Action Row */}
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 pt-2 border-t border-blue-50">
+              <div className="relative flex-1">
                 <Search className="absolute left-2 top-1/2 -translate-y-1/2 w-4 h-4 text-[#001e40]/50" />
                 <Input
-                  className="pl-8 h-9 bg-white border-slate-200"
+                  className="pl-8 h-9 bg-white border-slate-200 w-full"
                   placeholder="Search name or email…"
                   value={searchInput}
                   onChange={(e) => setSearchInput(e.target.value)}
                 />
               </div>
-              <Button type="button" variant="outline" size="icon"
-                className="bg-white border-none shadow-sm hover:shadow-md"
-                onClick={() => void refetch()}
-              >
-                <Filter className="w-4 h-4 text-[#001e40]" />
-              </Button>
-              <Button type="button" variant="outline" size="icon"
-                className="bg-white border-none shadow-sm hover:shadow-md"
-                onClick={exportCsv} disabled={!users.length}
-              >
-                <Download className="w-4 h-4 text-[#001e40]" />
-              </Button>
+              <div className="flex items-center gap-2 justify-end shrink-0">
+                <Button type="button" variant="outline" size="icon"
+                  className="bg-white border-none shadow-sm hover:shadow-md h-9 w-9"
+                  onClick={() => void refetch()}
+                >
+                  <Filter className="w-4 h-4 text-[#001e40]" />
+                </Button>
+                <Button type="button" variant="outline" size="icon"
+                  className="bg-white border-none shadow-sm hover:shadow-md h-9 w-9"
+                  onClick={exportCsv} disabled={!users.length}
+                >
+                  <Download className="w-4 h-4 text-[#001e40]" />
+                </Button>
+              </div>
             </div>
+
           </div>
         </div>
 
@@ -291,7 +354,7 @@ function UserManagement() {
                   Access Role
                 </TableHead>
                 <TableHead className="h-14 px-6 text-[11px] font-black text-[#001e40] uppercase tracking-widest">
-                  Department
+                  Department / Organisation
                 </TableHead>
                 <TableHead className="h-14 px-6 text-[11px] font-black text-[#001e40] uppercase tracking-widest">
                   Status
@@ -309,7 +372,7 @@ function UserManagement() {
                 >
                   <TableCell className="px-6 py-5">
                     <div className="flex items-center gap-4">
-                      <div className="w-10 h-10 rounded-lg bg-[#e0e9f2] flex items-center justify-center overflow-hidden border border-slate-100 text-xs font-bold text-[#001e40]">
+                      <div className="w-10 h-10 rounded-lg bg-[#e0e9f2] flex items-center justify-center overflow-hidden border border-slate-100 text-xs font-bold text-[#001e40] shrink-0">
                         {row.profile_picture_url ? (
                           <img src={row.profile_picture_url} alt="" className="w-full h-full object-cover" />
                         ) : (
@@ -326,7 +389,6 @@ function UserManagement() {
                   </TableCell>
 
                   <TableCell className="px-6">
-                    {/* ✅ single role string — no array map */}
                     <Badge
                       className={`rounded-full px-3 py-0.5 text-[10px] font-black uppercase tracking-tighter border-none shadow-none ${
                         row.role === "super-admin"
@@ -339,7 +401,11 @@ function UserManagement() {
                   </TableCell>
 
                   <TableCell className="px-6">
-                    <p className="text-sm font-semibold text-[#43474f]">{row.department_name}</p>
+                    <p className="text-sm font-semibold text-[#43474f]">
+                      {row.role?.toLowerCase() !== "event-organiser"
+                        ? (row.department_name ?? "—")
+                        : (row.organisation_name ?? "—")}
+                    </p>
                   </TableCell>
 
                   <TableCell className="px-6">
