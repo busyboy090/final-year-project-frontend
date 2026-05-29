@@ -16,7 +16,7 @@ export default function EventStepBasicDetails({ register, control, errors, onNex
             
             {/* Event Title with validation rules */}
             <div className="space-y-2">
-              <Label className="text-xs uppercase tracking-widest font-semibold text-slate-500">Event Title</Label>
+              <Label className="text-[10px] font-bold uppercase tracking-widest text-[#001e40]">Event Title</Label>
               <Input 
                 {...register('eventTitle', { 
                   required: 'Event title is required',
@@ -30,7 +30,7 @@ export default function EventStepBasicDetails({ register, control, errors, onNex
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Event Category Dropdown tracking */}
               <div className="space-y-2">
-                <Label className="text-xs uppercase tracking-widest font-semibold text-slate-500">Category</Label>
+                <Label className="text-[10px] font-bold uppercase tracking-widest text-[#001e40]">Category</Label>
                 <Controller
                   name="category"
                   control={control}
@@ -58,7 +58,7 @@ export default function EventStepBasicDetails({ register, control, errors, onNex
 
             {/* Event Description Text Area */}
             <div className="space-y-2">
-              <Label className="text-xs uppercase tracking-widest font-semibold text-slate-500">Description</Label>
+              <Label className="text-[10px] font-bold uppercase tracking-widest text-[#001e40]">Description</Label>
               <div className={`bg-slate-50 rounded-lg p-1 border ${errors.description ? 'border-red-500' : ''}`}>
                 <div className="flex gap-1 p-2 border-b">
                   <button type="button" className="p-2 hover:bg-slate-200 rounded text-slate-600"><Bold className="w-4 h-4" /></button>

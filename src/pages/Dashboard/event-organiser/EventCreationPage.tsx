@@ -21,7 +21,7 @@ export interface EventFormValues {
 }
 
 export default function EventCreationPage() {
-  const [currentStep, setCurrentStep] = useState<number>(2);
+  const [currentStep, setCurrentStep] = useState<number>(1);
 
   // 2. Initialize unified react-hook-form hub
   const {
