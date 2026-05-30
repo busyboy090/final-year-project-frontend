@@ -21,7 +21,7 @@ export interface EventFormValues {
 }
 
 export default function EventCreationPage() {
-  const [currentStep, setCurrentStep] = useState<number>(1);
+  const [currentStep, setCurrentStep] = useState<number>(2);
 
   // 2. Initialize unified react-hook-form hub
   const {
@@ -30,6 +30,7 @@ export default function EventCreationPage() {
     handleSubmit,
     trigger,
     getValues,
+    watch,
     formState: { errors }
   } = useForm<EventFormValues>({
     mode: 'onChange',
@@ -150,6 +151,7 @@ export default function EventCreationPage() {
             control={control}
             errors={errors}
             getValues={getValues}
+            watch={watch}
             onNext={handleNextStep}
             onBack={handleBackStep}
             onSaveDraft={handleSaveDraft}

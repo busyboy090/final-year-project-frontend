@@ -14,6 +14,7 @@ import AddVenuePage from '@/pages/Dashboard/admin/AddVenuePage';
 import EditVenuePage from '@/pages/Dashboard/admin/EditVenuePage';
 import VenueDetailsPage from '@/pages/Dashboard/VenueDetailsPage';
 import Settings from '@/pages/Dashboard/admin/Settings';
+import EventCreationPage from '@/pages/Dashboard/event-organiser/EventCreationPage';
 
 
 // Layouts
@@ -39,9 +40,8 @@ function AdminDashboardRoutes() {
           <Route path="profile" element={<Profile />} />
           <Route path="attendance" element={<Attendance />} />
           <Route path="settings" element={<Settings />} />
-          <Route path="users" element={<CheckUserRole role="admin" />}>
-            <Route index element={<UserManagement />} />
-          </Route>
+          <Route path='users' element={<UserManagement />} />
+          <Route path='events/create' element={<EventCreationPage />} />
         </Route>
       </Route>
 
