@@ -36,7 +36,8 @@ export default function EventStepVenueSchedule({ register, control, errors, getV
   const venues = Array.isArray(responseData) ? responseData : responseData?.items || [];
   const totalPages = responseData?.totalPages || 1;
 
-  const selectedVenueId = watch('selectedVenue');
+  // Synchronized state hook watches to align with matching backend tracking parameters
+  const selectedVenueId = watch('venue_id');
   const startDate = watch('startDate');
   const startTime = watch('startTime');
   const endTime = watch('endTime');
@@ -110,9 +111,9 @@ export default function EventStepVenueSchedule({ register, control, errors, getV
               <header className="flex flex-col gap-1">
                 <h1 className="text-3xl font-extrabold tracking-tight text-[#001e40]">Campus Venues</h1>
               </header>
-              {errors.selectedVenue && (
+              {errors.venue_id && (
                 <span className="text-xs bg-red-50 text-red-600 font-medium px-3 py-1.5 rounded-lg border border-red-200 animate-pulse">
-                  {errors.selectedVenue.message}
+                  {errors.venue_id.message}
                 </span>
               )}
             </div>
@@ -131,7 +132,7 @@ export default function EventStepVenueSchedule({ register, control, errors, getV
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <Controller
-                  name="selectedVenue"
+                  name="venue_id" // Standardized token hook reference matching backend mapping schema
                   control={control}
                   rules={{ required: 'Please specify a target campus location room asset' }}
                   render={({ field }) => (
@@ -150,7 +151,6 @@ export default function EventStepVenueSchedule({ register, control, errors, getV
                                 : 'border-slate-100 hover:border-slate-300'
                             }`}
                           >
-                            {/* Visual Asset Header Panel Container */}
                             <div className="h-44 relative overflow-hidden bg-slate-50 flex items-center justify-center border-b border-slate-100">
                               {venue.thumbnail ? (
                                 <img 
@@ -159,11 +159,10 @@ export default function EventStepVenueSchedule({ register, control, errors, getV
                                   alt={venue.name}
                                 />
                               ) : (
-                                /* Clean minimal layout fallback instead of images */
                                 <div className="flex flex-col items-center justify-center text-slate-300 select-none space-y-1">
                                   <Building className="w-10 h-10 stroke-[1.25] text-slate-300/80 group-hover:scale-110 transition-transform duration-300" />
                                   <span className="text-[10px] font-medium uppercase tracking-widest text-slate-400/70">No Media Assets</span>
-                                </div>
+                                  </div>
                               )}
                               
                               {isSelected ? (
@@ -190,7 +189,6 @@ export default function EventStepVenueSchedule({ register, control, errors, getV
                                   {venue.description || 'Premium academic deployment target with unified modern structural configuration.'}
                                 </p>
 
-                                {/* Dynamic Facilities Display Rendering Block */}
                                 {venue.venueFacilities && venue.venueFacilities.length > 0 && (
                                   <div className="mb-4 space-y-1.5">
                                     <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider flex items-center gap-1">
@@ -284,16 +282,16 @@ export default function EventStepVenueSchedule({ register, control, errors, getV
                 <div className="relative">
                   <Input 
                     type="number" 
-                    {...register('expectedAttendees', {
+                    {...register('capacity', { // Standardized key assignment registration update
                       required: 'Attendance head count estimation is mandatory',
                       min: { value: 5, message: 'Events require at least 5 expected attendees' }
                     })}
-                    className={`bg-slate-50 py-6 border-b-2 focus-visible:ring-0 ${errors.expectedAttendees ? 'border-red-500' : ''}`} 
+                    className={`bg-slate-50 py-6 border-b-2 focus-visible:ring-0 ${errors.capacity ? 'border-red-500' : ''}`} 
                     placeholder="e.g. 250" 
                   />
                   <Users className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                 </div>
-                {errors.expectedAttendees && <p className="text-xs text-red-500 font-medium">{errors.expectedAttendees.message}</p>}
+                {errors.capacity && <p className="text-xs text-red-500 font-medium">{errors.capacity.message}</p>}
               </div>
             </div>
           </div>

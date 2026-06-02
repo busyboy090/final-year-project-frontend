@@ -16,34 +16,7 @@ import StatCard from '@/features/dashboard/components/StatCard';
 function Events() {
   const [showFilters, setShowFilters] = useState(false);
 
-  const [events] = useState([
-    {
-      id: "1",
-      title: "AI in Modern Healthcare Summit",
-      thumbnail: "https://lh3.googleusercontent.com/aida-public/AB6AXuAyMyHPXBPGJwZp9G7HKpxWscr9qj177VnycDaGv4JvU9JJCJD8oBQCO-HsK6m3D1CbLFyZ858pNsPqhoKHlPVlQcYFJ2GdToA6ydIyS5desWfd6saVX45uaf4_Cuu8eDJZ8CXABs6gAT4sHLPavFNTqwHY9_YrhgfEsH8MzZoz46Nv6mNko9-7oGmOKYu1ApdBNmxxvYYBm0oaJ8PI3EmwMRpdJ6QGuE0a7ePfRvBtruNcj4VGCQ0bviQZXM_4aro-ATYzuaPNs7Q",
-      organizer: "Dr. Sarah Jenkins",
-      department: "School of Computing",
-      venue: "Great Hall, West Wing",
-      date: "Oct 24, 2023",
-      time: "09:00 AM - 05:00 PM",
-      capacity: "425/500",
-      fillPercentage: 85,
-      status: "Upcoming",
-    },
-    {
-      id: "2",
-      title: "Annual Alumni Gala Dinner",
-      thumbnail: "https://lh3.googleusercontent.com/aida-public/AB6AXuDCDMstufyfFvZv7C4i5ypR_JY0Fcdcx5otnffNJ7MC6dyxnziM1ak4vvV3J-OfoHVSG7Z2SU6DOueD7kgLPgjYSgrXvHOM01Ja9JjBSfjE7SQVuAgcQuHFPzReA1UMHJ9mRF-u2Tqh1UCu_Zb9cD0oZq2aufH0f084G7djm1RKgaz8Vt_-ujUy7ZmtEb76z_V3oQX4ue5EgHzaBKh1Of-7G7nBbXycG_MJ-LC0fcK6wEQwylCUwFnmF0NBIt69sCyG3Ri_CH4zHvo",
-      organizer: "Office of Advancement",
-      department: "Institutional Affairs",
-      venue: "Maritime Ballroom",
-      date: "Oct 21, 2023",
-      time: "07:00 PM - 11:30 PM",
-      capacity: "250/250",
-      fillPercentage: 100,
-      status: "Ongoing",
-    },
-  ]);
+  const events: any[] = [];
 
   return (
     <div className="max-w-[1400px] mx-auto space-y-10 animate-in fade-in duration-500">

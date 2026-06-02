@@ -28,15 +28,15 @@ function EventTableRow({ event, index }: { event: Event, index: number }) {
             </TableCell>
             <TableCell>
                 <div className="flex flex-col">
-                    <span className="text-sm font-semibold text-[#001e40]">{event.organizer}</span>
-                    <span className="text-[10px] text-slate-400">{event.department}</span>
+                    <span className="text-sm font-semibold text-[#001e40]">{event.organization.name}</span>
+                    {/* <span className="text-[10px] text-slate-400">{event.department}</span> */}
                 </div>
             </TableCell>
-            <TableCell className="text-sm text-slate-600">{event.venue}</TableCell>
+            <TableCell className="text-sm text-slate-600">{event.venue.name}</TableCell>
             <TableCell>
                 <div className="flex flex-col">
-                    <span className="text-sm font-semibold text-[#001e40]">{event.date}</span>
-                    <span className="text-[10px] text-slate-400">{event.time}</span>
+                    {/* <span className="text-sm font-semibold text-[#001e40]">{event.date}</span> */}
+                    {/* <span className="text-[10px] text-slate-400">{event.time}</span> */}
                 </div>
             </TableCell>
             <TableCell>
