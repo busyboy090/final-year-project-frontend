@@ -14,11 +14,7 @@ import AddVenuePage from '@/pages/Dashboard/admin/AddVenuePage';
 import EditVenuePage from '@/pages/Dashboard/admin/EditVenuePage';
 import VenueDetailsPage from '@/pages/Dashboard/VenueDetailsPage';
 import Settings from '@/pages/Dashboard/admin/Settings';
-import EventCreationPage from '@/pages/Dashboard/event-organiser/EventCreationPage';
 
-
-// Layouts
-import DashboardLayout from '@/layouts/DashboardLayout';
 
 // Components
 import PageNotFound from '@/components/PageNotFound';
@@ -27,22 +23,19 @@ import UserManagement from '@/pages/Dashboard/admin/UserManagementPage';
 function AdminDashboardRoutes() {
   return (
     <Routes>
-      <Route path="/" element={<CheckUserRole role="admin" />} >
-        <Route element={<DashboardLayout />} >
-          {/* Dashboard page  */}
-          <Route index element={<Dashboard />} />
-          <Route path="events" element={<Events />} />
-          <Route path="venues" element={<Venues />} />
-          <Route path="venues/add" element={<AddVenuePage />} />
-          <Route path="venues/edit/:id" element={<EditVenuePage />} />
-          <Route path="venues/:id" element={<VenueDetailsPage />} />
-          <Route path="reports" element={<Reports />} />
-          <Route path="profile" element={<Profile />} />
-          <Route path="attendance" element={<Attendance />} />
-          <Route path="settings" element={<Settings />} />
-          <Route path='users' element={<UserManagement />} />
-          <Route path='events/create' element={<EventCreationPage />} />
-        </Route>
+      <Route path="/" element={<CheckUserRole role={["admin"]} />} >
+        {/* Dashboard page  */}
+        <Route index element={<Dashboard />} />
+        <Route path="events" element={<Events />} />
+        <Route path="venues" element={<Venues />} />
+        <Route path="venues/add" element={<AddVenuePage />} />
+        <Route path="venues/edit/:id" element={<EditVenuePage />} />
+        <Route path="venues/:id" element={<VenueDetailsPage />} />
+        <Route path="reports" element={<Reports />} />
+        <Route path="profile" element={<Profile />} />
+        <Route path="attendance" element={<Attendance />} />
+        <Route path="settings" element={<Settings />} />
+        <Route path='users' element={<UserManagement />} />
       </Route>
 
       {/* 404 Route */}

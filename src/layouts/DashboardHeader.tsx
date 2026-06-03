@@ -46,7 +46,7 @@ function DashboardHeader() {
                     {/* Create Event button — visible to super-admin and event-organiser only */}
                     {(role === "super-admin" || role === "event-organiser") && (
                         <button
-                            onClick={() => navigate(`/dashboard/${profile?.role && formatRole(profile?.role)}/events/create`)}
+                            onClick={() => navigate("/dashboard/events/create")}
                             className="flex items-center gap-2 px-4 py-2 bg-amber-500 text-white rounded-lg text-sm font-bold shadow-lg hover:scale-95 transition-all"
                         >
                             <PlusCircle size={18} />

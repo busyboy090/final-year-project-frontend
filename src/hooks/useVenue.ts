@@ -26,11 +26,9 @@ export const useVenues = (filters: UseVenuesFilters = {}) => {
       // You might want to return the whole response object or just response.data depending on your needs.
       return response.data.data; 
     },
-    staleTime: 1000 * 60 * 60, // 1 hour
-    refetchOnWindowFocus: false,
-    refetchOnMount: false,
-    refetchOnReconnect: false,
-    refetchInterval: false,
-    refetchIntervalInBackground: false
+    refetchOnWindowFocus: true,
+    refetchOnMount: true,
+    refetchOnReconnect: true,
+    refetchIntervalInBackground: true
   });
 };

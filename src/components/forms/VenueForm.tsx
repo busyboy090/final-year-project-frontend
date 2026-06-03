@@ -117,7 +117,7 @@ export function VenueForm({
                                 ) : (
                                     <Controller name="type" control={control} render={({ field }) => (
                                         <Select onValueChange={field.onChange} value={field.value}>
-                                            <SelectTrigger className="h-11 w-full"><SelectValue /></SelectTrigger>
+                                            <SelectTrigger className="h-10! w-full"><SelectValue /></SelectTrigger>
                                             <SelectContent>
                                                 <SelectItem value="hall">Hall</SelectItem>
                                                 <SelectItem value="auditorium">Auditorium</SelectItem>

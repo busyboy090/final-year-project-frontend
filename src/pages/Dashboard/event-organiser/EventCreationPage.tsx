@@ -5,23 +5,27 @@ import EventStepVenueSchedule from './EventStepVenueSchedule';
 import EventStepReviewPublish from './EventStepReviewPublish';
 import { Button } from '@/components/ui/button';
 import { apiClient } from '@/apis/axios';
+import { toast } from 'sonner';
+import { useNavigate } from 'react-router-dom';
 
 // Declare type interface aligned directly with your backend keys
 export interface EventFormValues {
   title: string;
   category: string;
   description: string;
+  thumbnail: File[];
   venue_id: string;
-  capacity: string; 
-  startDate: string; 
+  capacity: string;
+  startDate: string;
   endDate: string;
   startTime: string;
   endTime: string;
 }
 
 export default function EventCreationPage() {
-  const [currentStep, setCurrentStep] = useState<number>(1); 
+  const [currentStep, setCurrentStep] = useState<number>(1);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const navigate = useNavigate()
 
   // Initialize unified react-hook-form hub
   const {
@@ -39,7 +43,8 @@ export default function EventCreationPage() {
       category: 'Academic Conference',
       description: '',
       venue_id: '',
-      capacity: '', 
+      capacity: '',
+      thumbnail: [],
       startDate: '',
       endDate: '',
       startTime: '',
@@ -59,7 +64,7 @@ export default function EventCreationPage() {
 
     const isStepValid = await trigger(fieldsToValidate);
     if (isStepValid) {
-      setCurrentStep((prev) => Math.min(prev + 1, 3)); 
+      setCurrentStep((prev) => Math.min(prev + 1, 3));
     }
   };
 
@@ -68,18 +73,36 @@ export default function EventCreationPage() {
   const onFinalSubmit = async (data: EventFormValues) => {
     try {
       setIsSubmitting(true);
-      
-      // Dispatching form data—the server picks this up, validates it, 
-      // and calculates the duration internally before storing.
-      const response = await apiClient.post('/api/v1/events', data);
-      
-      if (response.data?.success) {
-        alert('Event successfully constructed, verified, and published!');
+
+      const formData = new FormData();
+
+      // Append fields
+      formData.append('title', data.title);
+      formData.append('category', data.category);
+      formData.append('description', data.description);
+      formData.append('venue_id', data.venue_id);
+      formData.append('capacity', data.capacity);
+      formData.append('startDate', data.startDate);
+      formData.append('startTime', data.startTime);
+      formData.append('endDate', data.endDate);
+      formData.append('endTime', data.endTime);
+
+      // Append binary file securely
+      if (data?.thumbnail && data?.thumbnail[0]) {
+        formData.append('thumbnail', data.thumbnail[0]);
       }
+
+      await apiClient.post('/v1/events', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+
+      toast.success("Event created successfully");
+
+      navigate("/dashboard/events")
     } catch (error: any) {
       console.error('SUBMIT_EVENT_FORM_ERROR:', error);
       const serverMessage = error.response?.data?.message || 'Failed to publish event application.';
-      alert(`Error: ${serverMessage}`);
+      toast.error(serverMessage);
     } finally {
       setIsSubmitting(false);
     }
@@ -88,7 +111,7 @@ export default function EventCreationPage() {
   const handleSaveDraft = () => {
     const currentValues = getValues();
     console.log('Saving intermediate partial payload draft:', currentValues);
-    alert('Draft auto-cached successfully.');
+    toast.success('Draft auto-cached successfully.');
   };
 
   return (
@@ -132,18 +155,16 @@ export default function EventCreationPage() {
           { step: 3, label: 'Review & Publish' }
         ].map((item) => (
           <div key={item.step} className="flex flex-col items-center gap-3 dark:bg-slate-950 px-2 mt-6">
-            <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold transition-all duration-300 ring-4 ring-[#f6faff] dark:ring-slate-950 ${
-              currentStep > item.step
+            <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold transition-all duration-300 ring-4 ring-[#f6faff] dark:ring-slate-950 ${currentStep > item.step
                 ? 'bg-[#001e40] text-white'
                 : currentStep === item.step
                   ? 'bg-[#7b5800] text-white shadow-lg shadow-[#7b5800]/30 scale-105'
                   : 'bg-slate-200 dark:bg-slate-800 text-slate-500'
-            }`}>
+              }`}>
               {currentStep > item.step ? '✓' : item.step}
             </div>
-            <span className={`text-[10px] md:text-xs uppercase tracking-widest text-center transition-colors ${
-              currentStep === item.step ? 'text-[#001e40] dark:text-slate-50 font-bold' : 'text-slate-400'
-            }`}>
+            <span className={`text-[10px] md:text-xs uppercase tracking-widest text-center transition-colors ${currentStep === item.step ? 'text-[#001e40] dark:text-slate-50 font-bold' : 'text-slate-400'
+              }`}>
               {item.label}
             </span>
           </div>
@@ -194,8 +215,8 @@ export default function EventCreationPage() {
                 <Button type="button" onClick={handleBackStep} variant="outline" disabled={isSubmitting}>
                   Back
                 </Button>
-                <Button 
-                  type="submit" 
+                <Button
+                  type="submit"
                   disabled={isSubmitting}
                   className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-8 shadow-md"
                 >

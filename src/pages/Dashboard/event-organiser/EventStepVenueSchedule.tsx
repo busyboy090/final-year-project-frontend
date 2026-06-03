@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { 
-  MapPin, Calendar, Users, Building, ArrowLeft, ArrowRight, 
+  MapPin, Calendar, Users, Building, ArrowRight, 
   Search, SlidersHorizontal, Check, ShieldCheck, Layers, Cpu,
 } from 'lucide-react';
 import { useVenues } from '@/hooks/useVenue';
@@ -16,7 +16,7 @@ interface FilterProps {
   type?: 'hall' | 'outdoor' | 'classroom' | 'auditorium' | 'lab' | 'all';
 }
 
-export default function EventStepVenueSchedule({ register, control, errors, getValues, onNext, onBack, watch }: any) {
+export default function EventStepVenueSchedule({ register, control, errors, getValues, onNext, watch }: any) {
   const [page, setPage] = useState(1);
   const [filters, setFilters] = useState<FilterProps>({
     search: '',
@@ -397,15 +397,7 @@ export default function EventStepVenueSchedule({ register, control, errors, getV
       </div>
 
       {/* Primary Action Control Row */}
-      <div className="mt-8 flex flex-col sm:flex-row justify-between items-center gap-4 border-t pt-6">
-        <Button 
-          type="button" 
-          variant="outline" 
-          onClick={onBack} 
-          className="h-11 px-6 font-semibold flex items-center gap-2 w-full sm:w-auto justify-center border-slate-200 text-slate-700 hover:bg-slate-50"
-        >
-          <ArrowLeft className="w-4 h-4" /> Back to Basic Details
-        </Button>
+      <div className="mt-8 flex flex-col sm:flex-row justify-end items-center gap-4 border-t pt-6">
         <Button 
           type="button" 
           onClick={onNext} 

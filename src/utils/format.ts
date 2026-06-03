@@ -1,4 +1,7 @@
+
 import type { UserRole } from "@/types/user";
+
+type TimeUnit = 'minute' | 'hour' | 'day' | 'week';
 
 /**
  * Converts a technical role code into a display-friendly university title.
@@ -65,11 +68,55 @@ export const formatNumber = (
 
 
 export const formatRole = (role: UserRole): string => {
-    switch(role) {
-        case "super-admin" :
+    switch (role) {
+        case "super-admin":
             return "admin"
-        default: 
+        default:
             return role
     }
 }
 
+export function formatDate(date: Date) {
+    return new Date(date).toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "short",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true,
+    })
+}
+
+/**
+ * Formats a given number of minutes into a human-readable string
+ * matching the single largest applicable unit.
+ */
+export function formatMinutes(totalMinutes: number): string {
+  if (totalMinutes === 0) return '0 minutes';
+  
+  const MINS_IN_HOUR = 60;
+  const MINS_IN_DAY = 1440;       // 60 * 24
+  const MINS_IN_WEEK = 10080;     // 1440 * 7
+
+  // Type-safe pluralization helper
+  const pluralize = (value: number, unit: TimeUnit): string => {
+    return `${value} ${unit}${value === 1 ? '' : 's'}`;
+  };
+
+  if (totalMinutes >= MINS_IN_WEEK) {
+    const weeks = Math.floor(totalMinutes / MINS_IN_WEEK);
+    return pluralize(weeks, 'week');
+  }
+
+  if (totalMinutes >= MINS_IN_DAY) {
+    const days = Math.floor(totalMinutes / MINS_IN_DAY);
+    return pluralize(days, 'day');
+  }
+
+  if (totalMinutes >= MINS_IN_HOUR) {
+    const hours = Math.floor(totalMinutes / MINS_IN_HOUR);
+    return pluralize(hours, 'hour');
+  }
+
+  return pluralize(totalMinutes, 'minute');
+}

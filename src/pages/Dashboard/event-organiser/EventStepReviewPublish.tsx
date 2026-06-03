@@ -9,9 +9,7 @@ import {
   Laptop, 
   Mic, 
   FileText, 
-  Coffee, 
-  Send, 
-  ArrowLeft 
+  Coffee,
 } from 'lucide-react';
 
 interface ReviewPublishProps {
@@ -22,15 +20,14 @@ interface ReviewPublishProps {
 }
 
 export default function EventStepReviewPublish({ 
-  getValues, 
-  onBack,
+  getValues,
   onStepJump 
 }: ReviewPublishProps) {
   // Extract working details safely from centralized form hub
   const currentValues = getValues();
 
   return (
-    <div>
+    <div className="space-y-6">
       {/* Bento Grid Summary Framework */}
       <div className="grid grid-cols-12 gap-6 items-start">
         
@@ -54,19 +51,19 @@ export default function EventStepReviewPublish({
             <div>
               <p className="text-[11px] uppercase tracking-widest text-slate-400 font-bold mb-1">Event Name</p>
               <p className="text-base font-semibold text-slate-900 dark:text-slate-50">
-                {currentValues.eventTitle || 'Untitled Academic Event 2026'}
+                {currentValues.title || 'Untitled Academic Event'}
               </p>
             </div>
             <div>
-              <p className="text-[11px] uppercase tracking-widest text-slate-400 font-bold mb-1">Category &amp; Organizer</p>
+              <p className="text-[11px] uppercase tracking-widest text-slate-400 font-bold mb-1">Category</p>
               <p className="text-base font-semibold text-slate-900 dark:text-slate-50">
-                {currentValues.category || 'Unassigned'} — <span className="text-slate-500 text-sm font-normal">{currentValues.department}</span>
+                {currentValues.category || 'Unassigned'}
               </p>
             </div>
             <div className="col-span-1 sm:col-span-2">
               <p className="text-[11px] uppercase tracking-widest text-slate-400 font-bold mb-1">Description</p>
               <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed whitespace-pre-wrap">
-                {currentValues.description || 'No descriptive summary records provided for this institutional window framework.'}
+                {currentValues.description || 'No summary records provided for this event outline.'}
               </p>
             </div>
           </div>
@@ -81,8 +78,8 @@ export default function EventStepReviewPublish({
               <span className="font-bold text-[#f5be4f]">100% Configured</span>
             </div>
             <div className="flex justify-between items-center py-2 border-b border-white/10 text-sm">
-              <span className="text-slate-300">Expected Guests</span>
-              <span className="font-bold">{currentValues.expectedAttendees || '0'} Seats</span>
+              <span className="text-slate-300">Target Capacity</span>
+              <span className="font-bold">{currentValues.capacity || '0'} Seats</span>
             </div>
             <div className="flex justify-between items-center py-2 border-b border-white/10 text-sm">
               <span className="text-slate-300">Layout Conflicts</span>
@@ -92,7 +89,7 @@ export default function EventStepReviewPublish({
           <div className="bg-white/5 rounded-lg p-4">
             <p className="text-[10px] uppercase tracking-widest text-slate-400 font-bold mb-1">Deployment Memo:</p>
             <p className="text-xs text-slate-200 leading-relaxed">
-              Upon final publishing dispatch, notifications link automatically into the campus network digital layout dashboards.
+              Upon final publishing dispatch, reservation tokens link automatically into the campus network infrastructure and logistics managers.
             </p>
           </div>
         </aside>
@@ -102,7 +99,7 @@ export default function EventStepReviewPublish({
           <div className="flex justify-between items-start mb-6">
             <h3 className="text-xl font-bold text-[#001e40] dark:text-slate-50 flex items-center gap-2">
               <MapPin className="text-[#7b5800] w-5 h-5" />
-              Venue &amp; Logistics
+              Venue Allocation
             </h3>
             <Button
               type="button"
@@ -119,21 +116,21 @@ export default function EventStepReviewPublish({
                 <MapPin className="w-8 h-8 text-[#7b5800]" />
               </div>
               <div>
-                <p className="text-[11px] uppercase tracking-widest text-slate-400 font-bold mb-1">Allocated Center</p>
+                <p className="text-[11px] uppercase tracking-widest text-slate-400 font-bold mb-1">Allocated Identifier Token</p>
                 <p className="text-base font-semibold text-slate-900 dark:text-slate-50">
-                  {currentValues.selectedVenue === 'auditorium-alpha' ? 'Main Convocation Auditorium (Alpha)' : currentValues.selectedVenue === 'hall-sciences' ? 'Faculty of Sciences Lecture Theatre' : 'Unspecified Venue'}
+                  {currentValues.venue_id ? `Asset ID References: #${currentValues.venue_id}` : 'No Location Selected'}
                 </p>
-                <p className="text-xs text-slate-500 mt-0.5">Admiralty Campus Grounds Complex</p>
+                <p className="text-xs text-slate-500 mt-0.5">Campus Infrastructure Complex</p>
               </div>
             </div>
             <div className="grid grid-cols-2 gap-4 pt-4 border-t border-slate-100 dark:border-slate-800">
               <div>
                 <p className="text-[11px] uppercase tracking-widest text-slate-400 font-bold mb-0.5">Target Arrangement</p>
-                <p className="text-sm font-medium text-slate-700 dark:text-slate-300 capitalize">{currentValues.seatingStyle || 'Standard'} Format</p>
+                <p className="text-sm font-medium text-slate-700 dark:text-slate-300">Standard Room Layout</p>
               </div>
               <div>
                 <p className="text-[11px] uppercase tracking-widest text-slate-400 font-bold mb-0.5">A/V Integration</p>
-                <p className="text-sm font-medium text-emerald-600 dark:text-emerald-400 flex items-center gap-1">Premium Audio Ready</p>
+                <p className="text-sm font-medium text-emerald-600 dark:text-emerald-400">Hardware Verified</p>
               </div>
             </div>
           </div>
@@ -188,60 +185,39 @@ export default function EventStepReviewPublish({
               className="text-slate-400 cursor-not-allowed text-xs uppercase tracking-widest font-bold h-8 px-2"
               disabled
             >
-              Step 3 View
+              System Defaults
             </Button>
           </div>
           <div className="flex flex-wrap gap-3">
             <div className="px-4 py-2.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-100 dark:border-slate-800 flex items-center gap-2 text-xs font-medium text-slate-700 dark:text-slate-300">
               <Laptop className="w-4 h-4 text-[#001e40]" />
-              <span>Digital Infrastructure (40 Laptops Allocated)</span>
+              <span>Digital Infrastructure Systems Ready</span>
             </div>
             <div className="px-4 py-2.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-100 dark:border-slate-800 flex items-center gap-2 text-xs font-medium text-slate-700 dark:text-slate-300">
               <Mic className="w-4 h-4 text-[#001e40]" />
-              <span>2 Media Lecterns Assigned</span>
+              <span>Media Lecterns Configured</span>
             </div>
             <div className="px-4 py-2.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-100 dark:border-slate-800 flex items-center gap-2 text-xs font-medium text-slate-700 dark:text-slate-300">
               <FileText className="w-4 h-4 text-[#001e40]" />
-              <span>Institutional Program Prints (x500)</span>
+              <span>Institutional Program Outlines Included</span>
             </div>
             <div className="px-4 py-2.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-100 dark:border-slate-800 flex items-center gap-2 text-xs font-medium text-slate-700 dark:text-slate-300">
               <Coffee className="w-4 h-4 text-[#001e40]" />
-              <span>Catering Services: Academic Gold Tier Package</span>
+              <span>Standard Operations Tier Package</span>
             </div>
           </div>
         </section>
       </div>
 
       {/* Verification Preview Strip */}
-      <div className="mt-12 p-6 border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-xl flex flex-col items-center text-center bg-white/50 dark:bg-slate-900/50">
+      <div className="p-6 border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-xl flex flex-col items-center text-center bg-white/50 dark:bg-slate-900/50">
         <div className="w-12 h-12 rounded-full bg-emerald-50 dark:bg-emerald-950/40 flex items-center justify-center mb-3 text-emerald-600 dark:text-emerald-400">
           <CheckCircle className="w-6 h-6" />
         </div>
         <h4 className="text-base font-bold text-[#001e40] dark:text-slate-200 mb-1">Pre-flight Verification Complete</h4>
         <p className="text-xs text-slate-500 max-w-xl leading-relaxed">
-          The pipeline successfully cross-checked all inputs against room schedules. Publishing generates calendar slots and lists this event in the system directory.
+          The pipeline successfully cross-checked all entries against current campus schedules. Review all modules above to make sure configurations match requirements.
         </p>
-      </div>
-
-      {/* Step Navigation Footer */}
-      <div className="mt-12 flex flex-col sm:flex-row justify-between items-center gap-4 border-t border-slate-200 dark:border-slate-800 pt-8">
-        <Button 
-          type="button" 
-          variant="outline" 
-          onClick={onBack} 
-          className="w-full sm:w-auto px-6 font-semibold border-slate-200 text-slate-700 hover:bg-slate-50 h-11 flex items-center justify-center gap-2"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          Back to Venue Selection
-        </Button>
-
-        <Button 
-          type="submit" 
-          className="w-full sm:w-auto px-12 bg-[#7b5800] hover:bg-[#7b5800]/90 text-white font-bold rounded-lg shadow-lg shadow-[#7b5800]/20 h-11 flex items-center justify-center gap-2"
-        >
-          Confirm &amp; Publish Event
-          <Send className="w-4 h-4" />
-        </Button>
       </div>
     </div>
   );

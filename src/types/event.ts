@@ -11,6 +11,7 @@ export interface Event {
     thumbnail: string;
     category: EventCategory;
     description: string;
+    duration: number;
     venue_id: number;
     venue: Venue;
     organization_id?: number | null;
@@ -22,7 +23,7 @@ export interface Event {
     status: EventStatus;
     created_at: Date;
     updated_at: Date;
-    creator_by: User;
+    created_by: User;
 }
 
 export interface EventFormValues {
@@ -35,4 +36,27 @@ export interface EventFormValues {
     end_date: Date;
     start_time: string;
     end_time: string;
+}
+
+export interface PaginatedEventsResponse {
+    events: Event[];
+    total: number;
+    page: number;
+    pages: number;
+    limit: number;
+}
+
+export interface EventFilters {
+    limit?: number;
+    page?: number;
+    search?: string;
+    status?: EventStatus;
+    category?: EventCategory;
+    organisation_id?: number;
+    venue_id?: number;
+    creator_by?: number;
+    start_date?: Date;
+    end_date?: Date;
+    start_time?: string;
+    end_time?: string;
 }

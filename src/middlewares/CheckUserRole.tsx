@@ -3,34 +3,33 @@ import useAuth from "@/hooks/useAuth";
 import { dashboardPathForRole } from "@/utils/route";
 import type { UserRole } from "@/types/user";
 
-// Maps route segment to the role that can access it
 const routeRoleMap: Record<string, UserRole> = {
-  admin:          "super-admin",
+  admin:             "super-admin",
   "event-organiser": "event-organiser",
-  staff:          "staff",
-  student:        "student",
+  staff:             "staff",
+  student:           "student",
 };
 
 function CheckUserRole({
   children,
-  role,
+  role, // Keeps the string[] type
 }: {
   children?: React.ReactNode;
-  role: string;
+  role: string[];
 }) {
   const { user } = useAuth();
 
-  // 1. Redirect to login if no user
   if (!user) {
     return <Navigate to="/auth/login" replace />;
   }
 
-  // 2. Check if the user's single role matches the required route role
-  const requiredRole = routeRoleMap[role];
-  const hasAccess = !!requiredRole && user.role === requiredRole;
+  // Map the array of route segments to their actual UserRole values
+  const allowedRoles = role.map(r => routeRoleMap[r]).filter(Boolean);
+  
+  // Check if the current user's role is included in the allowed roles
+  const hasAccess = allowedRoles.includes(user.role as UserRole);
 
   if (!hasAccess) {
-    // Redirect to their own dashboard
     return <Navigate to={dashboardPathForRole(user.role as UserRole)} replace />;
   }
 

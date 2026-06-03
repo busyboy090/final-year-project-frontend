@@ -3,6 +3,9 @@ import { Routes, Route } from 'react-router-dom';
 // Middlewares
 import Protected from '@/middlewares/Protected';
 
+// Pages 
+import EventCreationPage from '@/pages/Dashboard/event-organiser/EventCreationPage';
+
 // Components
 import PageNotFound from '@/components/PageNotFound';
 
@@ -15,13 +18,17 @@ import StaffDashboardRoutes from './StaffDashboardRoutes';
 // Provider
 import DashboardProvider from '@/contexts/DashboardProvider';
 import UserLayout from '@/layouts/UserLayout';
+import CheckUserRole from '@/middlewares/CheckUserRole';
+
+// Layout
+import DashboardLayout from '@/layouts/DashboardLayout';
 
 function DashboardRoutes() {
   return (
     <Routes>
       <Route element={<Protected />} >
         <Route element={<UserLayout />}>
-          <Route element={<DashboardProvider />}>
+          <Route element={<DashboardProvider><DashboardLayout /></DashboardProvider>}>
             {/* Admin Dashboard Routes */}
             <Route path="/admin/*" element={<AdminDashboardRoutes />} />
 
@@ -33,6 +40,10 @@ function DashboardRoutes() {
 
             {/* Event Organiser Dashboard Routes */}
             <Route path="/event-organiser/*" element={<EventOrganiserDashboardRoutes />} />
+
+            <Route element={<CheckUserRole role={["admin", "event-organiser"]} />}>
+              <Route path='/events/create' element={<EventCreationPage />} />
+            </Route>
           </Route>
         </Route>
 
