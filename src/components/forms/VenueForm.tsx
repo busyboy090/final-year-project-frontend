@@ -17,11 +17,16 @@ export interface VenueFormValues {
     features: string[];
 }
 
+interface FacilityOption {
+    id: string | number;
+    name: string;
+}
+
 interface VenueFormProps {
     initialData?: Partial<VenueFormValues>;
     onSubmit: (values: VenueFormValues) => void;
     isSubmitting: boolean;
-    facilities: string[];
+    facilities: FacilityOption[];
     thumbnailPreview: string | null;
     setThumbnailPreview: (url: string | null) => void;
     galleryPreviews: string[];
@@ -60,6 +65,14 @@ export function VenueForm({
             reset(initialData);
         }
     }, [initialData, reset]);
+
+    useEffect(() => {
+        if (!isViewOnly) {
+            register("features", {
+                validate: (value) => (value?.length ?? 0) > 0 || "Select at least one facility",
+            });
+        }
+    }, [isViewOnly, register]);
 
     const watchThumbnail = watch("thumbnail");
     const selectedFeatures = watch("features") || [];
@@ -138,9 +151,16 @@ export function VenueForm({
                                 ) : (
                                     <InputGroup>
                                         <InputGroupAddon><Users className="h-4 w-full" /></InputGroupAddon>
-                                        <InputGroupInput type="number" {...register("capacity", { required: true })} />
+                                        <InputGroupInput
+                                            type="number"
+                                            {...register("capacity", {
+                                                required: "Capacity is required",
+                                                min: { value: 0, message: "Capacity cannot be negative" },
+                                            })}
+                                        />
                                     </InputGroup>
                                 )}
+                                {errors.capacity && <p className="text-xs text-red-500 font-medium">{errors.capacity.message}</p>}
                             </div>
 
                             {/* Status - Shown in Edit and View */}
@@ -182,7 +202,7 @@ export function VenueForm({
                         <div className="space-y-4">
                             <Label className="text-[10px] font-bold uppercase tracking-widest text-[#001e40]">Facilities</Label>
                             <div className="flex flex-wrap gap-2">
-                                {facilities?.map((f: any) => {
+                                {facilities?.map((f) => {
                                     const isSelected = selectedFeatures.includes(f.id.toString());
                                     // In view mode, we only show selected features, or show them all but styled differently
                                     if (isViewOnly && !isSelected) return null;
@@ -203,6 +223,7 @@ export function VenueForm({
                                     );
                                 })}
                             </div>
+                            {errors.features && <p className="text-xs text-red-500 font-medium">{errors.features.message}</p>}
                         </div>
                     </div>
                 </div>

@@ -6,23 +6,28 @@ import {
   updateLocalProfile
 } from "@/store/userSlice";
 import type { RootState, AppDispatch } from "@/store";
+import { useCallback } from "react";
 
 function useUser() {
     const dispatch = useDispatch<AppDispatch>();
     const userState = useSelector((state: RootState) => state.user);
+    const fetchProfile = useCallback(() => dispatch(fetchUserProfile()), [dispatch]);
+    const updateProfile = useCallback((value: any) => dispatch(updateLocalProfile(value)), [dispatch]);
+    const clearUserProfile = useCallback(() => dispatch(clearProfile()), [dispatch]);
+    const setProfileCompletionRequired = useCallback((value: boolean) => dispatch(setNeedsProfileCompletion(value)), [dispatch]);
 
     return {
         ...userState,
 
         // --- Auth Methods (Thunks) ---
         
-        fetchUserProfile: () => dispatch(fetchUserProfile()),
+        fetchUserProfile: fetchProfile,
 
-        updateLocalProfile: (value :any) => dispatch(updateLocalProfile(value)),
+        updateLocalProfile: updateProfile,
 
-        clearProfile: () => dispatch(clearProfile()),
+        clearProfile: clearUserProfile,
 
-        setNeedsProfileCompletion: (value:boolean) => dispatch(setNeedsProfileCompletion(value)),
+        setNeedsProfileCompletion: setProfileCompletionRequired,
     };
 }
 

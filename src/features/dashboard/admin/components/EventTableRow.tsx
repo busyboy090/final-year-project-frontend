@@ -1,11 +1,13 @@
 import { TableCell, TableRow } from "@/components/ui/table";
 import StatusBadge from "./StatusBadge";
 import { Button } from "@/components/ui/button";
-import { Eye, Pencil, Check, X } from "lucide-react"; // Imported specific action icons
+import { Ban, Check, Eye, Pencil, Trash2, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Event } from "@/types/event";
 import { formatDate, formatMinutes } from "@/utils/format";
 import useAuth from "@/hooks/useAuth";
+import { useCancelEvent, useDeleteEvent, useUpdateEventStatus } from "@/hooks/useEvent";
+import { toast } from "sonner";
 
 interface EventTableRowProps {
     event: Event;
@@ -14,10 +16,40 @@ interface EventTableRowProps {
 
 function EventTableRow({ event, index }: EventTableRowProps) {
     const { user } = useAuth();
+    const updateStatus = useUpdateEventStatus();
+    const cancelEvent = useCancelEvent();
+    const deleteEvent = useDeleteEvent();
 
     const isSuperAdmin = user?.role?.toLowerCase() === "super-admin";
-    const creator = user?.id === event.created_by?.id;
+    const creator = user?.id === event.created_by;
     const canManageActions = isSuperAdmin || creator;
+
+    const handleStatusChange = async (status: "approved" | "rejected") => {
+        try {
+            await updateStatus.mutateAsync({ id: event.id, status });
+            toast.success(`Event ${status}`);
+        } catch (error: any) {
+            toast.error(error?.response?.data?.message || "Could not update event status");
+        }
+    };
+
+    const handleCancel = async () => {
+        try {
+            await cancelEvent.mutateAsync(event.id);
+            toast.success("Event cancelled");
+        } catch (error: any) {
+            toast.error(error?.response?.data?.message || "Could not cancel event");
+        }
+    };
+
+    const handleDelete = async () => {
+        try {
+            await deleteEvent.mutateAsync(event.id);
+            toast.success("Event removed");
+        } catch (error: any) {
+            toast.error(error?.response?.data?.message || "Could not remove event");
+        }
+    };
 
     return (
         <TableRow className="group hover:bg-slate-50/80 transition-colors">
@@ -40,7 +72,7 @@ function EventTableRow({ event, index }: EventTableRowProps) {
             <TableCell className="text-center">
                 <div className="flex flex-col">
                     <span className="font-semibold text-[#001e40]">
-                        {event.organization?.name ?? "N/A"}
+                        {event.organisation?.name ?? "N/A"}
                     </span>
                 </div>
             </TableCell>
@@ -89,6 +121,7 @@ function EventTableRow({ event, index }: EventTableRowProps) {
                         size="icon"
                         className="size-8 text-[#001e40] hover:bg-slate-100 hover:text-[#001e40]"
                         title="View Event"
+                        onClick={() => toast.info(event.description || "No event description available")}
                     >
                         <Eye className="size-4" />
                         <span className="sr-only">View</span>
@@ -100,6 +133,8 @@ function EventTableRow({ event, index }: EventTableRowProps) {
                         size="icon"
                         className="size-8 text-slate-600 hover:bg-slate-100 hover:text-slate-900"
                         title="Edit Event"
+                        disabled={!creator}
+                        onClick={() => toast.info("Event editing screen is coming next.")}
                     >
                         <Pencil className="size-4" />
                         <span className="sr-only">Edit</span>
@@ -114,6 +149,8 @@ function EventTableRow({ event, index }: EventTableRowProps) {
                                 size="icon"
                                 className="size-8 text-emerald-600 hover:bg-emerald-50 hover:text-emerald-700"
                                 title="Approve Event"
+                                disabled={updateStatus.isPending || event.status === "approved"}
+                                onClick={() => handleStatusChange("approved")}
                             >
                                 <Check className="size-4" />
                                 <span className="sr-only">Approve</span>
@@ -125,9 +162,35 @@ function EventTableRow({ event, index }: EventTableRowProps) {
                                 size="icon"
                                 className="size-8 text-red-600 hover:bg-red-50 hover:text-red-700"
                                 title="Reject Event"
+                                disabled={updateStatus.isPending || event.status === "rejected"}
+                                onClick={() => handleStatusChange("rejected")}
                             >
                                 <X className="size-4" />
                                 <span className="sr-only">Reject</span>
+                            </Button>
+
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                className="size-8 text-amber-700 hover:bg-amber-50 hover:text-amber-800"
+                                title="Cancel Event"
+                                disabled={cancelEvent.isPending || event.status === "cancelled"}
+                                onClick={handleCancel}
+                            >
+                                <Ban className="size-4" />
+                                <span className="sr-only">Cancel</span>
+                            </Button>
+
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                className="size-8 text-red-700 hover:bg-red-50 hover:text-red-800"
+                                title="Delete Event"
+                                disabled={deleteEvent.isPending}
+                                onClick={handleDelete}
+                            >
+                                <Trash2 className="size-4" />
+                                <span className="sr-only">Delete</span>
                             </Button>
                         </>
                     )}

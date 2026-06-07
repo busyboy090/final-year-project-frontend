@@ -14,6 +14,9 @@ import AddVenuePage from '@/pages/Dashboard/admin/AddVenuePage';
 import EditVenuePage from '@/pages/Dashboard/admin/EditVenuePage';
 import VenueDetailsPage from '@/pages/Dashboard/VenueDetailsPage';
 import Settings from '@/pages/Dashboard/admin/Settings';
+import Faculties from '@/pages/Dashboard/admin/Faculties';
+import Departments from '@/pages/Dashboard/admin/Departments';
+import Facilities from '@/pages/Dashboard/admin/Facilities';
 
 
 // Components
@@ -23,7 +26,7 @@ import UserManagement from '@/pages/Dashboard/admin/UserManagementPage';
 function AdminDashboardRoutes() {
   return (
     <Routes>
-      <Route path="/" element={<CheckUserRole role={["admin"]} />} >
+      <Route element={<CheckUserRole role={["admin"]} />} >
         {/* Dashboard page  */}
         <Route index element={<Dashboard />} />
         <Route path="events" element={<Events />} />
@@ -34,6 +37,9 @@ function AdminDashboardRoutes() {
         <Route path="reports" element={<Reports />} />
         <Route path="profile" element={<Profile />} />
         <Route path="attendance" element={<Attendance />} />
+        <Route path="faculties" element={<Faculties />} />
+        <Route path="departments" element={<Departments />} />
+        <Route path="facilities" element={<Facilities />} />
         <Route path="settings" element={<Settings />} />
         <Route path='users' element={<UserManagement />} />
       </Route>

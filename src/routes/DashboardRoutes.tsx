@@ -30,19 +30,19 @@ function DashboardRoutes() {
         <Route element={<UserLayout />}>
           <Route element={<DashboardProvider><DashboardLayout /></DashboardProvider>}>
             {/* Admin Dashboard Routes */}
-            <Route path="/admin/*" element={<AdminDashboardRoutes />} />
+            <Route path="admin/*" element={<AdminDashboardRoutes />} />
 
             {/* Admin Dashboard Routes */}
-            <Route path="/staff/*" element={<StaffDashboardRoutes />} />
+            <Route path="staff/*" element={<StaffDashboardRoutes />} />
 
             {/* Student Dashboard Routes */}
-            <Route path="/student/*" element={<StudentDashboardRoutes />} />
+            <Route path="student/*" element={<StudentDashboardRoutes />} />
 
             {/* Event Organiser Dashboard Routes */}
-            <Route path="/event-organiser/*" element={<EventOrganiserDashboardRoutes />} />
+            <Route path="event-organiser/*" element={<EventOrganiserDashboardRoutes />} />
 
             <Route element={<CheckUserRole role={["admin", "event-organiser"]} />}>
-              <Route path='/events/create' element={<EventCreationPage />} />
+              <Route path="events/create" element={<EventCreationPage />} />
             </Route>
           </Route>
         </Route>

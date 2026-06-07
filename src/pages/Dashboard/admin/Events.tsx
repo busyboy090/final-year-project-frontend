@@ -75,8 +75,6 @@ function Events() {
   const creator_by = searchParams.get('creator_by') ? Number(searchParams.get('creator_by')) : undefined;
   const start_date = parseSearchDate(searchParams.get('start_date'));
   const end_date = parseSearchDate(searchParams.get('end_date'));
-  const start_time = searchParams.get('start_time') ?? '';
-  const end_time = searchParams.get('end_time') ?? '';
 
   // Fetch data with live URL states
   const { data, isLoading, isError } = useGetEvents({
@@ -88,10 +86,8 @@ function Events() {
     category: category !== 'all' ? (category as EventCategory) : undefined,
     venue_id,
     creator_by,
-    start_date,
-    end_date,
-    start_time,
-    end_time
+    start_date_from: start_date,
+    start_date_to: end_date,
   });
 
   const events = data?.events ?? [];
@@ -204,10 +200,12 @@ function Events() {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Categories</SelectItem>
-              <SelectItem value="conference">Conference</SelectItem>
-              <SelectItem value="workshop">Workshop</SelectItem>
-              <SelectItem value="seminar">Seminar</SelectItem>
-              <SelectItem value="webinar">Webinar</SelectItem>
+              <SelectItem value="Academic Conference">Academic Conference</SelectItem>
+              <SelectItem value="Workshop">Workshop</SelectItem>
+              <SelectItem value="Cultural Event">Cultural Event</SelectItem>
+              <SelectItem value="Sports Match">Sports Match</SelectItem>
+              <SelectItem value="Exhibition/Expo">Exhibition/Expo</SelectItem>
+              <SelectItem value="Social Gathering/Party">Social Gathering/Party</SelectItem>
             </SelectContent>
           </Select>
         </div>

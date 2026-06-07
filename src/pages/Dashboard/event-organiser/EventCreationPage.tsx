@@ -7,13 +7,14 @@ import { Button } from '@/components/ui/button';
 import { apiClient } from '@/apis/axios';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
+import useAuth from '@/hooks/useAuth';
 
 // Declare type interface aligned directly with your backend keys
 export interface EventFormValues {
   title: string;
   category: string;
   description: string;
-  thumbnail: File[];
+  thumbnail: FileList | null;
   venue_id: string;
   capacity: string;
   startDate: string;
@@ -26,6 +27,7 @@ export default function EventCreationPage() {
   const [currentStep, setCurrentStep] = useState<number>(1);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const navigate = useNavigate()
+  const { user } = useAuth();
 
   // Initialize unified react-hook-form hub
   const {
@@ -35,6 +37,7 @@ export default function EventCreationPage() {
     trigger,
     getValues,
     watch,
+    setValue,
     formState: { errors }
   } = useForm<EventFormValues>({
     mode: 'onChange',
@@ -44,7 +47,7 @@ export default function EventCreationPage() {
       description: '',
       venue_id: '',
       capacity: '',
-      thumbnail: [],
+      thumbnail: null,
       startDate: '',
       endDate: '',
       startTime: '',
@@ -57,7 +60,7 @@ export default function EventCreationPage() {
     let fieldsToValidate: Array<keyof EventFormValues> = [];
 
     if (currentStep === 1) {
-      fieldsToValidate = ['title', 'category', 'description'];
+      fieldsToValidate = ['title', 'category', 'description', 'thumbnail'];
     } else if (currentStep === 2) {
       fieldsToValidate = ['venue_id', 'capacity', 'startDate', 'endDate', 'startTime', 'endTime'];
     }
@@ -92,13 +95,14 @@ export default function EventCreationPage() {
         formData.append('thumbnail', data.thumbnail[0]);
       }
 
-      await apiClient.post('/v1/events', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      });
+      await apiClient.post('/v1/events', formData);
 
       toast.success("Event created successfully");
 
-      navigate("/dashboard/events")
+      const eventsPath = user?.role === "super-admin"
+        ? "/dashboard/admin/events"
+        : "/dashboard/event-organiser/events";
+      navigate(eventsPath)
     } catch (error: any) {
       console.error('SUBMIT_EVENT_FORM_ERROR:', error);
       const serverMessage = error.response?.data?.message || 'Failed to publish event application.';
@@ -179,6 +183,7 @@ export default function EventCreationPage() {
             control={control}
             errors={errors}
             watch={watch}
+            setValue={setValue}
             onNext={handleNextStep}
             onSaveDraft={handleSaveDraft}
           />

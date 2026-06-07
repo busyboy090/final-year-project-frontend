@@ -28,6 +28,8 @@ export type RegistryUsersQuery = {
   search?: string;
   role?: UserRole | "all" | "";
   department_id?: number;
+  faculty_id?: number;
+  organisation_id?: number;
 };
 
 export function useRegistryUsers(params: RegistryUsersQuery) {
@@ -40,6 +42,8 @@ export function useRegistryUsers(params: RegistryUsersQuery) {
       if (params.search?.trim()) qs.set("search", params.search.trim());
       if (params.role && params.role !== "all") qs.set("role", params.role);
       if (params.department_id) qs.set("department_id", String(params.department_id));
+      if (params.faculty_id) qs.set("faculty_id", String(params.faculty_id));
+      if (params.organisation_id) qs.set("organisation_id", String(params.organisation_id));
       const res = await apiClient.get(`/v1/user/management/users?${qs.toString()}`);
       return res.data as RegistryUsersResponse;
     },

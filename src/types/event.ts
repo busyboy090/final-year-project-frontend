@@ -14,8 +14,9 @@ export interface Event {
     duration: number;
     venue_id: number;
     venue: Venue;
-    organization_id?: number | null;
-    organization: Organisation;
+    organisation_id?: number | null;
+    organisation?: Organisation;
+    creator?: User;
     fillPercentage: number;
     start_date: Date;
     end_date: Date;
@@ -23,7 +24,7 @@ export interface Event {
     status: EventStatus;
     created_at: Date;
     updated_at: Date;
-    created_by: User;
+    created_by: number;
 }
 
 export interface EventFormValues {
@@ -46,6 +47,17 @@ export interface PaginatedEventsResponse {
     limit: number;
 }
 
+export interface EventStats {
+    total_events: number;
+    pending_approval: number;
+    approved_events: number;
+    rejected_events: number;
+    cancelled_events: number;
+    upcoming_events: number;
+    active_events: number;
+    past_events: number;
+}
+
 export interface EventFilters {
     limit?: number;
     page?: number;
@@ -54,9 +66,10 @@ export interface EventFilters {
     category?: EventCategory;
     organisation_id?: number;
     venue_id?: number;
+    created_by?: number;
     creator_by?: number;
-    start_date?: Date;
-    end_date?: Date;
+    start_date_from?: Date;
+    start_date_to?: Date;
     start_time?: string;
     end_time?: string;
 }

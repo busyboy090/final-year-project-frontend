@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk, type PayloadAction } from '@reduxjs/toolkit';
 import { apiClient as api } from '@/apis/axios';
+import type { RootState } from '@/store';
 
 interface UserState {
   profile: any | null; // This will hold the flattened profile data
@@ -10,7 +11,7 @@ interface UserState {
 
 const initialState: UserState = {
   profile: null,
-  loading: true,
+  loading: false,
   error: null,
   needsProfileCompletion: false
 };
@@ -30,6 +31,12 @@ export const fetchUserProfile = createAsyncThunk(
     } catch (err: any) {
       return rejectWithValue(err.response?.data?.message || 'Failed to fetch profile');
     }
+  },
+  {
+    condition: (_, { getState }) => {
+      const { user } = getState() as RootState;
+      return !user.loading && !user.profile;
+    },
   }
 );
 

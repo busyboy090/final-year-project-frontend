@@ -8,8 +8,8 @@ function UserLayout({ children }: { children?: ReactNode }) {
     const { isAuthenticated } = useAuth()
 
     useEffect(() => {
-        if (!profile) fetchUserProfile()
-    }, [isAuthenticated, profile])
+        if (isAuthenticated && !profile) fetchUserProfile()
+    }, [fetchUserProfile, isAuthenticated, profile])
 
     if (loading || !profile) {
         return (

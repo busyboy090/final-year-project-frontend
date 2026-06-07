@@ -1,8 +1,14 @@
 import WelcomeBack from '@/components/ui/welcome-back';
 import StatCard from '@/features/dashboard/components/StatCard';
 import { Calendar, CalendarDays, Mail, Users, MoreVertical, Clock, ChevronRight } from 'lucide-react';
+import { useEventStats, useGetEvents } from '@/hooks/useEvent';
+import { formatDate } from '@/utils/format';
 
 function AdminDashboard() {
+    const { data: stats } = useEventStats();
+    const { data: recentEvents } = useGetEvents({ limit: 5 });
+    const events = recentEvents?.events ?? [];
+
     return (
         <div className="px-2 pb-12">
             <div className='mb-4'>
@@ -11,10 +17,10 @@ function AdminDashboard() {
             </div>
 
             <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-                <StatCard icon={Calendar} label="Upcoming Events" value="24" trend="+12%" />
-                <StatCard icon={CalendarDays} label="Events This Month" value="08" trend="THIS MONTH" />
-                <StatCard icon={Mail} label="Unread Notifications" value="15" isUpdate={true} />
-                <StatCard icon={Users} label="Total Attendance" value="1.2k" trend="TOTAL" />
+                <StatCard icon={Calendar} label="Upcoming Events" value={String(stats?.upcoming_events ?? 0)} trend="Scheduled" />
+                <StatCard icon={CalendarDays} label="Approved Events" value={String(stats?.approved_events ?? 0)} trend="Published" />
+                <StatCard icon={Mail} label="Pending Approvals" value={String(stats?.pending_approval ?? 0)} isUpdate={true} />
+                <StatCard icon={Users} label="Total Events" value={String(stats?.total_events ?? 0)} trend="Registry" />
             </section>
 
             <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
@@ -43,23 +49,26 @@ function AdminDashboard() {
                                 </tr>
                             </thead>
                             <tbody className="text-sm">
-                                {[
-                                    { title: "Convocation Gala 2024", date: "Oct 24, 2023", venue: "Main Auditorium", status: "Completed", color: "green" },
-                                    { title: "Cybersecurity Symposium", date: "Nov 02, 2023", venue: "Tech Hub C4", status: "Scheduled", color: "blue" },
-                                    { title: "Alumni Networking Mixer", date: "Nov 15, 2023", venue: "Officers' Mess", status: "Pending", color: "amber" },
-                                ].map((event, i) => (
-                                    <tr key={i} className="group hover:bg-slate-50 transition-colors">
+                                {events.map((event) => (
+                                    <tr key={event.id} className="group hover:bg-slate-50 transition-colors">
                                         <td className="py-5 font-bold text-[#001e40]">{event.title}</td>
-                                        <td className="py-5 text-slate-500">{event.date}</td>
-                                        <td className="py-5 text-slate-500">{event.venue}</td>
+                                        <td className="py-5 text-slate-500">{formatDate(event.start_date)}</td>
+                                        <td className="py-5 text-slate-500">{event.venue?.name ?? "No venue"}</td>
                                         <td className="py-5">
-                                            <span className={`px-3 py-1 bg-${event.color}-100 text-${event.color}-700 rounded-full text-[10px] font-black uppercase`}>
+                                            <span className="rounded-full bg-slate-100 px-3 py-1 text-[10px] font-black uppercase text-slate-700">
                                                 {event.status}
                                             </span>
                                         </td>
                                         <td className="py-5 text-right"><MoreVertical size={16} className="inline cursor-pointer" /></td>
                                     </tr>
                                 ))}
+                                {events.length === 0 && (
+                                    <tr>
+                                        <td colSpan={5} className="py-10 text-center text-sm text-slate-500">
+                                            No events have been created yet.
+                                        </td>
+                                    </tr>
+                                )}
                             </tbody>
                         </table>
                     </div>

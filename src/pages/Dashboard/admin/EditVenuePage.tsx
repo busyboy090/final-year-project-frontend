@@ -38,7 +38,7 @@ export default function EditVenuePage() {
                 });
 
                 media.setThumbnailPreview(venue.thumbnail);
-                media.setGalleryPreviews(venue.images)
+                media.setGalleryPreviews(venue.images || []);
                 setIsLoading(false);
             } catch (err) {
                 toast.error("Venue not found");
@@ -58,7 +58,7 @@ export default function EditVenuePage() {
                 }
             });
 
-            values.features.forEach((fid) => formData.append("features[]", fid));
+            values.features.forEach((fid) => formData.append("features", fid));
             if (values.thumbnail?.[0]) formData.append("thumbnail", values.thumbnail[0]);
             media.galleryFiles.forEach((file) => formData.append("images", file));
 

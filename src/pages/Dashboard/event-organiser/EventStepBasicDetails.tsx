@@ -13,7 +13,7 @@ export default function EventStepBasicDetails({ register, control, errors, watch
   const handleClearImage = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    setValue('thumbnail', null); // Clears the file from react-hook-form state
+    setValue('thumbnail', null, { shouldValidate: true }); // Clears the file from react-hook-form state
   };
 
   return (

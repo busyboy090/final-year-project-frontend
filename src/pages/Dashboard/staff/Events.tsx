@@ -1,8 +1,2 @@
 
-function Events() {
-  return (
-    <div>Events</div>
-  )
-}
-
-export default Events
+export { default } from "@/pages/Dashboard/user/Events";

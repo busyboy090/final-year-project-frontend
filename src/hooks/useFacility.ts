@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiClient } from "@/apis/axios";
 
 export const useFacilities = () => {
@@ -16,3 +16,31 @@ export const useFacilities = () => {
         refetchIntervalInBackground: false
     });
 }
+
+export const useCreateFacility = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: async (payload: { name: string; description?: string }) => {
+            const response = await apiClient.post("/v1/facilities", payload);
+            return response.data;
+        },
+        onSuccess: () => {
+            void queryClient.invalidateQueries({ queryKey: ["facilities"] });
+        },
+    });
+};
+
+export const useUpdateFacility = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: async ({ id, payload }: { id: number; payload: { name?: string; description?: string } }) => {
+            const response = await apiClient.patch(`/v1/facilities/${id}`, payload);
+            return response.data;
+        },
+        onSuccess: () => {
+            void queryClient.invalidateQueries({ queryKey: ["facilities"] });
+        },
+    });
+};

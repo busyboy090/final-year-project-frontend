@@ -42,7 +42,10 @@ export default function EventStepVenueSchedule({ register, control, errors, getV
   const startTime = watch('startTime');
   const endTime = watch('endTime');
 
-  const selectedVenueDetails = venues.find((v: any) => v.id === selectedVenueId || v.value === selectedVenueId);
+  const selectedVenueDetails = venues.find((v: any) => {
+    const id = v.id ?? v.value;
+    return String(id) === String(selectedVenueId);
+  });
 
   const handleFilterChange = (key: keyof FilterProps, value: any) => {
     setFilters(prev => ({ ...prev, [key]: value }));
@@ -138,13 +141,14 @@ export default function EventStepVenueSchedule({ register, control, errors, getV
                   render={({ field }) => (
                     <>
                       {venues.map((venue: any) => {
-                        const id = venue.id || venue.value;
-                        const isSelected = field.value === id;
+                        const id = venue.id ?? venue.value;
+                        const venueId = String(id);
+                        const isSelected = String(field.value) === venueId;
 
                         return (
                           <div 
                             key={id}
-                            onClick={() => field.onChange(id)}
+                            onClick={() => field.onChange(venueId)}
                             className={`group relative bg-white rounded-xl overflow-hidden shadow-sm transition-all duration-300 border-2 cursor-pointer flex flex-col h-full ${
                               isSelected 
                                 ? 'border-[#7b5800] ring-4 ring-[#7b5800]/5 shadow-md' 
@@ -284,7 +288,8 @@ export default function EventStepVenueSchedule({ register, control, errors, getV
                     type="number" 
                     {...register('capacity', { // Standardized key assignment registration update
                       required: 'Attendance head count estimation is mandatory',
-                      min: { value: 5, message: 'Events require at least 5 expected attendees' }
+                      min: { value: 5, message: 'Events require at least 5 expected attendees' },
+                      validate: (value: string) => Number.isInteger(Number(value)) || 'Attendance must be a whole number'
                     })}
                     className={`bg-slate-50 py-6 border-b-2 focus-visible:ring-0 ${errors.capacity ? 'border-red-500' : ''}`} 
                     placeholder="e.g. 250" 

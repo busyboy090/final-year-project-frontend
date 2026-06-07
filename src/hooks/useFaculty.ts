@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiClient } from "@/apis/axios";
 
 export const useFaculties = () => {
@@ -11,3 +11,17 @@ export const useFaculties = () => {
       staleTime: 1000 * 60 * 60, // Data is fresh for 1 hour (academic data doesn't change often)
     });
   };
+
+export const useCreateFaculty = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (payload: { name: string; code: string }) => {
+      const response = await apiClient.post("/v1/faculties", payload);
+      return response.data;
+    },
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ["faculties"] });
+    },
+  });
+};

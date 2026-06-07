@@ -3,9 +3,16 @@ import AttendanceItem from '@/features/dashboard/components/AttendanceItem';
 import MilestoneItem from '@/features/dashboard/components/MilestoneItem';
 import RegisteredEvents from '@/features/dashboard/RegisteredEvents';
 import WelcomeBack from '@/components/ui/welcome-back';
+import { useMyEnrollments } from '@/hooks/useEvent';
+import { formatDate } from '@/utils/format';
 
 
 function StudentDashboard() {
+  const { data: enrollments = [] } = useMyEnrollments();
+  const nextEvent = enrollments
+    .map((item) => item.event)
+    .filter((event) => event && new Date(event.start_date) >= new Date())
+    .sort((a, b) => new Date(a!.start_date).getTime() - new Date(b!.start_date).getTime())[0];
 
   return (
     <div className="max-w-7xl mx-auto">
@@ -21,7 +28,7 @@ function StudentDashboard() {
           </div>
           <div>
             <p className="text-xs text-slate-500 font-medium">Next Check-in</p>
-            <p className="text-sm font-bold text-[#001e40]">In 2 Hours</p>
+            <p className="text-sm font-bold text-[#001e40]">{nextEvent ? formatDate(new Date(nextEvent.start_date)) : "No upcoming event"}</p>
           </div>
         </div>
       </div>
@@ -35,8 +42,8 @@ function StudentDashboard() {
             </div>
             <div className="relative z-10">
               <span className="inline-block bg-[#7b5800] text-white text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full mb-4">Priority Event</span>
-              <h3 className="text-3xl font-bold mb-2">Chancellor's Annual Symposium</h3>
-              <p className="text-white/70 max-w-md mb-6 leading-relaxed">Neural Ethics in Modern Research: Join distinguished speakers in the Grand Hall.</p>
+              <h3 className="text-3xl font-bold mb-2">{nextEvent?.title ?? "No upcoming registered event"}</h3>
+              <p className="text-white/70 max-w-md mb-6 leading-relaxed">{nextEvent?.description ?? "Browse approved events and register for sessions that match your academic interests."}</p>
               <div className="flex flex-wrap gap-6 text-sm font-medium">
                 <span className="flex items-center gap-2"><Calendar size={16} className="text-[#7b5800]" /> Oct 12, 2023</span>
                 <span className="flex items-center gap-2"><Clock size={16} className="text-[#7b5800]" /> 10:00 AM</span>

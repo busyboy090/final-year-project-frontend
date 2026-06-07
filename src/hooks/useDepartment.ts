@@ -1,5 +1,5 @@
 import { apiClient } from "@/apis/axios";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { DepartmentsParams, PaginatedDepartmentsResponse } from "@/types/department";
 
 export const useDepartments = (params: DepartmentsParams = {}) => {
@@ -23,3 +23,22 @@ export const useDepartments = (params: DepartmentsParams = {}) => {
       staleTime: 1000 * 60 * 60,
     });
   };
+
+export const useCreateDepartment = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (payload: {
+      name: string;
+      code: string;
+      type: string;
+      facultyId?: number;
+    }) => {
+      const response = await apiClient.post("/v1/departments", payload);
+      return response.data;
+    },
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ["departments"] });
+    },
+  });
+};

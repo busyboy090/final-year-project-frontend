@@ -26,7 +26,7 @@ export default function AddVenuePage() {
             formData.append("capacity", values.capacity.toString());
             formData.append("location", values.location);
             
-            values.features.forEach((id) => formData.append("features[]", id));
+            values.features.forEach((id) => formData.append("features", id));
 
             if (values.thumbnail?.[0]) {
                 formData.append("thumbnail", values.thumbnail[0]);

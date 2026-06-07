@@ -13,14 +13,15 @@ import {
 import WelcomeBack from '@/components/ui/welcome-back';
 import StatCard from '@/features/dashboard/components/StatCard';
 import { useVenues } from '@/hooks/useVenue';
+import { useEventStats, useGetEvents } from '@/hooks/useEvent';
+import { formatDate } from '@/utils/format';
+import useAuth from '@/hooks/useAuth';
 
 export default function CuratorDashboardMain() {
-  const recentEvents = [
-    { id: 1, name: "Inter-University Symposium 2024",  date: "Oct 24, 2024", status: "Published", dot: "bg-primary"    },
-    { id: 2, name: "Navy Leadership Seminar",           date: "Nov 02, 2024", status: "Draft",     dot: "bg-border"     },
-    { id: 3, name: "Graduation Gala Night",             date: "Sep 18, 2024", status: "Completed", dot: "bg-muted-foreground" },
-    { id: 4, name: "Engineering Tech Expo",             date: "Oct 30, 2024", status: "Published", dot: "bg-primary"    },
-  ];
+  const { user } = useAuth();
+  const { data: stats } = useEventStats();
+  const { data: recentEventsData } = useGetEvents({ limit: 4, created_by: user?.id });
+  const recentEvents = recentEventsData?.events ?? [];
 
   const deadlines = [
     { id: 1, day: "Today",  title: "Submit catering for Symposium",   detail: "Vendor: Royal Palate Ltd.",     active: true  },
@@ -40,9 +41,10 @@ export default function CuratorDashboardMain() {
 
   // shadcn-safe status badge styles
   const statusConfig: Record<string, string> = {
-    Published: 'bg-emerald-50  text-emerald-700 ring-1 ring-emerald-200',
-    Draft:     'bg-muted        text-muted-foreground ring-1 ring-border',
-    Completed: 'bg-primary/10  text-primary          ring-1 ring-primary/20',
+    approved: 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200',
+    pending: 'bg-amber-50 text-amber-700 ring-1 ring-amber-200',
+    rejected: 'bg-red-50 text-red-700 ring-1 ring-red-200',
+    cancelled: 'bg-muted text-muted-foreground ring-1 ring-border',
   };
 
   const { data: venues = [] } = useVenues({ limit: 3, status: "available" })
@@ -62,10 +64,10 @@ export default function CuratorDashboardMain() {
 
       {/* ── Stat Cards ── */}
       <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-        <StatCard icon={CalendarDays} label="Active Events"          value="24"    trend="+12%"     />
-        <StatCard icon={Users}        label="Upcoming Registrations" value="1,204" trend="840/1k"   />
-        <StatCard icon={Wallet}       label="Budget Utilization"     value="₦4.2M" trend="On Track" isUpdate={true} />
-        <StatCard icon={TrendingUp}   label="Attendance Rate"        value="92.4%" trend="89% Avg"  />
+        <StatCard icon={CalendarDays} label="Active Events" value={String(stats?.active_events ?? 0)} trend="Live now" />
+        <StatCard icon={Users} label="Upcoming Events" value={String(stats?.upcoming_events ?? 0)} trend="Scheduled" />
+        <StatCard icon={Wallet} label="Pending Approval" value={String(stats?.pending_approval ?? 0)} trend="Awaiting review" isUpdate={true} />
+        <StatCard icon={TrendingUp} label="Approved Events" value={String(stats?.approved_events ?? 0)} trend="Published" />
       </section>
 
       {/* ── Bento Grid ── */}
@@ -77,7 +79,7 @@ export default function CuratorDashboardMain() {
           <div className="flex justify-between items-center px-6 py-5 border-b border-border">
             <div>
               <h3 className="font-heading text-lg font-bold tracking-tight text-foreground">My Recent Events</h3>
-              <p className="text-xs text-muted-foreground font-medium mt-0.5">4 events · updated just now</p>
+              <p className="text-xs text-muted-foreground font-medium mt-0.5">{recentEvents.length} events · updated just now</p>
             </div>
             <button className="flex items-center gap-1 text-foreground font-bold text-xs hover:text-primary transition-colors group">
               View All
@@ -103,11 +105,11 @@ export default function CuratorDashboardMain() {
                   >
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
-                        <span className={`w-2.5 h-2.5 rounded-full shrink-0 ${event.dot}`} />
-                        <span className="font-semibold text-sm text-foreground leading-snug">{event.name}</span>
+                        <span className={`w-2.5 h-2.5 rounded-full shrink-0 ${event.status === "approved" ? "bg-primary" : "bg-border"}`} />
+                        <span className="font-semibold text-sm text-foreground leading-snug">{event.title}</span>
                       </div>
                     </td>
-                    <td className="px-4 py-4 text-sm text-muted-foreground whitespace-nowrap">{event.date}</td>
+                    <td className="px-4 py-4 text-sm text-muted-foreground whitespace-nowrap">{formatDate(event.start_date)}</td>
                     <td className="px-4 py-4">
                       <span className={`px-2.5 py-1 text-[10px] font-bold rounded-full uppercase tracking-wider ${statusConfig[event.status] ?? ''}`}>
                         {event.status}
@@ -125,6 +127,13 @@ export default function CuratorDashboardMain() {
                     </td>
                   </tr>
                 ))}
+                {recentEvents.length === 0 && (
+                  <tr>
+                    <td colSpan={4} className="px-6 py-10 text-center text-sm text-muted-foreground">
+                      No events have been created yet.
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>

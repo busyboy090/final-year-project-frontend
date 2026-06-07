@@ -20,14 +20,14 @@ function GuestRoutes() {
   return (
     <Routes>
       <Route element={<Guest />}>
-        <Route path="/set-password" element={<SetPasswordPage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/verify-mfa" element={<MfaPage />} />
-        <Route path="/verify-email" element={<VerifyEmailPage />} />
-        <Route path="/signup" element={<SignupPage />} />
-        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-        <Route path="/email-verification" element={<EmailVerificationPage />} />
-        <Route path="/reset-password" element={<ResetPasswordPage />} />
+        <Route path="set-password" element={<SetPasswordPage />} />
+        <Route path="login" element={<LoginPage />} />
+        <Route path="verify-mfa" element={<MfaPage />} />
+        <Route path="verify-email" element={<VerifyEmailPage />} />
+        <Route path="signup" element={<SignupPage />} />
+        <Route path="forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="email-verification" element={<EmailVerificationPage />} />
+        <Route path="reset-password" element={<ResetPasswordPage />} />
       </Route>
 
       <Route path="*" element={<PageNotFound />} />
