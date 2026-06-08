@@ -3,7 +3,7 @@ import { apiClient } from "@/apis/axios";
 import type { EventFilters, PaginatedEventsResponse } from "@/types/event";
 
 export const useGetEvents = (params: EventFilters = {}) => {
-    const { limit = 20, page = 1, search, status, category, organisation_id, venue_id, creator_by, start_date, end_date, start_time, end_time } = params;
+    const { limit = 20, page = 1, search, status, category, organisation_id, venue_id, created_by, start_date, end_date, start_time, end_time } = params;
     return useQuery({
         queryKey: ["events", params],
         queryFn: async () => {
@@ -16,7 +16,7 @@ export const useGetEvents = (params: EventFilters = {}) => {
                     category,
                     organisation_id,
                     venue_id,
-                    creator_by,
+                    created_by,
                     start_date,
                     end_date,
                     start_time,

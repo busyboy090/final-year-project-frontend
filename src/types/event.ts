@@ -23,7 +23,8 @@ export interface Event {
     status: EventStatus;
     created_at: Date;
     updated_at: Date;
-    created_by: User;
+    creator: User;
+    created_by: number;
 }
 
 export interface EventFormValues {
@@ -53,6 +54,7 @@ export interface EventFilters {
     status?: EventStatus;
     category?: EventCategory;
     organisation_id?: number;
+    created_by?: number;
     venue_id?: number;
     creator_by?: number;
     start_date?: Date;

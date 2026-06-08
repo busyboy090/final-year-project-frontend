@@ -6,7 +6,7 @@ import CheckUserRole from '@/middlewares/CheckUserRole';
 // Pages
 import Dashboard from '@/pages/Dashboard/admin/Dashboard';
 import Venues from '@/pages/Dashboard/admin/Venues';
-import Events from '@/pages/Dashboard/admin/Events';
+import Events from '@/pages/Dashboard/Events';
 import Reports from '@/pages/Dashboard/admin/Reports';
 import Profile from '@/pages/Dashboard/admin/Profile';
 import Attendance from '@/pages/Dashboard/admin/Attendance';

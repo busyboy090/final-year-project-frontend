@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import {
   Download,
   Calendar,
@@ -9,8 +10,10 @@ import {
   AlertCircle,
   Search
 } from 'lucide-react';
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from '@/components/ui/label';
 import {
   Select,
   SelectContent,
@@ -18,13 +21,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+
 import EventsTable from '@/features/dashboard/admin/EventsTable';
 import StatCard from '@/features/dashboard/components/StatCard';
 import { useGetEvents } from '@/hooks/useEvent';
-import { useOrganisations } from '@/hooks/useOrganisation';
-import { useSearchParams } from 'react-router-dom';
+import useAuth from '@/hooks/useAuth';
+import { cn } from '@/lib/utils';
 import type { EventCategory, EventStatus } from '@/types/event';
-import { Label } from '@/components/ui/label';
 
 const parseSearchDate = (dateString: string | null): Date | undefined => {
   if (!dateString) return undefined;
@@ -32,19 +35,20 @@ const parseSearchDate = (dateString: string | null): Date | undefined => {
   return isNaN(parsedDate.getTime()) ? undefined : parsedDate;
 };
 
-function Events() {
+function MyEvents() {
+  const { user } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const { data: orgData } = useOrganisations();
-
-  const organisations = orgData?.data ?? [];
+  const userRole = user?.role?.toLowerCase();
+  const isStudent = userRole === "student";
+  const isStaff = userRole === "staff";
+  const isPrivilegedUser = userRole === "super-admin" || userRole === "event-organiser";
 
   // Read URL Params to state
   const limit = Number(searchParams.get('limit')) || 20;
   const page = Number(searchParams.get('page')) || 1;
   const search = searchParams.get('search') ?? '';
   const status = searchParams.get('status') ?? 'all';
-  const organisation_id = searchParams.get('organisation_id') ?? 'all';
   const category = searchParams.get('category') ?? 'all';
 
   const [localSearch, setLocalSearch] = useState(search);
@@ -82,16 +86,18 @@ function Events() {
   const { data, isLoading, isError } = useGetEvents({
     limit,
     page,
+    // Fix: Users can search matching names; fallback fallback condition sets API query safety
     search: search || undefined,
-    status: status !== 'all' ? (status as EventStatus) : undefined,
-    organisation_id: organisation_id !== 'all' ? Number(organisation_id) : undefined,
+    // Safe enforcement configuration if API restricts view for standard students/staff
+    status: isStaff || isStudent ? 'approved' : (status !== 'all' ? (status as EventStatus) : undefined),
     category: category !== 'all' ? (category as EventCategory) : undefined,
     venue_id,
     creator_by,
     start_date,
     end_date,
     start_time,
-    end_time
+    end_time,
+    created_by: user?.id
   });
 
   const events = data?.events ?? [];
@@ -119,7 +125,7 @@ function Events() {
             Centralized Oversight
           </span>
           <h1 className="text-4xl font-extrabold tracking-tighter text-[#001e40]">
-            Global Event Management
+            My Event Management
           </h1>
         </div>
         <div className="flex items-center self-end gap-3">
@@ -129,16 +135,21 @@ function Events() {
         </div>
       </div>
 
-      {/* Metrics Grid */}
-      <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <StatCard icon={Calendar} label="Upcoming Events" value="24" trend="+12%" />
-        <StatCard icon={CalendarCheck} label="Events This Month" value="08" trend="Active" />
-        <StatCard icon={Bell} label="Pending Approvals" value="15" isUpdate={true} />
-        <StatCard icon={Users} label="Total Registrations" value="1.2k" trend="Total" />
-      </section>
+      {/* Metrics Grid — Fixed Parentheses Logic Wrapper */}
+      {isPrivilegedUser && (
+        <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <StatCard icon={Calendar} label="Upcoming Events" value="24" trend="+12%" />
+          <StatCard icon={CalendarCheck} label="Events This Month" value="08" trend="Active" />
+          <StatCard icon={Bell} label="Pending Approvals" value="15" isUpdate={true} />
+          <StatCard icon={Users} label="Total Registrations" value="1.2k" trend="Total" />
+        </section>
+      )}
 
       {/* Inline Filters Form Section */}
-      <div className="bg-slate-100/60 p-5 rounded-xl border border-slate-200/60 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 animate-in slide-in-from-top-4 duration-300 items-center">
+      <div className={cn(
+        "bg-slate-100/60 p-5 rounded-xl border border-slate-200/60 grid grid-cols-1 sm:grid-cols-2 gap-4 animate-in slide-in-from-top-4 duration-300 items-center",
+        isStudent || isStaff ? "lg:grid-cols-3" : "lg:grid-cols-4"
+      )}>
 
         {/* Search Term Filter */}
         <div className="flex flex-col gap-1.5">
@@ -156,42 +167,24 @@ function Events() {
           </div>
         </div>
 
-        {/* Organization Filter */}
-        <div className="flex flex-col gap-1.5">
-          <Label className="text-[11px] font-extrabold uppercase tracking-wider px-0.5">
-            Organisation
-          </Label>
-          <Select value={String(organisation_id)} onValueChange={(val) => updateParam('organisation_id', val)}>
-            <SelectTrigger className="bg-white w-full h-10!">
-              <SelectValue placeholder="All Organisations" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Organisations</SelectItem>
-              {Array.isArray(organisations) && organisations.map((org: any) => (
-                <SelectItem key={org.id} value={String(org.id)}>{org.name}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-
         {/* Status Filter */}
-        <div className="flex flex-col gap-1.5">
-          <Label className="text-[11px] font-extrabold uppercase tracking-wider px-0.5">
-            Event Status
-          </Label>
-          <Select value={status} onValueChange={(val) => updateParam('status', val)}>
-            <SelectTrigger className="bg-white w-full h-10!">
-              <SelectValue placeholder="All Status" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Status</SelectItem>
-              <SelectItem value="pending">Pending</SelectItem>
-              <SelectItem value="approved">Approved</SelectItem>
-              <SelectItem value="rejected">Rejected</SelectItem>
-              <SelectItem value="cancelled">Cancelled</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
+          <div className="flex flex-col gap-1.5">
+            <Label className="text-[11px] font-extrabold uppercase tracking-wider px-0.5">
+              Event Status
+            </Label>
+            <Select value={status} onValueChange={(val) => updateParam('status', val)}>
+              <SelectTrigger className="bg-white w-full h-10">
+                <SelectValue placeholder="All Status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Status</SelectItem>
+                <SelectItem value="pending">Pending</SelectItem>
+                <SelectItem value="approved">Approved</SelectItem>
+                <SelectItem value="rejected">Rejected</SelectItem>
+                <SelectItem value="cancelled">Cancelled</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
 
         {/* Category Filter */}
         <div className="flex flex-col gap-1.5">
@@ -199,8 +192,8 @@ function Events() {
             Category
           </Label>
           <Select value={category} onValueChange={(val) => updateParam('category', val)}>
-            <SelectTrigger className="bg-white w-full h-10!">
-                <SelectValue placeholder="All Categories" />
+            <SelectTrigger className="bg-white w-full h-10">
+              <SelectValue placeholder="All Categories" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Categories</SelectItem>
@@ -246,4 +239,4 @@ function Events() {
   );
 }
 
-export default Events;
+export default MyEvents;

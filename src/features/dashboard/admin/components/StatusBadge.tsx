@@ -28,8 +28,11 @@ const GLOBAL_STATUS_MAP: Record<string, StatusConfig> = {
   
   // User/General Statuses
   active: { className: "bg-green-50 text-green-700 border-green-200/60" },    // Success state
-  inactive: { className: "bg-zinc-100 text-zinc-500 border-zinc-200" },       // Neutral/Disabled state
+  inactive: { className: "bg-red-100 text-red-700 border-red-200/60" },       // Neutral/Disabled state
   pending: { className: "bg-amber-50 text-amber-800 border-amber-200/60" },   // Warning/Pending state
+
+  approved: { className: "bg-green-50 text-green-700 border-green-200/60" },
+  rejected: { className: "bg-red-100 text-red-700 border-red-200/60" }
 };
 
 export function StatusBadge({ status, configOverride }: StatusBadgeProps) {
