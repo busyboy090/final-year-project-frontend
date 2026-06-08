@@ -14,7 +14,7 @@ export default function EditVenuePage() {
     const { id } = useParams();
     const navigate = useNavigate();
     const { refetch: refetchVenues } = useVenues();
-    const { data: facilities } = useFacilities();
+    const { data: facilities } = useFacilities({});
 
     const [isLoading, setIsLoading] = useState(true);
     const [isSubmitting, setIsSubmitting] = useState(false);

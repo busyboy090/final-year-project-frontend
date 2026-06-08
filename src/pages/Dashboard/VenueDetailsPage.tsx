@@ -10,7 +10,7 @@ import { useFacilities } from "@/hooks/useFacility";
 export default function VenueViewPage() {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
-    const { data: facilities } = useFacilities()
+    const { data: facilities } = useFacilities({})
 
     const [initialData, setInitialData] = useState<Partial<VenueFormValues> | undefined>(undefined);
     const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(null);

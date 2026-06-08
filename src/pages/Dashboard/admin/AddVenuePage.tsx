@@ -12,7 +12,7 @@ import { ArrowLeft } from "lucide-react";
 export default function AddVenuePage() {
     const navigate = useNavigate();
     const { refetch: refetchVenues } = useVenues();
-    const { data: facilities } = useFacilities();
+    const { data: facilities } = useFacilities({});
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const media = useVenueMedia();
