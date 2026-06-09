@@ -187,16 +187,6 @@ export default function Facilities() {
       {/* ── Page Header ── */}
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 pb-2">
         <div className="flex items-start gap-4">
-          <div
-            className="flex items-center justify-center rounded-xl shrink-0"
-            style={{
-              width: 52,
-              height: 52,
-              background: "linear-gradient(135deg, #001e40 0%, #002d5e 100%)",
-            }}
-          >
-            <Building2 className="text-[#c9a227]" size={26} strokeWidth={1.5} />
-          </div>
           <div>
             <p
               className="text-[10px] font-bold uppercase tracking-[0.25em] mb-1"

@@ -1,57 +1,72 @@
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route } from "react-router-dom";
 
 // Middlewares
-import Protected from '@/middlewares/Protected';
-import CheckUserRole from '@/middlewares/CheckUserRole';
+import Protected from "@/middlewares/Protected";
+import CheckUserRole from "@/middlewares/CheckUserRole";
 
 // Layouts & Providers
-import UserLayout from '@/layouts/UserLayout';
-import DashboardLayout from '@/layouts/DashboardLayout';
-import DashboardProvider from '@/contexts/DashboardProvider';
+import UserLayout from "@/layouts/UserLayout";
+import DashboardLayout from "@/layouts/DashboardLayout";
+import DashboardProvider from "@/contexts/DashboardProvider";
 
 // Shared Pages
-import PageNotFound from '@/components/PageNotFound';
+import PageNotFound from "@/components/PageNotFound";
 
 // Admin Pages
-import AdminDashboard from '@/pages/Dashboard/admin/Dashboard';
-import AdminEvents from '@/pages/Dashboard/admin/Events';
-import AdminReports from '@/pages/Dashboard/admin/Reports';
-import Faculties from '@/pages/Dashboard/admin/Faculties';
-import Departments from '@/pages/Dashboard/admin/Departments';
-import UserManagement from '@/pages/Dashboard/admin/UserManagementPage';
+import AdminDashboard from "@/pages/Dashboard/admin/Dashboard";
+import AdminEvents from "@/pages/Dashboard/admin/Events";
+import AdminReports from "@/pages/Dashboard/admin/Reports";
+import Faculties from "@/pages/Dashboard/admin/Faculties";
+import Departments from "@/pages/Dashboard/admin/Departments";
+import UserManagement from "@/pages/Dashboard/admin/UserManagementPage";
+import Venues from '@/pages/Dashboard/admin/Venues';
+import AddVenuePage from '@/pages/Dashboard/admin/AddVenuePage';
+import EditVenuePage from '@/pages/Dashboard/admin/EditVenuePage';
+import VenueDetailsPage from '@/pages/Dashboard/VenueDetailsPage';
+import Facilities from "@/pages/Dashboard/admin/Facilities";
 
 // Event Organiser Pages
-import EventOrganiserDashboard from '@/pages/Dashboard/event-organiser/Dashboard';
-import EventOrganiserProfile from '@/pages/Dashboard/event-organiser/Profile';
-import EventCreationPage from '@/pages/Dashboard/event-organiser/EventCreationPage';
+import EventOrganiserDashboard from "@/pages/Dashboard/event-organiser/Dashboard";
+import EventOrganiserProfile from "@/pages/Dashboard/event-organiser/Profile";
+import EventCreationPage from "@/pages/Dashboard/event-organiser/EventCreationPage";
 
 // Staff Pages
-import StaffDashboard from '@/pages/Dashboard/user/Dashboard';
-import StaffProfile from '@/pages/Dashboard/user/StaffProfileSettings';
-import StaffSettings from '@/pages/Dashboard/staff/Settings';
+import StaffDashboard from "@/pages/Dashboard/user/Dashboard";
+import StaffProfile from "@/pages/Dashboard/user/StaffProfileSettings";
+import StaffSettings from "@/pages/Dashboard/staff/Settings";
 
 // Student Pages
-import StudentDashboard from '@/pages/Dashboard/user/Dashboard';
-import StudentProfile from '@/pages/Dashboard/student/Profile';
-import StudentSettings from '@/pages/Dashboard/student/Settings';
+import StudentDashboard from "@/pages/Dashboard/user/Dashboard";
+import StudentProfile from "@/pages/Dashboard/student/Profile";
+import StudentSettings from "@/pages/Dashboard/student/Settings";
 
 // Shared User Pages
-import UserEvents from '@/pages/Dashboard/user/Events';
+import UserEvents from "@/pages/Dashboard/user/Events";
 
 function DashboardRoutes() {
   return (
     <Routes>
       <Route element={<Protected />}>
         <Route element={<UserLayout />}>
-          <Route element={<DashboardProvider><DashboardLayout /></DashboardProvider>}>
-
+          <Route
+            element={
+              <DashboardProvider>
+                <DashboardLayout />
+              </DashboardProvider>
+            }
+          >
             {/* ── Admin ── */}
-            <Route element={<CheckUserRole role={['admin']} />}>
+            <Route element={<CheckUserRole role={["admin"]} />}>
               <Route path="admin" element={<AdminDashboard />} />
               <Route path="admin/events" element={<AdminEvents />} />
-              <Route path="admin/events/create" element={<EventCreationPage />} />
+              <Route path="admin/venues" element={<Venues />} />
+              <Route path="admin/venues/add" element={<AddVenuePage />} />
+              <Route path="admin/venues/edit/:id" element={<EditVenuePage />} />
+              <Route path="admin/venues/:id" element={<VenueDetailsPage />} />
+              <Route path="admin/events/create" element={<EventCreationPage />}/>
               <Route path="admin/reports" element={<AdminReports />} />
               <Route path="admin/faculties" element={<Faculties />} />
+              <Route path="admin/facilities" element={<Facilities />} />
               <Route path="admin/departments" element={<Departments />} />
               <Route path="admin/users" element={<UserManagement />} />
               <Route path="admin/calendar" element={<AdminEvents />} />
@@ -59,19 +74,40 @@ function DashboardRoutes() {
             </Route>
 
             {/* ── Event Organiser ── */}
-            <Route element={<CheckUserRole role={['event-organiser']} />}>
-              <Route path="event-organiser" element={<EventOrganiserDashboard />} />
-              <Route path="event-organiser/profile" element={<EventOrganiserProfile />} />
-              <Route path="event-organiser/my-events" element={<AdminEvents />} />
+            <Route element={<CheckUserRole role={["event-organiser"]} />}>
+              <Route
+                path="event-organiser"
+                element={<EventOrganiserDashboard />}
+              />
+              <Route
+                path="event-organiser/profile"
+                element={<EventOrganiserProfile />}
+              />
+              <Route
+                path="event-organiser/my-events"
+                element={<AdminEvents />}
+              />
               <Route path="event-organiser/events" element={<AdminEvents />} />
-              <Route path="event-organiser/events/create" element={<EventCreationPage />} />
-              <Route path="event-organiser/calendar" element={<AdminEvents />} />
-              <Route path="event-organiser/analytics" element={<AdminReports />} />
-              <Route path="event-organiser/settings" element={<EventOrganiserProfile />} />
+              <Route
+                path="event-organiser/events/create"
+                element={<EventCreationPage />}
+              />
+              <Route
+                path="event-organiser/calendar"
+                element={<AdminEvents />}
+              />
+              <Route
+                path="event-organiser/analytics"
+                element={<AdminReports />}
+              />
+              <Route
+                path="event-organiser/settings"
+                element={<EventOrganiserProfile />}
+              />
             </Route>
 
             {/* ── Staff ── */}
-            <Route element={<CheckUserRole role={['staff']} />}>
+            <Route element={<CheckUserRole role={["staff"]} />}>
               <Route path="staff" element={<StaffDashboard />} />
               <Route path="staff/profile" element={<StaffProfile />} />
               <Route path="staff/events" element={<UserEvents />} />
@@ -81,7 +117,7 @@ function DashboardRoutes() {
             </Route>
 
             {/* ── Student ── */}
-            <Route element={<CheckUserRole role={['student']} />}>
+            <Route element={<CheckUserRole role={["student"]} />}>
               <Route path="student" element={<StudentDashboard />} />
               <Route path="student/profile" element={<StudentProfile />} />
               <Route path="student/events" element={<UserEvents />} />
@@ -89,7 +125,6 @@ function DashboardRoutes() {
               <Route path="student/analytics" element={<StudentDashboard />} />
               <Route path="student/settings" element={<StudentSettings />} />
             </Route>
-
           </Route>
         </Route>
 
