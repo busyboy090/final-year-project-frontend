@@ -77,6 +77,11 @@ function EventTableRow({ event, index }: EventTableRowProps) {
                 </div>
             </TableCell>
 
+            {/* Category */}
+            <TableCell className="text-sm text-slate-600 text-center">
+                <span className="line-clamp-1">{event.category}</span>
+            </TableCell>
+
             {/* Venue */}
             <TableCell className="text-sm text-slate-600">
                 <span className="line-clamp-1">{event.venue?.name ?? "N/A"}</span>

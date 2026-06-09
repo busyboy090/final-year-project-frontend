@@ -32,7 +32,7 @@ interface VenueFormProps {
     galleryPreviews: string[];
     handleGalleryChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     removeGalleryImage: (index: number) => void;
-    mode: "add" | "edit" | "view"; // Added 'view'
+    mode: "add" | "edit" | "view";
 }
 
 export function VenueForm({
@@ -49,7 +49,7 @@ export function VenueForm({
 }: VenueFormProps) {
     const isViewOnly = mode === "view";
 
-    const { register, handleSubmit, control, reset, watch, setValue, formState: { errors } } = useForm<VenueFormValues>({
+    const { register, handleSubmit, control, reset, watch, setValue, formState: { errors, isValid } } = useForm<VenueFormValues>({
         defaultValues: {
             name: "",
             type: "hall",
@@ -57,7 +57,8 @@ export function VenueForm({
             location: "",
             status: "available",
             features: [],
-        }
+        },
+        mode: "onChange"
     });
 
     useEffect(() => {
@@ -69,7 +70,7 @@ export function VenueForm({
     useEffect(() => {
         if (!isViewOnly) {
             register("features", {
-                validate: (value) => (value?.length ?? 0) > 0 || "Select at least one facility",
+                validate: (value) => (value?.length ?? 0) > 0 || "At least one venue feature is required",
             });
         }
     }, [isViewOnly, register]);
@@ -116,9 +117,16 @@ export function VenueForm({
                             ) : (
                                 <InputGroup className={errors.name ? 'border-destructive' : ''}>
                                     <InputGroupAddon><Building2 className="h-4 w-4" /></InputGroupAddon>
-                                    <InputGroupInput placeholder="Admiral Dele Ezeoba Hall" {...register("name", { required: "Required" })} />
+                                    <InputGroupInput
+                                        placeholder="Admiral Dele Ezeoba Hall"
+                                        {...register("name", {
+                                            required: "Venue name is required",
+                                            minLength: { value: 3, message: "Venue name must be at least 3 characters long" },
+                                        })}
+                                    />
                                 </InputGroup>
                             )}
+                            {errors.name && <p className="text-xs text-red-500 font-medium">{errors.name.message}</p>}
                         </div>
 
                         <div className={cn("grid grid-cols-1 gap-6", mode !== "add" ? "md:grid-cols-3" : "md:grid-cols-2")}>
@@ -130,7 +138,9 @@ export function VenueForm({
                                 ) : (
                                     <Controller name="type" control={control} render={({ field }) => (
                                         <Select onValueChange={field.onChange} value={field.value}>
-                                            <SelectTrigger className="h-10! w-full"><SelectValue /></SelectTrigger>
+                                            <SelectTrigger className={cn("h-10! w-full", errors.type && "border-destructive")}>
+                                                <SelectValue />
+                                            </SelectTrigger>
                                             <SelectContent>
                                                 <SelectItem value="hall">Hall</SelectItem>
                                                 <SelectItem value="auditorium">Auditorium</SelectItem>
@@ -141,6 +151,7 @@ export function VenueForm({
                                         </Select>
                                     )} />
                                 )}
+                                {errors.type && <p className="text-xs text-red-500 font-medium">{errors.type.message}</p>}
                             </div>
 
                             {/* Capacity */}
@@ -149,13 +160,15 @@ export function VenueForm({
                                 {isViewOnly ? (
                                     <p className="text-sm font-semibold text-slate-700 h-11 flex items-center px-4 bg-slate-50 rounded-lg border">{watch("capacity")} Guests</p>
                                 ) : (
-                                    <InputGroup>
-                                        <InputGroupAddon><Users className="h-4 w-full" /></InputGroupAddon>
+                                    <InputGroup className={errors.capacity ? 'border-destructive' : ''}>
+                                        <InputGroupAddon><Users className="h-4 w-4" /></InputGroupAddon>
                                         <InputGroupInput
                                             type="number"
                                             {...register("capacity", {
                                                 required: "Capacity is required",
                                                 min: { value: 0, message: "Capacity cannot be negative" },
+                                                validate: (value) =>
+                                                    Number.isInteger(Number(value)) || "Capacity must be a whole number",
                                             })}
                                         />
                                     </InputGroup>
@@ -163,7 +176,7 @@ export function VenueForm({
                                 {errors.capacity && <p className="text-xs text-red-500 font-medium">{errors.capacity.message}</p>}
                             </div>
 
-                            {/* Status - Shown in Edit and View */}
+                            {/* Status — shown in Edit and View only */}
                             {mode !== "add" && (
                                 <div className="space-y-2">
                                     <Label className="text-[10px] font-bold uppercase tracking-widest text-[#001e40]">Status</Label>
@@ -172,7 +185,9 @@ export function VenueForm({
                                     ) : (
                                         <Controller name="status" control={control} render={({ field }) => (
                                             <Select onValueChange={field.onChange} value={field.value}>
-                                                <SelectTrigger className="h-11 w-full"><SelectValue /></SelectTrigger>
+                                                <SelectTrigger className={cn("h-11 w-full", errors.status && "border-destructive")}>
+                                                    <SelectValue />
+                                                </SelectTrigger>
                                                 <SelectContent>
                                                     <SelectItem value="available">Available</SelectItem>
                                                     <SelectItem value="maintenance">Maintenance</SelectItem>
@@ -181,6 +196,7 @@ export function VenueForm({
                                             </Select>
                                         )} />
                                     )}
+                                    {errors.status && <p className="text-xs text-red-500 font-medium">{errors.status.message}</p>}
                                 </div>
                             )}
                         </div>
@@ -191,11 +207,17 @@ export function VenueForm({
                             {isViewOnly ? (
                                 <p className="text-sm font-semibold text-slate-700 h-11 flex items-center px-4 bg-slate-50 rounded-lg border">{watch("location")}</p>
                             ) : (
-                                <InputGroup>
+                                <InputGroup className={errors.location ? 'border-destructive' : ''}>
                                     <InputGroupAddon><MapPin className="h-4 w-4" /></InputGroupAddon>
-                                    <InputGroupInput {...register("location", { required: true })} />
+                                    <InputGroupInput
+                                        {...register("location", {
+                                            required: "Location description is required",
+                                            minLength: { value: 5, message: "Please provide a more detailed location description" },
+                                        })}
+                                    />
                                 </InputGroup>
                             )}
+                            {errors.location && <p className="text-xs text-red-500 font-medium">{errors.location.message}</p>}
                         </div>
 
                         {/* Facilities */}
@@ -204,18 +226,21 @@ export function VenueForm({
                             <div className="flex flex-wrap gap-2">
                                 {facilities?.map((f) => {
                                     const isSelected = selectedFeatures.includes(f.id.toString());
-                                    // In view mode, we only show selected features, or show them all but styled differently
                                     if (isViewOnly && !isSelected) return null;
 
                                     return (
-                                        <button 
-                                            key={f.id} 
-                                            type="button" 
+                                        <button
+                                            key={f.id}
+                                            type="button"
                                             onClick={() => toggleFeature(f.id.toString())}
                                             disabled={isViewOnly}
-                                            className={cn("flex items-center gap-2 px-4 py-2 rounded-full border text-[11px] font-bold transition-all",
-                                                isSelected ? "bg-[#001e40] text-white border-[#001e40]" : "bg-slate-50 text-slate-600 border-slate-200",
-                                                isViewOnly && "cursor-default")}
+                                            className={cn(
+                                                "flex items-center gap-2 px-4 py-2 rounded-full border text-[11px] font-bold transition-all",
+                                                isSelected
+                                                    ? "bg-[#001e40] text-white border-[#001e40]"
+                                                    : "bg-slate-50 text-slate-600 border-slate-200",
+                                                isViewOnly && "cursor-default"
+                                            )}
                                         >
                                             {isSelected ? <Check className="h-3 w-3" /> : <Plus className="h-3 w-3" />}
                                             {f.name}
@@ -229,8 +254,15 @@ export function VenueForm({
                 </div>
 
                 {!isViewOnly && (
-                    <Button type="submit" className="w-full bg-[#001e40] py-7 font-bold uppercase tracking-widest shadow-lg" disabled={isSubmitting}>
-                        {isSubmitting ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : mode === "add" ? "Register Venue" : "Save Changes"}
+                    <Button
+                        type="submit"
+                        className="w-full bg-[#001e40] py-7 font-bold uppercase tracking-widest shadow-lg"
+                        disabled={isSubmitting || !isValid}
+                    >
+                        {isSubmitting
+                            ? <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                            : mode === "add" ? "Register Venue" : "Save Changes"
+                        }
                     </Button>
                 )}
             </div>
@@ -239,14 +271,22 @@ export function VenueForm({
                 {/* Cover Image */}
                 <div className="bg-white rounded-2xl border shadow-sm p-6">
                     <Label className="text-[10px] font-bold uppercase tracking-widest mb-4 block text-[#001e40]">Cover Image</Label>
-                    <div className={cn("relative border-2 border-dashed rounded-xl h-52 flex items-center justify-center overflow-hidden", isViewOnly && "border-solid bg-slate-50")}>
+                    <div className={cn(
+                        "relative border-2 border-dashed rounded-xl h-52 flex items-center justify-center overflow-hidden",
+                        isViewOnly && "border-solid bg-slate-50"
+                    )}>
                         {thumbnailPreview ? (
                             <img src={thumbnailPreview} className="w-full h-full object-cover" alt="Cover" />
                         ) : (
                             <ImageIcon className="h-10 w-10 text-slate-300" />
                         )}
                         {!isViewOnly && (
-                            <input type="file" accept="image/*" className="absolute inset-0 opacity-0 cursor-pointer" {...register("thumbnail")} />
+                            <input
+                                type="file"
+                                accept="image/*"
+                                className="absolute inset-0 opacity-0 cursor-pointer"
+                                {...register("thumbnail")}
+                            />
                         )}
                     </div>
                 </div>
@@ -256,7 +296,13 @@ export function VenueForm({
                     <Label className="text-[10px] font-bold uppercase tracking-widest text-[#001e40] mb-4 block">Gallery</Label>
                     {!isViewOnly && (
                         <div className="relative border-2 border-dashed rounded-xl p-6 text-center hover:bg-slate-50 cursor-pointer mb-4">
-                            <input type="file" multiple accept="image/*" className="absolute inset-0 opacity-0 cursor-pointer" onChange={handleGalleryChange} />
+                            <input
+                                type="file"
+                                multiple
+                                accept="image/*"
+                                className="absolute inset-0 opacity-0 cursor-pointer"
+                                onChange={handleGalleryChange}
+                            />
                             <Plus className="mx-auto h-6 w-6 text-slate-400" />
                             <p className="text-xs text-slate-500 mt-2 font-medium">Add Photos</p>
                         </div>
@@ -266,9 +312,9 @@ export function VenueForm({
                             <div key={i} className="aspect-square rounded-lg overflow-hidden border relative group">
                                 <img src={url} className="w-full h-full object-cover" alt={`Gallery ${i}`} />
                                 {!isViewOnly && (
-                                    <button 
-                                        type="button" 
-                                        onClick={() => removeGalleryImage(i)} 
+                                    <button
+                                        type="button"
+                                        onClick={() => removeGalleryImage(i)}
                                         className="absolute top-1 right-1 bg-red-500 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
                                     >
                                         <X className="h-3 w-3" />

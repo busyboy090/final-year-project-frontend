@@ -2,56 +2,102 @@ import { Routes, Route } from 'react-router-dom';
 
 // Middlewares
 import Protected from '@/middlewares/Protected';
-
-// Pages 
-import EventCreationPage from '@/pages/Dashboard/event-organiser/EventCreationPage';
-
-// Components
-import PageNotFound from '@/components/PageNotFound';
-
-// Routes
-import AdminDashboardRoutes from './AdminDashboardRoutes';
-import StudentDashboardRoutes from './StudentDashboardRoutes';
-import EventOrganiserDashboardRoutes from './EventOrganiserDashboardRoutes';
-import StaffDashboardRoutes from './StaffDashboardRoutes';
-
-// Provider
-import DashboardProvider from '@/contexts/DashboardProvider';
-import UserLayout from '@/layouts/UserLayout';
 import CheckUserRole from '@/middlewares/CheckUserRole';
 
-// Layout
+// Layouts & Providers
+import UserLayout from '@/layouts/UserLayout';
 import DashboardLayout from '@/layouts/DashboardLayout';
+import DashboardProvider from '@/contexts/DashboardProvider';
+
+// Shared Pages
+import PageNotFound from '@/components/PageNotFound';
+
+// Admin Pages
+import AdminDashboard from '@/pages/Dashboard/admin/Dashboard';
+import AdminEvents from '@/pages/Dashboard/admin/Events';
+import AdminReports from '@/pages/Dashboard/admin/Reports';
+import Faculties from '@/pages/Dashboard/admin/Faculties';
+import Departments from '@/pages/Dashboard/admin/Departments';
+import UserManagement from '@/pages/Dashboard/admin/UserManagementPage';
+
+// Event Organiser Pages
+import EventOrganiserDashboard from '@/pages/Dashboard/event-organiser/Dashboard';
+import EventOrganiserProfile from '@/pages/Dashboard/event-organiser/Profile';
+import EventCreationPage from '@/pages/Dashboard/event-organiser/EventCreationPage';
+
+// Staff Pages
+import StaffDashboard from '@/pages/Dashboard/user/Dashboard';
+import StaffProfile from '@/pages/Dashboard/user/StaffProfileSettings';
+import StaffSettings from '@/pages/Dashboard/staff/Settings';
+
+// Student Pages
+import StudentDashboard from '@/pages/Dashboard/user/Dashboard';
+import StudentProfile from '@/pages/Dashboard/student/Profile';
+import StudentSettings from '@/pages/Dashboard/student/Settings';
+
+// Shared User Pages
+import UserEvents from '@/pages/Dashboard/user/Events';
 
 function DashboardRoutes() {
   return (
     <Routes>
-      <Route element={<Protected />} >
+      <Route element={<Protected />}>
         <Route element={<UserLayout />}>
           <Route element={<DashboardProvider><DashboardLayout /></DashboardProvider>}>
-            {/* Admin Dashboard Routes */}
-            <Route path="admin/*" element={<AdminDashboardRoutes />} />
 
-            {/* Admin Dashboard Routes */}
-            <Route path="staff/*" element={<StaffDashboardRoutes />} />
-
-            {/* Student Dashboard Routes */}
-            <Route path="student/*" element={<StudentDashboardRoutes />} />
-
-            {/* Event Organiser Dashboard Routes */}
-            <Route path="event-organiser/*" element={<EventOrganiserDashboardRoutes />} />
-
-            <Route element={<CheckUserRole role={["admin", "event-organiser"]} />}>
-              <Route path="events/create" element={<EventCreationPage />} />
+            {/* ── Admin ── */}
+            <Route element={<CheckUserRole role={['admin']} />}>
+              <Route path="admin" element={<AdminDashboard />} />
+              <Route path="admin/events" element={<AdminEvents />} />
+              <Route path="admin/events/create" element={<EventCreationPage />} />
+              <Route path="admin/reports" element={<AdminReports />} />
+              <Route path="admin/faculties" element={<Faculties />} />
+              <Route path="admin/departments" element={<Departments />} />
+              <Route path="admin/users" element={<UserManagement />} />
+              <Route path="admin/calendar" element={<AdminEvents />} />
+              <Route path="admin/settings" element={<AdminDashboard />} />
             </Route>
+
+            {/* ── Event Organiser ── */}
+            <Route element={<CheckUserRole role={['event-organiser']} />}>
+              <Route path="event-organiser" element={<EventOrganiserDashboard />} />
+              <Route path="event-organiser/profile" element={<EventOrganiserProfile />} />
+              <Route path="event-organiser/my-events" element={<AdminEvents />} />
+              <Route path="event-organiser/events" element={<AdminEvents />} />
+              <Route path="event-organiser/events/create" element={<EventCreationPage />} />
+              <Route path="event-organiser/calendar" element={<AdminEvents />} />
+              <Route path="event-organiser/analytics" element={<AdminReports />} />
+              <Route path="event-organiser/settings" element={<EventOrganiserProfile />} />
+            </Route>
+
+            {/* ── Staff ── */}
+            <Route element={<CheckUserRole role={['staff']} />}>
+              <Route path="staff" element={<StaffDashboard />} />
+              <Route path="staff/profile" element={<StaffProfile />} />
+              <Route path="staff/events" element={<UserEvents />} />
+              <Route path="staff/calendar" element={<UserEvents />} />
+              <Route path="staff/analytics" element={<StaffDashboard />} />
+              <Route path="staff/settings" element={<StaffSettings />} />
+            </Route>
+
+            {/* ── Student ── */}
+            <Route element={<CheckUserRole role={['student']} />}>
+              <Route path="student" element={<StudentDashboard />} />
+              <Route path="student/profile" element={<StudentProfile />} />
+              <Route path="student/events" element={<UserEvents />} />
+              <Route path="student/calendar" element={<UserEvents />} />
+              <Route path="student/analytics" element={<StudentDashboard />} />
+              <Route path="student/settings" element={<StudentSettings />} />
+            </Route>
+
           </Route>
         </Route>
 
-        {/* 404 Route */}
+        {/* 404 */}
         <Route path="*" element={<PageNotFound />} />
       </Route>
     </Routes>
-  )
+  );
 }
 
-export default DashboardRoutes
+export default DashboardRoutes;

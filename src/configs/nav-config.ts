@@ -37,7 +37,7 @@ export const superAdminNavItems: NavItem[] = [
 export const studentNavItems = [
     { icon: LayoutDashboard, label: 'Dashboard', path: '/dashboard/student', active: true },
     { icon: CalendarDays, label: 'Calendar', path: '/dashboard/student/calendar' },
-    { icon: CalendarCheck, label: 'My Events', path: '/dashboard/student/my-events' },
+    { icon: CalendarCheck, label: 'Events', path: '/dashboard/student/events' },
     { icon: ChartNoAxesColumn, label: 'Analytics', path: '/dashboard/student/analytics' },
     { icon: User, label: 'Profile', path: '/dashboard/student/profile' },
     { icon: Settings, label: 'Settings', path: '/dashboard/student/settings' }
@@ -46,7 +46,7 @@ export const studentNavItems = [
 export const staffNavItems = [
     { icon: LayoutDashboard, label: 'Dashboard', path: '/dashboard/staff', active: true },
     { icon: CalendarDays, label: 'Calendar', path: '/dashboard/staff/calendar' },
-    { icon: CalendarCheck, label: 'My Events', path: '/dashboard/staff/my-events' },
+    { icon: CalendarCheck, label: 'Events', path: '/dashboard/staff/events' },
     { icon: ChartNoAxesColumn, label: 'Analytics', path: '/dashboard/staff/analytics' },
     { icon: User, label: 'Profile', path: '/dashboard/staff/profile' },
     { icon: Settings, label: 'Settings', path: '/dashboard/staff/settings' }

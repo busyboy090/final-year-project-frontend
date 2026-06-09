@@ -42,6 +42,7 @@ function EventsTable({ events, pagination, onPageChange }: EventsTableProps) {
                             <TableHead className="w-16 uppercase text-[11px] font-extrabold tracking-widest px-6 py-5">S/N</TableHead>
                             <TableHead className="min-w-[200px] uppercase text-[11px] font-extrabold tracking-widest">Event Title</TableHead>
                             <TableHead className="uppercase text-[11px] font-extrabold tracking-widest">Organizer</TableHead>
+                            <TableHead className="uppercase text-[11px] font-extrabold tracking-widest text-center">Category</TableHead>
                             <TableHead className="uppercase text-center text-[11px] font-extrabold tracking-widest">Venue</TableHead>
                             <TableHead className="uppercase text-center text-[11px] font-extrabold tracking-widest">Date & Time</TableHead>
                             <TableHead className="uppercase text-[11px] font-extrabold tracking-widest">Duration</TableHead>
