@@ -1,8 +1,20 @@
 import WelcomeBack from '@/components/ui/welcome-back';
 import StatCard from '@/features/dashboard/components/StatCard';
-import { Calendar, CalendarDays, Mail, Users, MoreVertical, Clock, ChevronRight } from 'lucide-react';
+import { Calendar, CalendarDays, Mail, Users, Clock, ChevronRight } from 'lucide-react';
 import { useEventStats, useGetEvents } from '@/hooks/useEvent';
 import { formatDate } from '@/utils/format';
+import StatusBadge from '@/features/dashboard/admin/components/StatusBadge';
+import { Button } from "@/components/ui/button";
+import { Link } from 'react-router-dom';
+
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 function AdminDashboard() {
     const { data: stats } = useEventStats();
@@ -25,52 +37,54 @@ function AdminDashboard() {
 
             <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
                 {/* Table Section */}
-                <section className="xl:col-span-2 bg-white rounded-2xl p-8 shadow-sm">
-                    <div className="flex justify-between items-center mb-8">
+                <section className="xl:col-span-2 bg-white rounded-2xl p-8 shadow-sm flex flex-col h-137.5">
+                    <div className="flex justify-between items-center mb-8 shrink-0">
                         <h4 className="text-xl font-extrabold text-[#001e40] flex items-center gap-2">
                             <span className="w-1 h-6 bg-amber-500 rounded-full"></span>
                             Recent Events
                         </h4>
                         <div className="flex gap-2">
+                            {/* Added View All Button */}
+                            <Button asChild className="px-4 py-2 bg-slate-50 h-11 rounded-lg text-xs font-bold text-slate-700 border-slate-200 hover:bg-[#001e40] hover:text-white transition-all">
+                                <Link to="/dashboard/admin/events">
+                                    View All
+                                </Link>
+                            </Button>
                             <button className="px-4 py-2 bg-slate-50 rounded-lg text-xs font-bold text-slate-700 border hover:bg-[#001e40] hover:text-white transition-all">Filter</button>
                             <button className="px-4 py-2 bg-slate-50 rounded-lg text-xs font-bold text-slate-700 border hover:bg-[#001e40] hover:text-white transition-all">Export CSV</button>
                         </div>
                     </div>
 
-                    <div className="overflow-x-auto">
-                        <table className="w-full text-left">
-                            <thead className="text-[10px] uppercase tracking-widest text-slate-500 font-bold border-b">
-                                <tr>
-                                    <th className="pb-4">Event Title</th>
-                                    <th className="pb-4">Date</th>
-                                    <th className="pb-4">Venue</th>
-                                    <th className="pb-4">Status</th>
-                                    <th className="pb-4 text-right">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody className="text-sm">
+                    <div className="flex-1 overflow-y-auto pr-2 min-w-full">
+                        <Table>
+                            <TableHeader className="text-[10px] uppercase tracking-widest text-slate-500 font-bold sticky top-0 bg-white z-10">
+                                <TableRow className="hover:bg-transparent border-b">
+                                    <TableHead className="pb-4 h-auto font-bold text-slate-500 pl-0">Event Title</TableHead>
+                                    <TableHead className="pb-4 h-auto font-bold text-slate-500">Date</TableHead>
+                                    <TableHead className="pb-4 h-auto font-bold text-slate-500">Venue</TableHead>
+                                    <TableHead className="pb-4 h-auto font-bold text-slate-500 pr-0">Status</TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody className="text-sm">
                                 {events.map((event) => (
-                                    <tr key={event.id} className="group hover:bg-slate-50 transition-colors">
-                                        <td className="py-5 font-bold text-[#001e40]">{event.title}</td>
-                                        <td className="py-5 text-slate-500">{formatDate(event.start_date)}</td>
-                                        <td className="py-5 text-slate-500">{event.venue?.name ?? "No venue"}</td>
-                                        <td className="py-5">
-                                            <span className="rounded-full bg-slate-100 px-3 py-1 text-[10px] font-black uppercase text-slate-700">
-                                                {event.status}
-                                            </span>
-                                        </td>
-                                        <td className="py-5 text-right"><MoreVertical size={16} className="inline cursor-pointer" /></td>
-                                    </tr>
+                                    <TableRow key={event.id} className="group hover:bg-slate-50 border-b transition-colors">
+                                        <TableCell className="py-5 font-bold text-[#001e40] pl-0">{event.title}</TableCell>
+                                        <TableCell className="py-5 text-slate-500">{formatDate(event.start_date)}</TableCell>
+                                        <TableCell className="py-5 text-slate-500">{event.venue?.name ?? "No venue"}</TableCell>
+                                        <TableCell className="py-5 pr-0">
+                                            <StatusBadge status={event.status} />
+                                        </TableCell>
+                                    </TableRow>
                                 ))}
                                 {events.length === 0 && (
-                                    <tr>
-                                        <td colSpan={5} className="py-10 text-center text-sm text-slate-500">
+                                    <TableRow>
+                                        <TableCell colSpan={4} className="py-10 text-center text-sm text-slate-500">
                                             No events have been created yet.
-                                        </td>
-                                    </tr>
+                                        </TableCell>
+                                    </TableRow>
                                 )}
-                            </tbody>
-                        </table>
+                            </TableBody>
+                        </Table>
                     </div>
                 </section>
 
@@ -113,7 +127,7 @@ function AdminDashboard() {
                 </aside>
             </div>
         </div>
-    )
+    );
 }
 
-export default AdminDashboard
+export default AdminDashboard;

@@ -98,7 +98,7 @@ function EventTableRow({ event, index }: EventTableRowProps) {
 
             {/* Capacity Progression Bar */}
             <TableCell>
-                <div className="flex items-center gap-2 min-w-[120px]">
+                <div className="flex items-center gap-2 min-w-30">
                     <div className="flex-1 h-1.5 bg-slate-100 rounded-full overflow-hidden">
                         <div
                             className={cn(
