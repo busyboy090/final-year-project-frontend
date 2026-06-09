@@ -106,7 +106,7 @@ function Events() {
   };
 
   return (
-    <div className="max-w-[1400px] mx-auto space-y-10 animate-in fade-in duration-500">
+    <div className="mx-auto space-y-10 animate-in fade-in duration-500">
 
       {/* Header section */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
@@ -214,7 +214,7 @@ function Events() {
       {/* Table Data Layout section */}
       <div>
         {(isLoading || isError) && (
-          <div className="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden min-h-[300px] flex flex-col justify-center">
+          <div className="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden min-h-75 flex flex-col justify-center">
             {isLoading && (
               <div className="flex flex-col items-center justify-center py-20 text-slate-500 space-y-3">
                 <Loader2 className="size-8 animate-spin text-[#001e40]" />
