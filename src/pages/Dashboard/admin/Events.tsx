@@ -20,9 +20,9 @@ import {
 } from "@/components/ui/select";
 import EventsTable from '@/features/dashboard/admin/EventsTable';
 import StatCard from '@/features/dashboard/components/StatCard';
-import { useGetEvents } from '@/hooks/useEvent';
+import { useEventStats, useGetEvents } from '@/hooks/useEvent';
 import { useOrganisations } from '@/hooks/useOrganisation';
-import { useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import type { EventCategory, EventStatus } from '@/types/event';
 import { Label } from '@/components/ui/label';
 
@@ -36,6 +36,7 @@ function Events() {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const { data: orgData } = useOrganisations();
+  const { data: stats, isLoading: isStatsLoading } = useEventStats();
 
   const organisations = orgData?.data ?? [];
 
@@ -119,18 +120,20 @@ function Events() {
           </h1>
         </div>
         <div className="flex items-center self-end gap-3">
-          <Button variant="outline" className="font-semibold gap-2 border-slate-200">
-            <Download className="size-4" /> Export CSV
+          <Button asChild variant="outline" className="font-semibold gap-2 border-slate-200">
+            <Link to="/dashboard/admin/reports">
+              <Download className="size-4" /> View Reports
+            </Link>
           </Button>
         </div>
       </div>
 
       {/* Metrics Grid */}
       <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <StatCard icon={Calendar} label="Upcoming Events" value="24" trend="+12%" />
-        <StatCard icon={CalendarCheck} label="Events This Month" value="08" trend="Active" />
-        <StatCard icon={Bell} label="Pending Approvals" value="15" isUpdate={true} />
-        <StatCard icon={Users} label="Total Registrations" value="1.2k" trend="Total" />
+        <StatCard icon={Calendar} label="Upcoming Events" value={isStatsLoading ? "..." : String(stats?.upcoming_events ?? 0)} trend="Scheduled" />
+        <StatCard icon={CalendarCheck} label="Active Events" value={isStatsLoading ? "..." : String(stats?.active_events ?? 0)} trend="Live now" />
+        <StatCard icon={Bell} label="Pending Approvals" value={isStatsLoading ? "..." : String(stats?.pending_approval ?? 0)} isUpdate={(stats?.pending_approval ?? 0) > 0} />
+        <StatCard icon={Users} label="Total Registrations" value={isStatsLoading ? "..." : String(stats?.total_registrations ?? 0)} trend="Confirmed" />
       </section>
 
       {/* Inline Filters Form Section */}

@@ -254,8 +254,10 @@ export const useMyEnrollments = () => {
                 event?: {
                     id: number;
                     title: string;
+                    category?: Event["category"];
                     description?: string;
                     thumbnail?: string;
+                    fillPercentage?: number;
                     start_date: string;
                     end_date?: string;
                     venue?: { name: string };

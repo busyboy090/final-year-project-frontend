@@ -1,9 +1,9 @@
 import { type LucideIcon } from 'lucide-react';
 
 const MilestoneItem = ({
-    icon: Icon, title, timeLabel, category, attendees
+    icon: Icon, title, timeLabel, category, attendeeCount
 }: {
-    icon: LucideIcon; title: string; timeLabel: string; category: string; attendees: string[]
+    icon: LucideIcon; title: string; timeLabel: string; category: string; attendeeCount?: number | null
 }) => (
     <div className="bg-slate-200 p-6 rounded-xl transition-all hover:bg-slate-300 cursor-pointer border border-slate-200">
         <div className="flex justify-between items-start mb-4">
@@ -16,13 +16,8 @@ const MilestoneItem = ({
         </div>
         <h4 className="font-bold text-[#001e40] mb-1">{title}</h4>
         <p className="text-xs text-slate-500 mb-4">{timeLabel}</p>
-        <div className="flex -space-x-2">
-            {attendees.map((url, i) => (
-                <img key={i} className="w-8 h-8 rounded-full border-2 border-white shadow-sm" src={url} alt="User" />
-            ))}
-            <div className="w-8 h-8 rounded-full border-2 border-white bg-slate-200 flex items-center justify-center text-[10px] font-bold text-slate-600">
-                +14
-            </div>
+        <div className="inline-flex items-center rounded-full bg-white px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-slate-600">
+            {typeof attendeeCount === "number" ? `${attendeeCount}% filled` : "Registered"}
         </div>
     </div>
 );

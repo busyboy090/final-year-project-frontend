@@ -2,11 +2,14 @@ import { Link } from "react-router-dom";
 import { Plus } from "lucide-react";
 import RegisteredEventCard from "./components/RegisteredEventCard";
 import { useMyEnrollments } from "@/hooks/useEvent";
+import useAuth from "@/hooks/useAuth";
 import { formatDate } from "@/utils/format";
 
 function RegisteredEvents() {
+  const { user } = useAuth();
   const { data: enrollments = [] } = useMyEnrollments();
   const events = enrollments.filter((item) => item.event);
+  const roleSegment = user?.role === "staff" ? "staff" : "student";
 
   return (
     <section className="py-8">
@@ -35,13 +38,13 @@ function RegisteredEvents() {
         ))}
 
         {/* Add More Events Placeholder */}
-        <Link to="events" className="flex flex-col items-center justify-center border-2 border-dashed border-slate-200 rounded-2xl p-8 text-center group hover:border-[#7b5800] hover:bg-slate-50 transition-all cursor-pointer min-h-[320px]">
+        <Link to={`/dashboard/${roleSegment}/events`} className="flex flex-col items-center justify-center border-2 border-dashed border-slate-200 rounded-2xl p-8 text-center group hover:border-[#7b5800] hover:bg-slate-50 transition-all cursor-pointer min-h-[320px]">
           <div className="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center mb-4 group-hover:bg-[#7b5800]/10 transition-colors">
             <Plus className="text-slate-400 group-hover:text-[#7b5800]" size={32} />
           </div>
           <h4 className="font-bold text-[#001e40] mb-1">Add More Events</h4>
           <p className="text-xs text-slate-500 max-w-[180px]">
-            Explore thousands of university activities and sessions.
+            Browse approved events available to your audience profile.
           </p>
         </Link>
       </div>

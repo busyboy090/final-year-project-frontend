@@ -76,6 +76,8 @@ export interface EventStats {
     upcoming_events: number;
     active_events: number;
     past_events: number;
+    total_registrations: number;
+    attended_registrations: number;
 }
 
 export interface EventFilters {

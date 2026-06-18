@@ -19,7 +19,30 @@ import {
 function AdminDashboard() {
     const { data: stats } = useEventStats();
     const { data: recentEvents } = useGetEvents({ limit: 5 });
+    const { data: upcomingEventsData } = useGetEvents({
+        limit: 3,
+        status: "approved",
+        start_date_from: new Date(),
+    });
     const events = recentEvents?.events ?? [];
+    const agendaEvents = (upcomingEventsData?.events ?? [])
+        .slice()
+        .sort((a, b) => new Date(a.start_date).getTime() - new Date(b.start_date).getTime());
+
+    const quickActions = [
+        { label: "Create New Event", to: "/dashboard/admin/events/create" },
+        { label: "View Calendar", to: "/dashboard/admin/calendar" },
+        { label: "Download Reports", to: "/dashboard/admin/reports" },
+    ];
+
+    const formatAgendaMonth = (date: Date) =>
+        new Date(date).toLocaleDateString("en-US", { month: "short" }).toUpperCase();
+
+    const formatAgendaDay = (date: Date) =>
+        new Date(date).toLocaleDateString("en-US", { day: "2-digit" });
+
+    const formatAgendaTime = (date: Date) =>
+        new Date(date).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", hour12: true });
 
     return (
         <div className="px-2 pb-12">
@@ -50,8 +73,11 @@ function AdminDashboard() {
                                     View All
                                 </Link>
                             </Button>
-                            <button className="px-4 py-2 bg-slate-50 rounded-lg text-xs font-bold text-slate-700 border hover:bg-[#001e40] hover:text-white transition-all">Filter</button>
-                            <button className="px-4 py-2 bg-slate-50 rounded-lg text-xs font-bold text-slate-700 border hover:bg-[#001e40] hover:text-white transition-all">Export CSV</button>
+                            <Button asChild className="px-4 py-2 bg-slate-50 h-11 rounded-lg text-xs font-bold text-slate-700 border-slate-200 hover:bg-[#001e40] hover:text-white transition-all">
+                                <Link to="/dashboard/admin/reports">
+                                    Reports
+                                </Link>
+                            </Button>
                         </div>
                     </div>
 
@@ -93,11 +119,11 @@ function AdminDashboard() {
                     <div className="bg-[#001e40] text-white rounded-2xl p-8 relative overflow-hidden shadow-xl">
                         <h4 className="text-xl font-black mb-6 relative z-10">Quick Actions</h4>
                         <div className="space-y-3 relative z-10">
-                            {['Create New Event', 'View Calendar', 'Download Reports'].map((item) => (
-                                <button key={item} className="w-full flex items-center justify-between p-4 bg-white/10 rounded-xl hover:bg-white/20 transition-all border border-white/10 group">
-                                    <span className="font-bold text-sm">{item}</span>
+                            {quickActions.map((item) => (
+                                <Link key={item.label} to={item.to} className="w-full flex items-center justify-between p-4 bg-white/10 rounded-xl hover:bg-white/20 transition-all border border-white/10 group">
+                                    <span className="font-bold text-sm">{item.label}</span>
                                     <ChevronRight size={18} className="group-hover:translate-x-1 transition-transform" />
-                                </button>
+                                </Link>
                             ))}
                         </div>
                     </div>
@@ -105,23 +131,28 @@ function AdminDashboard() {
                     <div className="bg-white rounded-2xl p-6 shadow-sm">
                         <div className="flex justify-between items-center mb-6">
                             <h4 className="text-lg font-extrabold text-[#001e40]">Agenda</h4>
-                            <a href="#" className="text-xs font-bold text-amber-600 uppercase hover:underline">See All</a>
+                            <Link to="/dashboard/admin/events" className="text-xs font-bold text-amber-600 uppercase hover:underline">See All</Link>
                         </div>
                         <div className="space-y-4">
-                            {[12, 14, 20].map((day) => (
-                                <div key={day} className="flex gap-4 items-start p-3 hover:bg-slate-50 rounded-xl transition-colors cursor-pointer group">
+                            {agendaEvents.map((event) => (
+                                <Link key={event.id} to={`/dashboard/admin/events/${event.id}`} className="flex gap-4 items-start p-3 hover:bg-slate-50 rounded-xl transition-colors cursor-pointer group">
                                     <div className="flex flex-col items-center justify-center w-12 h-14 bg-white rounded-lg border shadow-sm">
-                                        <span className="text-[10px] font-black text-slate-400">NOV</span>
-                                        <span className="text-xl font-black text-[#001e40]">{day}</span>
+                                        <span className="text-[10px] font-black text-slate-400">{formatAgendaMonth(event.start_date)}</span>
+                                        <span className="text-xl font-black text-[#001e40]">{formatAgendaDay(event.start_date)}</span>
                                     </div>
                                     <div>
-                                        <h5 className="text-sm font-bold text-[#001e40] group-hover:text-amber-600">Event Title</h5>
+                                        <h5 className="text-sm font-bold text-[#001e40] group-hover:text-amber-600">{event.title}</h5>
                                         <p className="text-xs text-slate-500 flex items-center gap-1 mt-1">
-                                            <Clock size={12} /> 10:00 AM
+                                            <Clock size={12} /> {formatAgendaTime(event.start_date)}
                                         </p>
                                     </div>
-                                </div>
+                                </Link>
                             ))}
+                            {agendaEvents.length === 0 && (
+                                <div className="rounded-xl border border-dashed p-4 text-sm text-slate-500">
+                                    No upcoming approved events yet.
+                                </div>
+                            )}
                         </div>
                     </div>
                 </aside>
