@@ -119,7 +119,7 @@ const StaffProfileSettings = () => {
 
   const onProfileSubmit = async (values: StaffProfileForm) => {
     try {
-      const response = await api.patch("/v1/user/profile/staff/update", values);
+      const response = await api.patch("/v1/user/profile/staff/complete", values);
 
       if (response.data.success) {
         toast.success("Profile saved successfully!");

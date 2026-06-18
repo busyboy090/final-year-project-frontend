@@ -20,6 +20,7 @@ import {
 import {
   useRegistryUsers, useUpdateRegistryUser, type RegistryUserRow,
 } from "@/hooks/useRegistryUsers";
+import { exportAllUsers } from "@/hooks/useEvent";
 import { useDepartments } from "@/hooks/useDepartment";
 import { useFaculties } from "@/hooks/useFaculty";
 import { useOrganisations } from "@/hooks/useOrganisation";
@@ -158,32 +159,14 @@ function UserManagement() {
     }
   };
 
-  const exportCsv = () => {
-    const header = ["id", "name", "email", "role", "assigned_unit", "active"];
-    const lines = users.map((u) => {
-      const unitName = u.role?.toLowerCase() === "event-organiser"
-        ? (u.organisation_name ?? "—")
-        : (u.department_name ?? "—");
-
-      return [
-        u.id,
-        displayName(u).replaceAll(",", " "),
-        u.email,
-        u.role ?? "—",
-        unitName.replaceAll(",", " "),
-        u.is_active ? "yes" : "no",
-      ].join(",");
-    });
-
-    const blob = new Blob([[header.join(","), ...lines].join("\n")], {
-      type: "text/csv;charset=utf-8",
-    });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `users-page-${page}.csv`;
-    a.click();
-    URL.revokeObjectURL(url);
+  const exportCsv = async () => {
+    try {
+      await exportAllUsers();
+      toast.success("User export started");
+    } catch (e: unknown) {
+      const msg = (e as { response?: { data?: { message?: string } } })?.response?.data?.message ?? "Could not export users";
+      toast.error(msg);
+    }
   };
 
   return (

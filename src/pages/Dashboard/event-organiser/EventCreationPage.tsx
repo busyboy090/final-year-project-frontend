@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import EventStepBasicDetails from './EventStepBasicDetails';
+import EventStepAudience from './EventStepAudience';
 import EventStepVenueSchedule from './EventStepVenueSchedule';
 import EventStepReviewPublish from './EventStepReviewPublish';
 import { Button } from '@/components/ui/button';
@@ -15,6 +16,11 @@ export interface EventFormValues {
   category: string;
   description: string;
   thumbnail: FileList | null;
+  audience_scope: "all" | "custom";
+  audience_roles: Array<"staff" | "student">;
+  audience_staff_types: Array<"academic-staff" | "non-academic-staff">;
+  audience_student_level_ids: number[];
+  audience_gender: "all" | "male" | "female" | "other";
   venue_id: string;
   capacity: string;
   startDate: string;
@@ -22,6 +28,52 @@ export interface EventFormValues {
   startTime: string;
   endTime: string;
 }
+
+type AudienceRule = {
+  role: "staff" | "student";
+  staff_type?: "academic-staff" | "non-academic-staff" | null;
+  level_id?: number | null;
+  gender?: "male" | "female" | "other" | null;
+};
+
+const buildAudienceRules = (data: EventFormValues): AudienceRule[] => {
+  if (data.audience_scope !== "custom") return [];
+
+  const gender = data.audience_gender === "all" ? null : data.audience_gender;
+  const rules: AudienceRule[] = [];
+
+  if (data.audience_roles.includes("staff")) {
+    const staffTypes = data.audience_staff_types.length
+      ? data.audience_staff_types
+      : [null];
+
+    staffTypes.forEach((staffType) => {
+      rules.push({
+        role: "staff",
+        staff_type: staffType,
+        level_id: null,
+        gender,
+      });
+    });
+  }
+
+  if (data.audience_roles.includes("student")) {
+    const levelIds = data.audience_student_level_ids.length
+      ? data.audience_student_level_ids
+      : [null];
+
+    levelIds.forEach((levelId) => {
+      rules.push({
+        role: "student",
+        staff_type: null,
+        level_id: levelId,
+        gender,
+      });
+    });
+  }
+
+  return rules;
+};
 
 export default function EventCreationPage() {
   const [currentStep, setCurrentStep] = useState<number>(1);
@@ -45,6 +97,11 @@ export default function EventCreationPage() {
       title: '',
       category: 'Academic Conference',
       description: '',
+      audience_scope: 'all',
+      audience_roles: [],
+      audience_staff_types: [],
+      audience_student_level_ids: [],
+      audience_gender: 'all',
       venue_id: '',
       capacity: '',
       thumbnail: null,
@@ -62,12 +119,18 @@ export default function EventCreationPage() {
     if (currentStep === 1) {
       fieldsToValidate = ['title', 'category', 'description', 'thumbnail'];
     } else if (currentStep === 2) {
+      const values = getValues();
+      if (values.audience_scope === "custom" && values.audience_roles.length === 0) {
+        toast.error("Select staff, students, or both for this custom audience.");
+        return;
+      }
+    } else if (currentStep === 3) {
       fieldsToValidate = ['venue_id', 'capacity', 'startDate', 'endDate', 'startTime', 'endTime'];
     }
 
     const isStepValid = await trigger(fieldsToValidate);
     if (isStepValid) {
-      setCurrentStep((prev) => Math.min(prev + 1, 3));
+      setCurrentStep((prev) => Math.min(prev + 1, 4));
     }
   };
 
@@ -83,6 +146,8 @@ export default function EventCreationPage() {
       formData.append('title', data.title);
       formData.append('category', data.category);
       formData.append('description', data.description);
+      formData.append('audience_scope', data.audience_scope);
+      formData.append('audience_rules', JSON.stringify(buildAudienceRules(data)));
       formData.append('venue_id', data.venue_id);
       formData.append('capacity', data.capacity);
       formData.append('startDate', data.startDate);
@@ -138,7 +203,7 @@ export default function EventCreationPage() {
           >
             Save Draft
           </Button>
-          {currentStep < 3 && (
+          {currentStep < 4 && (
             <Button
               type="button"
               onClick={handleNextStep}
@@ -155,8 +220,9 @@ export default function EventCreationPage() {
         <div className="absolute top-[45px] left-[80px] right-[80px] h-[2px] bg-slate-200 dark:bg-slate-800 -z-10 -translate-y-1/2"></div>
         {[
           { step: 1, label: 'Basic Details' },
-          { step: 2, label: 'Venue & Schedule' },
-          { step: 3, label: 'Review & Publish' }
+          { step: 2, label: 'Audience' },
+          { step: 3, label: 'Venue & Schedule' },
+          { step: 4, label: 'Review & Publish' }
         ].map((item) => (
           <div key={item.step} className="flex flex-col items-center gap-3 dark:bg-slate-950 px-2 mt-6">
             <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold transition-all duration-300 ring-4 ring-[#f6faff] dark:ring-slate-950 ${currentStep > item.step
@@ -190,6 +256,14 @@ export default function EventCreationPage() {
         )}
 
         {currentStep === 2 && (
+          <EventStepAudience
+            watch={watch}
+            setValue={setValue}
+            onNext={handleNextStep}
+          />
+        )}
+
+        {currentStep === 3 && (
           <EventStepVenueSchedule
             register={register}
             control={control}
@@ -202,7 +276,7 @@ export default function EventCreationPage() {
           />
         )}
 
-        {currentStep === 3 && (
+        {currentStep === 4 && (
           <div className="space-y-6">
             <EventStepReviewPublish
               getValues={getValues}

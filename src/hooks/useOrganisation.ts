@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiClient } from "@/apis/axios";
 import type { OrganisationFilters, PaginatedOrganisationsResponse } from "@/types/organisation";
 
@@ -24,5 +24,54 @@ export const useOrganisations = (filters: OrganisationFilters = {}) => {
   return useQuery({
     queryKey: ["organisations", filters],
     queryFn:  () => fetchOrganisations(filters),
+  });
+};
+
+export type OrganisationPayload = {
+  name: string;
+  address?: string;
+  faculty_id?: number;
+  department_id?: number;
+};
+
+export const useCreateOrganisation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (payload: OrganisationPayload) => {
+      const response = await apiClient.post("/v1/organisations", payload);
+      return response.data;
+    },
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ["organisations"] });
+    },
+  });
+};
+
+export const useUpdateOrganisation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ id, payload }: { id: number; payload: OrganisationPayload }) => {
+      const response = await apiClient.patch(`/v1/organisations/${id}`, payload);
+      return response.data;
+    },
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ["organisations"] });
+    },
+  });
+};
+
+export const useDeleteOrganisation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (id: number) => {
+      const response = await apiClient.delete(`/v1/organisations/${id}`);
+      return response.data;
+    },
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ["organisations"] });
+    },
   });
 };

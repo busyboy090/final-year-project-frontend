@@ -10,6 +10,7 @@ import {
   Mic, 
   FileText, 
   Coffee,
+  Users,
 } from 'lucide-react';
 
 interface ReviewPublishProps {
@@ -25,6 +26,38 @@ export default function EventStepReviewPublish({
 }: ReviewPublishProps) {
   // Extract working details safely from centralized form hub
   const currentValues = getValues();
+
+  const audienceSummary = (() => {
+    if (currentValues.audience_scope !== 'custom') {
+      return 'Everyone';
+    }
+
+    const parts: string[] = [];
+
+    if (currentValues.audience_roles?.includes('staff')) {
+      const staffTypes = currentValues.audience_staff_types?.length
+        ? currentValues.audience_staff_types
+            .map((type: string) =>
+              type === 'academic-staff' ? 'Academic staff' : 'Non-academic staff',
+            )
+            .join(', ')
+        : 'All staff';
+      parts.push(staffTypes);
+    }
+
+    if (currentValues.audience_roles?.includes('student')) {
+      const levels = currentValues.audience_student_level_ids?.length
+        ? `Selected student levels: ${currentValues.audience_student_level_ids.join(', ')}`
+        : 'All students';
+      parts.push(levels);
+    }
+
+    if (currentValues.audience_gender && currentValues.audience_gender !== 'all') {
+      parts.push(`${currentValues.audience_gender} only`);
+    }
+
+    return parts.length ? parts.join(' / ') : 'Custom audience not selected';
+  })();
 
   return (
     <div className="space-y-6">
@@ -69,6 +102,38 @@ export default function EventStepReviewPublish({
           </div>
         </section>
 
+        {/* Module Area 2b: Audience Gate Details */}
+        <section className="col-span-12 bg-white dark:bg-slate-900 rounded-xl p-6 lg:p-8 border border-slate-100 dark:border-slate-800 shadow-sm">
+          <div className="flex justify-between items-start mb-6">
+            <h3 className="text-xl font-bold text-[#001e40] dark:text-slate-50 flex items-center gap-2">
+              <Users className="text-[#7b5800] w-5 h-5" />
+              Audience Access
+            </h3>
+            <Button
+              type="button"
+              variant="ghost"
+              onClick={() => onStepJump(2)}
+              className="text-[#001e40] hover:text-[#7b5800] hover:bg-slate-50 gap-1 text-xs uppercase tracking-widest font-bold h-8 px-2"
+            >
+              Edit <Edit3 className="w-3 h-3" />
+            </Button>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+            <div>
+              <p className="text-[11px] uppercase tracking-widest text-slate-400 font-bold mb-1">Access Mode</p>
+              <p className="text-base font-semibold text-slate-900 dark:text-slate-50">
+                {currentValues.audience_scope === 'custom' ? 'Custom audience' : 'Everyone'}
+              </p>
+            </div>
+            <div className="sm:col-span-2">
+              <p className="text-[11px] uppercase tracking-widest text-slate-400 font-bold mb-1">Eligible Audience</p>
+              <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                {audienceSummary}
+              </p>
+            </div>
+          </div>
+        </section>
+
         {/* Module Area 2: Sticky Right Admin Context Widget */}
         <aside className="col-span-12 lg:col-span-4 bg-[#001e40] rounded-xl p-6 lg:p-8 text-white shadow-xl shadow-blue-950/20">
           <h3 className="text-xl font-bold mb-6">Review Summary</h3>
@@ -104,7 +169,7 @@ export default function EventStepReviewPublish({
             <Button
               type="button"
               variant="ghost"
-              onClick={() => onStepJump(2)}
+              onClick={() => onStepJump(3)}
               className="text-[#001e40] hover:text-[#7b5800] hover:bg-slate-50 gap-1 text-xs uppercase tracking-widest font-bold h-8 px-2"
             >
               Edit <Edit3 className="w-3 h-3" />
@@ -146,7 +211,7 @@ export default function EventStepReviewPublish({
             <Button
               type="button"
               variant="ghost"
-              onClick={() => onStepJump(2)}
+              onClick={() => onStepJump(3)}
               className="text-[#001e40] hover:text-[#7b5800] hover:bg-slate-50 gap-1 text-xs uppercase tracking-widest font-bold h-8 px-2"
             >
               Edit <Edit3 className="w-3 h-3" />

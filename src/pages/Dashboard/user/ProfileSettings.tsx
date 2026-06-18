@@ -108,7 +108,7 @@ const ProfileSettings = () => {
 
   const onProfileSubmit = async (values: StudentProfileForm) => {
     try {
-      const response = await api.post("/v1/user/profile/student/complete", {
+      const response = await api.patch("/v1/user/profile/student/complete", {
         ...values,
         gender: values?.gender?.toLowerCase(),
       });

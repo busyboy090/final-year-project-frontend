@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiClient } from "@/apis/axios";
-import type { EventFilters, EventStats, EventStatus, PaginatedEventsResponse } from "@/types/event";
+import type { Event, EventAudienceRule, EventFilters, EventStats, EventStatus, PaginatedEventsResponse } from "@/types/event";
 import useAuth from "./useAuth";
 
 export const useGetEvents = (params: EventFilters = {}) => {
@@ -43,6 +43,47 @@ export const useUpdateEventStatus = () => {
         },
         onSuccess: () => {
             void queryClient.invalidateQueries({ queryKey: ["events"] });
+            void queryClient.invalidateQueries({ queryKey: ["event-stats"] });
+        },
+    });
+};
+
+export const useGetEvent = (id?: number | string) => {
+    return useQuery({
+        queryKey: ["event", id],
+        queryFn: async () => {
+            const response = await apiClient.get<{ success: boolean; data: Event }>(`/v1/events/${id}`);
+            return response.data.data;
+        },
+        enabled: Boolean(id),
+    });
+};
+
+export type UpdateEventPayload = {
+    title?: string;
+    category?: Event["category"];
+    description?: string;
+    venue_id?: number;
+    capacity?: number;
+    startDate?: string;
+    startTime?: string;
+    endDate?: string;
+    endTime?: string;
+    audience_scope?: "all" | "custom";
+    audience_rules?: EventAudienceRule[];
+};
+
+export const useUpdateEvent = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: async ({ id, payload }: { id: number; payload: UpdateEventPayload }) => {
+            const response = await apiClient.patch(`/v1/events/${id}`, payload);
+            return response.data;
+        },
+        onSuccess: (_data, variables) => {
+            void queryClient.invalidateQueries({ queryKey: ["events"] });
+            void queryClient.invalidateQueries({ queryKey: ["event", variables.id] });
             void queryClient.invalidateQueries({ queryKey: ["event-stats"] });
         },
     });
@@ -113,6 +154,92 @@ export const useJoinEvent = () => {
     });
 };
 
+export const useCancelEnrollment = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: async (enrollmentId: number) => {
+            const response = await apiClient.patch(`/v1/events/enrollments/${enrollmentId}/cancel`);
+            return response.data;
+        },
+        onSuccess: () => {
+            void queryClient.invalidateQueries({ queryKey: ["events"] });
+            void queryClient.invalidateQueries({ queryKey: ["my-enrollments"] });
+        },
+    });
+};
+
+export const useCheckInEnrollment = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: async (enrollmentId: number) => {
+            const response = await apiClient.patch(`/v1/events/enrollments/${enrollmentId}/check-in`);
+            return response.data;
+        },
+        onSuccess: () => {
+            void queryClient.invalidateQueries({ queryKey: ["my-enrollments"] });
+        },
+    });
+};
+
+export const useEventAttendanceStats = (eventId?: number) => {
+    return useQuery({
+        queryKey: ["event-attendance-stats", eventId],
+        queryFn: async () => {
+            const response = await apiClient.get(`/v1/events/enrollments/${eventId}/stats`);
+            return response.data.data as {
+                event_id: number;
+                total_enrolled: number;
+                total_attended: number;
+                total_cancelled: number;
+                no_show: number;
+                attendance_rate: string | number;
+            };
+        },
+        enabled: Boolean(eventId),
+    });
+};
+
+export const useRegenerateEnrollmentQr = () => {
+    return useMutation({
+        mutationFn: async (enrollmentId: number) => {
+            const response = await apiClient.post(`/v1/admin/enrollments/${enrollmentId}/regenerate-qr`);
+            return response.data;
+        },
+    });
+};
+
+export const downloadBlob = (blob: Blob, filename: string) => {
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = filename;
+    link.click();
+    URL.revokeObjectURL(url);
+};
+
+export const exportEventRegistrants = async (eventId: number) => {
+    const response = await apiClient.get(`/v1/events/${eventId}/registrants/export`, {
+        responseType: "blob",
+    });
+    downloadBlob(response.data, `event-${eventId}-registrants.csv`);
+};
+
+export const exportEventAttendance = async (eventId: number) => {
+    const response = await apiClient.get(`/v1/admin/events/${eventId}/attendance/export`, {
+        responseType: "blob",
+    });
+    downloadBlob(response.data, `event-${eventId}-attendance.csv`);
+};
+
+export const exportAllUsers = async () => {
+    const response = await apiClient.get("/v1/admin/users/export", {
+        responseType: "blob",
+    });
+    downloadBlob(response.data, "users-export.csv");
+};
+
 export const useMyEnrollments = () => {
     return useQuery({
         queryKey: ["my-enrollments"],
@@ -121,12 +248,16 @@ export const useMyEnrollments = () => {
             return response.data.data as Array<{
                 id: number;
                 status: string;
+                qr_token?: string | null;
+                qr_issued_at?: string | null;
+                check_in_time?: string | null;
                 event?: {
                     id: number;
                     title: string;
                     description?: string;
                     thumbnail?: string;
                     start_date: string;
+                    end_date?: string;
                     venue?: { name: string };
                 };
             }>;

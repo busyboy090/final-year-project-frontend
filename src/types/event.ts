@@ -4,6 +4,24 @@ import type { Organisation } from './organisation';
 
 export type EventCategory = 'Academic Conference' | 'Workshop' | 'Cultural Event' | 'Sports Match' | 'Exhibition/Expo' | 'Social Gathering/Party';
 export type EventStatus = 'pending' | 'approved' | 'rejected' | 'cancelled';
+export type EventAudienceScope = 'all' | 'custom';
+export type EventAudienceRole = 'staff' | 'student';
+export type EventAudienceGender = 'male' | 'female' | 'other';
+export type EventAudienceStaffType = 'academic-staff' | 'non-academic-staff';
+
+export interface EventAudienceRule {
+    id?: number;
+    event_id?: number;
+    role: EventAudienceRole;
+    staff_type?: EventAudienceStaffType | null;
+    level_id?: number | null;
+    gender?: EventAudienceGender | null;
+    level?: {
+        id: number;
+        name: string;
+        code?: string;
+    };
+}
 
 export interface Event {
     id: number;
@@ -22,6 +40,8 @@ export interface Event {
     end_date: Date;
     capacity: number;
     status: EventStatus;
+    audience_scope: EventAudienceScope;
+    audienceRules?: EventAudienceRule[];
     created_at: Date;
     updated_at: Date;
     created_by: number;

@@ -8,6 +8,7 @@ import { formatDate, formatMinutes } from "@/utils/format";
 import useAuth from "@/hooks/useAuth";
 import { useCancelEvent, useDeleteEvent, useUpdateEventStatus } from "@/hooks/useEvent";
 import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
 interface EventTableRowProps {
     event: Event;
@@ -19,6 +20,7 @@ function EventTableRow({ event, index }: EventTableRowProps) {
     const updateStatus = useUpdateEventStatus();
     const cancelEvent = useCancelEvent();
     const deleteEvent = useDeleteEvent();
+    const navigate = useNavigate();
 
     const isSuperAdmin = user?.role?.toLowerCase() === "super-admin";
     const creator = user?.id === event.created_by;
@@ -126,7 +128,7 @@ function EventTableRow({ event, index }: EventTableRowProps) {
                         size="icon"
                         className="size-8 text-[#001e40] hover:bg-slate-100 hover:text-[#001e40]"
                         title="View Event"
-                        onClick={() => toast.info(event.description || "No event description available")}
+                        onClick={() => navigate(`${event.id}`)}
                     >
                         <Eye className="size-4" />
                         <span className="sr-only">View</span>
@@ -139,7 +141,7 @@ function EventTableRow({ event, index }: EventTableRowProps) {
                         className="size-8 text-slate-600 hover:bg-slate-100 hover:text-slate-900"
                         title="Edit Event"
                         disabled={!creator}
-                        onClick={() => toast.info("Event editing screen is coming next.")}
+                        onClick={() => navigate(`${event.id}/edit`)}
                     >
                         <Pencil className="size-4" />
                         <span className="sr-only">Edit</span>

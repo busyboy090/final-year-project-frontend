@@ -65,7 +65,7 @@ function StudentProfileModal({ onClose }: { onClose: () => void }) {
   const onSubmit = async (values: StudentProfileForm) => {
     setIsSubmitting(true);
     try {
-      const response = await apiClient.post("/v1/user/profile/student/complete", {
+      const response = await apiClient.patch("/v1/user/profile/student/complete", {
         ...values,
         gender: values?.gender?.toLowerCase()
       });

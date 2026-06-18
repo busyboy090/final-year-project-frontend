@@ -118,6 +118,7 @@ function ForgotPasswordPage() {
 
                                     <ResendOTP
                                         url="/v1/auth/reset-password/resend-otp"
+                                        method="patch"
                                         initialCountdown={initialCooldown}
                                     />
 

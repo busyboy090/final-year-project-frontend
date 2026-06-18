@@ -5,6 +5,7 @@ import { formatTime } from "@/utils/time";
 
 type Props = {
     url: string;
+    method?: "post" | "patch";
     disabled?: boolean;
     cooldownSeconds?: number;
     initialCountdown?: number;
@@ -12,6 +13,7 @@ type Props = {
 
 function ResendOTP({ 
     url, 
+    method = "post",
     disabled: externalDisabled,
     initialCountdown = 0 
 }: Props) {
@@ -39,7 +41,7 @@ function ResendOTP({
 
         setLoading(true);
         try {
-            const response = await api.post(url);
+            const response = await api[method](url);
             toast.success(response.data.message || "A new code has been sent.");
             setCountdown(response.data.cooldownSeconds); 
         } catch (err: any) {

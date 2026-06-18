@@ -9,6 +9,7 @@ import {
   UserCheck,
 } from "lucide-react";
 import { useState, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -75,11 +76,13 @@ function EventCard({
   enrolled,
   onJoin,
   isJoining,
+  onView,
 }: {
   event: Event;
   enrolled: boolean;
   onJoin: (id: number) => Promise<void>;
   isJoining: boolean;
+  onView: (id: number) => void;
 }) {
   return (
     <div className="group bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 flex flex-col h-full border border-slate-100">
@@ -124,11 +127,19 @@ function EventCard({
             "An intensive gathering curated for the leaders and scholars of Admiralty University."}
         </p>
 
-        <div className="mt-auto">
+        <div className="mt-auto grid grid-cols-2 gap-2">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => onView(event.id)}
+            className="py-6 font-bold rounded-lg"
+          >
+            Details
+          </Button>
           <Button
             disabled={enrolled || isJoining}
             onClick={() => onJoin(event.id)}
-            className={`w-full py-6 font-bold rounded-lg transition-all active:scale-[0.98] border-none shadow-none ${
+            className={`py-6 font-bold rounded-lg transition-all active:scale-[0.98] border-none shadow-none ${
               enrolled
                 ? "bg-slate-100 text-slate-400 hover:bg-slate-100 cursor-not-allowed border border-slate-200"
                 : "bg-[#001e40] text-white hover:bg-[#003366]"
@@ -149,6 +160,7 @@ function EventCard({
 }
 
 export default function Events() {
+  const navigate = useNavigate();
   const { data, isLoading, isError } = useGetEvents({
     status: "approved",
     limit: 50,
@@ -357,6 +369,7 @@ export default function Events() {
                   event={event}
                   enrolled={enrolledEventIds.has(event.id)}
                   onJoin={handleJoin}
+                  onView={(id) => navigate(String(id))}
                   isJoining={joiningId === event.id}
                 />
               ))}
