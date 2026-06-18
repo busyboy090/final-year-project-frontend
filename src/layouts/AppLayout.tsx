@@ -90,7 +90,7 @@ function AppLayout({ children }: { children?: React.ReactNode }) {
       if (isMutatingRequest(config)) {
         if (!csrfTokenCache && !csrfTokenRequest) {
           csrfTokenRequest = apiClient
-            .get("/v1/auth/csrf-token")
+            .get("/csrf-token")
             .then((res) => {
               csrfTokenCache = res.data.csrfToken;
               return csrfTokenCache!;
