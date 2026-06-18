@@ -62,6 +62,9 @@ function DashboardRoutes() {
               </DashboardProvider>
             }
           >
+            <Route path="/calendar" element={<CalendarPage />} />
+
+
             {/* ── Admin ── */}
             <Route element={<CheckUserRole role={["admin"]} />}>
               <Route path="admin" element={<AdminDashboard />} />
@@ -84,7 +87,6 @@ function DashboardRoutes() {
               <Route path="admin/organisations" element={<Organisations />} />
               <Route path="admin/levels" element={<Levels />} />
               <Route path="admin/users" element={<UserManagement />} />
-              <Route path="admin/calendar" element={<CalendarPage />} />
               <Route path="admin/settings" element={<AdminDashboard />} />
             </Route>
 
@@ -111,10 +113,7 @@ function DashboardRoutes() {
                 path="event-organiser/events/:id/edit"
                 element={<EventEditPage />}
               />
-              <Route
-                path="event-organiser/calendar"
-                element={<CalendarPage />}
-              />
+
               <Route
                 path="event-organiser/analytics"
                 element={<AdminReports />}
@@ -132,7 +131,6 @@ function DashboardRoutes() {
               <Route path="staff/events" element={<UserEvents />} />
               <Route path="staff/events/:id" element={<EventDetailsPage />} />
               <Route path="staff/my-events" element={<MyEvents />} />
-              <Route path="staff/calendar" element={<CalendarPage />} />
               <Route path="staff/analytics" element={<StaffDashboard />} />
               <Route path="staff/settings" element={<StaffSettings />} />
             </Route>
@@ -144,17 +142,15 @@ function DashboardRoutes() {
               <Route path="student/events" element={<UserEvents />} />
               <Route path="student/events/:id" element={<EventDetailsPage />} />
               <Route path="student/my-events" element={<MyEvents />} />
-              <Route path="student/calendar" element={<CalendarPage />} />
               <Route path="student/analytics" element={<StudentDashboard />} />
               <Route path="student/settings" element={<StudentSettings />} />
             </Route>
 
             {/* ── Student ── */}
-            <Route element={<CheckUserRole role={["event-organiser","admin"]} />}>
-               <Route
-                path="events/create"
-                element={<EventCreationPage />}
-              />
+            <Route
+              element={<CheckUserRole role={["event-organiser", "admin"]} />}
+            >
+              <Route path="events/create" element={<EventCreationPage />} />
             </Route>
           </Route>
         </Route>
