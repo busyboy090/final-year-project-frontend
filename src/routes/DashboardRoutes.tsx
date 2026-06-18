@@ -11,6 +11,7 @@ import DashboardProvider from "@/contexts/DashboardProvider";
 
 // Shared Pages
 import PageNotFound from "@/components/PageNotFound";
+import CalendarPage from "@/pages/Dashboard/CalendarPage";
 
 // Admin Pages
 import AdminDashboard from "@/pages/Dashboard/admin/Dashboard";
@@ -83,7 +84,7 @@ function DashboardRoutes() {
               <Route path="admin/organisations" element={<Organisations />} />
               <Route path="admin/levels" element={<Levels />} />
               <Route path="admin/users" element={<UserManagement />} />
-              <Route path="admin/calendar" element={<AdminEvents />} />
+              <Route path="admin/calendar" element={<CalendarPage />} />
               <Route path="admin/settings" element={<AdminDashboard />} />
             </Route>
 
@@ -112,7 +113,7 @@ function DashboardRoutes() {
               />
               <Route
                 path="event-organiser/calendar"
-                element={<AdminEvents />}
+                element={<CalendarPage />}
               />
               <Route
                 path="event-organiser/analytics"
@@ -131,7 +132,7 @@ function DashboardRoutes() {
               <Route path="staff/events" element={<UserEvents />} />
               <Route path="staff/events/:id" element={<EventDetailsPage />} />
               <Route path="staff/my-events" element={<MyEvents />} />
-              <Route path="staff/calendar" element={<UserEvents />} />
+              <Route path="staff/calendar" element={<CalendarPage />} />
               <Route path="staff/analytics" element={<StaffDashboard />} />
               <Route path="staff/settings" element={<StaffSettings />} />
             </Route>
@@ -143,7 +144,7 @@ function DashboardRoutes() {
               <Route path="student/events" element={<UserEvents />} />
               <Route path="student/events/:id" element={<EventDetailsPage />} />
               <Route path="student/my-events" element={<MyEvents />} />
-              <Route path="student/calendar" element={<UserEvents />} />
+              <Route path="student/calendar" element={<CalendarPage />} />
               <Route path="student/analytics" element={<StudentDashboard />} />
               <Route path="student/settings" element={<StudentSettings />} />
             </Route>
