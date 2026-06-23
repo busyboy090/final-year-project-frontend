@@ -16,6 +16,7 @@ export interface EventFormValues {
   category: string;
   description: string;
   thumbnail: FileList | null;
+  session_id: string;
   audience_scope: "all" | "custom";
   audience_roles: Array<"staff" | "student">;
   audience_staff_types: Array<"academic-staff" | "non-academic-staff">;
@@ -97,6 +98,7 @@ export default function EventCreationPage() {
       title: '',
       category: 'Academic Conference',
       description: '',
+      session_id: '',
       audience_scope: 'all',
       audience_roles: [],
       audience_staff_types: [],
@@ -117,7 +119,7 @@ export default function EventCreationPage() {
     let fieldsToValidate: Array<keyof EventFormValues> = [];
 
     if (currentStep === 1) {
-      fieldsToValidate = ['title', 'category', 'description', 'thumbnail'];
+      fieldsToValidate = ['title', 'category', 'description', 'session_id', 'thumbnail'];
     } else if (currentStep === 2) {
       const values = getValues();
       if (values.audience_scope === "custom" && values.audience_roles.length === 0) {
@@ -146,6 +148,7 @@ export default function EventCreationPage() {
       formData.append('title', data.title);
       formData.append('category', data.category);
       formData.append('description', data.description);
+      formData.append('session_id', data.session_id);
       formData.append('audience_scope', data.audience_scope);
       formData.append('audience_rules', JSON.stringify(buildAudienceRules(data)));
       formData.append('venue_id', data.venue_id);

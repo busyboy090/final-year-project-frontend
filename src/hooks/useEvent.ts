@@ -4,7 +4,7 @@ import type { Event, EventAudienceRule, EventFilters, EventStats, EventStatus, P
 import useAuth from "./useAuth";
 
 export const useGetEvents = (params: EventFilters = {}) => {
-    const { limit = 20, page = 1, search, status, category, organisation_id, venue_id, created_by, creator_by, start_date_from, start_date_to } = params;
+    const { limit = 20, page = 1, search, status, category, organisation_id, venue_id, session_id, created_by, creator_by, start_date_from, start_date_to } = params;
     return useQuery({
         queryKey: ["events", params],
         queryFn: async () => {
@@ -17,6 +17,7 @@ export const useGetEvents = (params: EventFilters = {}) => {
                     category,
                     organisation_id,
                     venue_id,
+                    session_id,
                     created_by: created_by ?? creator_by,
                     start_date_from,
                     start_date_to,
@@ -63,6 +64,7 @@ export type UpdateEventPayload = {
     title?: string;
     category?: Event["category"];
     description?: string;
+    session_id?: number;
     venue_id?: number;
     capacity?: number;
     startDate?: string;

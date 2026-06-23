@@ -43,6 +43,19 @@ export default function CuratorDashboardMain() {
     };
   });
   const peakFill = chartData.reduce((peak, item) => item.hoverVal > peak.hoverVal ? item : peak, { hoverVal: 0, day: "" });
+  const latestEventUpdate = recentEvents
+    .map((event) => new Date(event.updated_at ?? event.start_date).getTime())
+    .filter(Number.isFinite)
+    .sort((a, b) => b - a)[0];
+  const recentEventsUpdatedLabel = latestEventUpdate
+    ? `updated ${new Date(latestEventUpdate).toLocaleDateString("en-US", {
+        month: "short",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true,
+      })}`
+    : "no updates yet";
 
   // shadcn-safe status badge styles
   const statusConfig: Record<string, string> = {
@@ -87,7 +100,9 @@ export default function CuratorDashboardMain() {
           <div className="flex justify-between items-center px-6 py-5 border-b border-border">
             <div>
               <h3 className="font-heading text-lg font-bold tracking-tight text-foreground">My Recent Events</h3>
-              <p className="text-xs text-muted-foreground font-medium mt-0.5">{recentEvents.length} events · updated just now</p>
+              <p className="text-xs text-muted-foreground font-medium mt-0.5">
+                {recentEvents.length} events · {recentEventsUpdatedLabel}
+              </p>
             </div>
             <Link to="/dashboard/event-organiser/events" className="flex items-center gap-1 text-foreground font-bold text-xs hover:text-primary transition-colors group">
               View All

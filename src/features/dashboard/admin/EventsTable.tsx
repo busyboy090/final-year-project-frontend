@@ -44,6 +44,7 @@ function EventsTable({ events, pagination, onPageChange }: EventsTableProps) {
                             <TableHead className="uppercase text-[11px] font-extrabold tracking-widest">Organizer</TableHead>
                             <TableHead className="uppercase text-[11px] font-extrabold tracking-widest text-center">Category</TableHead>
                             <TableHead className="uppercase text-center text-[11px] font-extrabold tracking-widest">Venue</TableHead>
+                            <TableHead className="uppercase text-center text-[11px] font-extrabold tracking-widest">Session</TableHead>
                             <TableHead className="uppercase text-center text-[11px] font-extrabold tracking-widest">Date & Time</TableHead>
                             <TableHead className="uppercase text-[11px] font-extrabold tracking-widest">Duration</TableHead>
                             <TableHead className="uppercase text-[11px] font-extrabold tracking-widest text-center">Capacity</TableHead>
@@ -54,7 +55,7 @@ function EventsTable({ events, pagination, onPageChange }: EventsTableProps) {
                     <TableBody>
                         {events.length === 0 ? (
                             <TableRow>
-                                <TableCell colSpan={8} className="h-24 text-center text-sm text-slate-500">
+                                <TableCell colSpan={10} className="h-24 text-center text-sm text-slate-500">
                                     No events found.
                                 </TableCell>
                             </TableRow>

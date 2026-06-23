@@ -165,6 +165,10 @@ export default function EventDetailsPage() {
                 <span>{formatDate(event.start_date)}</span>
               </div>
               <div className="flex items-center gap-3">
+                <Calendar className="size-4 text-[#7b5800]" />
+                <span>{event.session?.code ?? "Session not assigned"}</span>
+              </div>
+              <div className="flex items-center gap-3">
                 <MapPin className="size-4 text-[#7b5800]" />
                 <span>{event.venue?.name ?? "Venue TBA"}</span>
               </div>

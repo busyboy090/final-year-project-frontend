@@ -1,7 +1,29 @@
 import { ArrowRight, CalendarCheck } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
+import { apiClient } from '@/apis/axios';
+import useAuth from '@/hooks/useAuth';
+import type { PaginatedEventsResponse } from '@/types/event';
 
 const Hero = () => {
+  const { isAuthenticated } = useAuth();
+  const { data: upcomingEvents } = useQuery({
+    queryKey: ['home-upcoming-event'],
+    queryFn: async () => {
+      const response = await apiClient.get<PaginatedEventsResponse>('/v1/events', {
+        params: {
+          limit: 1,
+          page: 1,
+          status: 'approved',
+          start_date_from: new Date(),
+        },
+      });
+      return response.data.events ?? [];
+    },
+    enabled: Boolean(isAuthenticated),
+  });
+  const upcomingEvent = upcomingEvents?.[0];
+
   return (
     <section className="relative min-h-[850px] md:min-h-[700px] flex items-center overflow-hidden bg-gradient-to-br from-[#001e40] to-[#003366]">
       <div 
@@ -41,8 +63,12 @@ const Hero = () => {
                 <CalendarCheck className="text-[#735200] w-6 h-6" />
               </div>
               <div>
-                <p className="text-white text-xs uppercase tracking-widest font-bold">Upcoming Event</p>
-                <p className="text-white font-medium">Founder's Day Gala 2026</p>
+                <p className="text-white text-xs uppercase tracking-widest font-bold">
+                  {upcomingEvent ? 'Upcoming Event' : 'Live Event Updates'}
+                </p>
+                <p className="text-white font-medium">
+                  {upcomingEvent?.title ?? 'Sign in to view upcoming events'}
+                </p>
               </div>
             </div>
           </div>

@@ -89,6 +89,11 @@ function EventTableRow({ event, index }: EventTableRowProps) {
                 <span className="line-clamp-1">{event.venue?.name ?? "N/A"}</span>
             </TableCell>
 
+            {/* Session */}
+            <TableCell className="text-sm text-slate-600 text-center">
+                <span className="whitespace-nowrap">{event.session?.code ?? "N/A"}</span>
+            </TableCell>
+
             {/* Date & Time */}
             <TableCell>
                 <span className="font-semibold text-[#001e40] whitespace-nowrap">{formatDate(event.start_date)}</span>
@@ -140,7 +145,7 @@ function EventTableRow({ event, index }: EventTableRowProps) {
                         size="icon"
                         className="size-8 text-slate-600 hover:bg-slate-100 hover:text-slate-900"
                         title="Edit Event"
-                        disabled={!creator}
+                        disabled={!canManageActions}
                         onClick={() => navigate(`${event.id}/edit`)}
                     >
                         <Pencil className="size-4" />
@@ -150,31 +155,35 @@ function EventTableRow({ event, index }: EventTableRowProps) {
                     {/* Conditional Admin/Creator Actions */}
                     {canManageActions && (
                         <>
-                            {/* Approve Button */}
-                            <Button
-                                variant="ghost"
-                                size="icon"
-                                className="size-8 text-emerald-600 hover:bg-emerald-50 hover:text-emerald-700"
-                                title="Approve Event"
-                                disabled={updateStatus.isPending || event.status === "approved"}
-                                onClick={() => handleStatusChange("approved")}
-                            >
-                                <Check className="size-4" />
-                                <span className="sr-only">Approve</span>
-                            </Button>
+                            {isSuperAdmin && (
+                                <>
+                                    {/* Approve Button */}
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        className="size-8 text-emerald-600 hover:bg-emerald-50 hover:text-emerald-700"
+                                        title="Approve Event"
+                                        disabled={updateStatus.isPending || event.status === "approved"}
+                                        onClick={() => handleStatusChange("approved")}
+                                    >
+                                        <Check className="size-4" />
+                                        <span className="sr-only">Approve</span>
+                                    </Button>
 
-                            {/* Reject Button */}
-                            <Button
-                                variant="ghost"
-                                size="icon"
-                                className="size-8 text-red-600 hover:bg-red-50 hover:text-red-700"
-                                title="Reject Event"
-                                disabled={updateStatus.isPending || event.status === "rejected"}
-                                onClick={() => handleStatusChange("rejected")}
-                            >
-                                <X className="size-4" />
-                                <span className="sr-only">Reject</span>
-                            </Button>
+                                    {/* Reject Button */}
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        className="size-8 text-red-600 hover:bg-red-50 hover:text-red-700"
+                                        title="Reject Event"
+                                        disabled={updateStatus.isPending || event.status === "rejected"}
+                                        onClick={() => handleStatusChange("rejected")}
+                                    >
+                                        <X className="size-4" />
+                                        <span className="sr-only">Reject</span>
+                                    </Button>
+                                </>
+                            )}
 
                             <Button
                                 variant="ghost"

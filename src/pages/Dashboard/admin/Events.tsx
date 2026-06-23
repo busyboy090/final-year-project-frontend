@@ -22,6 +22,7 @@ import EventsTable from '@/features/dashboard/admin/EventsTable';
 import StatCard from '@/features/dashboard/components/StatCard';
 import { useEventStats, useGetEvents } from '@/hooks/useEvent';
 import { useOrganisations } from '@/hooks/useOrganisation';
+import { useAcademicSessions, useCurrentAcademicSession } from '@/hooks/useAcademicData';
 import { Link, useSearchParams } from 'react-router-dom';
 import type { EventCategory, EventStatus } from '@/types/event';
 import { Label } from '@/components/ui/label';
@@ -36,6 +37,8 @@ function Events() {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const { data: orgData } = useOrganisations();
+  const { data: sessions = [] } = useAcademicSessions();
+  const { data: currentSession } = useCurrentAcademicSession();
   const { data: stats, isLoading: isStatsLoading } = useEventStats();
 
   const organisations = orgData?.data ?? [];
@@ -46,6 +49,7 @@ function Events() {
   const search = searchParams.get('search') ?? '';
   const status = searchParams.get('status') ?? 'all';
   const organisation_id = searchParams.get('organisation_id') ?? 'all';
+  const session_id = searchParams.get('session_id') ?? 'all';
   const category = searchParams.get('category') ?? 'all';
 
   const [localSearch, setLocalSearch] = useState(search);
@@ -84,6 +88,7 @@ function Events() {
     search: search || undefined,
     status: status !== 'all' ? (status as EventStatus) : undefined,
     organisation_id: organisation_id !== 'all' ? Number(organisation_id) : undefined,
+    session_id: session_id !== 'all' ? Number(session_id) : undefined,
     category: category !== 'all' ? (category as EventCategory) : undefined,
     venue_id,
     creator_by,
@@ -137,7 +142,7 @@ function Events() {
       </section>
 
       {/* Inline Filters Form Section */}
-      <div className="bg-slate-100/60 p-5 rounded-xl border border-slate-200/60 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 animate-in slide-in-from-top-4 duration-300 items-center">
+      <div className="bg-slate-100/60 p-5 rounded-xl border border-slate-200/60 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-4 animate-in slide-in-from-top-4 duration-300 items-center">
 
         {/* Search Term Filter */}
         <div className="flex flex-col gap-1.5">
@@ -188,6 +193,33 @@ function Events() {
               <SelectItem value="approved">Approved</SelectItem>
               <SelectItem value="rejected">Rejected</SelectItem>
               <SelectItem value="cancelled">Cancelled</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        {/* Session Filter */}
+        <div className="flex flex-col gap-1.5">
+          <Label className="text-[11px] font-extrabold uppercase tracking-wider px-0.5">
+            Session
+          </Label>
+          <Select value={session_id} onValueChange={(val) => updateParam('session_id', val)}>
+            <SelectTrigger className="bg-white w-full h-10!">
+              <SelectValue placeholder="All Sessions" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Sessions</SelectItem>
+              {currentSession && (
+                <SelectItem value={String(currentSession.id)}>
+                  {currentSession.code} (Current)
+                </SelectItem>
+              )}
+              {sessions
+                .filter((session) => session.id !== currentSession?.id)
+                .map((session) => (
+                  <SelectItem key={session.id} value={String(session.id)}>
+                    {session.code}
+                  </SelectItem>
+                ))}
             </SelectContent>
           </Select>
         </div>

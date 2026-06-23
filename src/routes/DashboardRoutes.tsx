@@ -28,6 +28,7 @@ import Facilities from "@/pages/Dashboard/admin/Facilities";
 import Attendance from "@/pages/Dashboard/admin/Attendance";
 import Levels from "@/pages/Dashboard/admin/Levels";
 import Organisations from "@/pages/Dashboard/admin/Organisations";
+import Sessions from "@/pages/Dashboard/admin/Sessions";
 
 // Event Organiser Pages
 import EventOrganiserDashboard from "@/pages/Dashboard/event-organiser/Dashboard";
@@ -85,6 +86,7 @@ function DashboardRoutes() {
               <Route path="admin/facilities" element={<Facilities />} />
               <Route path="admin/departments" element={<Departments />} />
               <Route path="admin/organisations" element={<Organisations />} />
+              <Route path="admin/sessions" element={<Sessions />} />
               <Route path="admin/levels" element={<Levels />} />
               <Route path="admin/users" element={<UserManagement />} />
               <Route path="admin/settings" element={<AdminDashboard />} />

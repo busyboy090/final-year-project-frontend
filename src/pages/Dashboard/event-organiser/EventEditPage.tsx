@@ -19,12 +19,14 @@ import { Textarea } from "@/components/ui/textarea";
 import EventStepAudience from "./EventStepAudience";
 import { useGetEvent, useUpdateEvent } from "@/hooks/useEvent";
 import { useVenues } from "@/hooks/useVenue";
+import { useAcademicSessions, useCurrentAcademicSession } from "@/hooks/useAcademicData";
 import type { Event, EventAudienceRule } from "@/types/event";
 
 type EditEventForm = {
   title: string;
   category: Event["category"];
   description: string;
+  session_id: string;
   venue_id: string;
   capacity: string;
   startDate: string;
@@ -121,6 +123,8 @@ export default function EventEditPage() {
   const navigate = useNavigate();
   const { data: event, isLoading } = useGetEvent(eventId);
   const updateEvent = useUpdateEvent();
+  const { data: sessions = [] } = useAcademicSessions();
+  const { data: currentSession } = useCurrentAcademicSession();
   const { data: venuesData } = useVenues({ limit: 100, status: "available" });
   const venues = Array.isArray(venuesData) ? venuesData : venuesData?.items || [];
 
@@ -137,6 +141,7 @@ export default function EventEditPage() {
       title: "",
       category: "Academic Conference",
       description: "",
+      session_id: "",
       venue_id: "",
       capacity: "",
       startDate: "",
@@ -159,6 +164,7 @@ export default function EventEditPage() {
       title: event.title,
       category: event.category,
       description: event.description,
+      session_id: String(event.session_id ?? currentSession?.id ?? ""),
       venue_id: String(event.venue_id),
       capacity: String(event.capacity),
       startDate: dateInput(event.start_date),
@@ -168,7 +174,7 @@ export default function EventEditPage() {
       audience_scope: event.audience_scope ?? "all",
       ...audienceValues,
     });
-  }, [event, reset]);
+  }, [currentSession?.id, event, reset]);
 
   const onSubmit = async (values: EditEventForm) => {
     if (values.audience_scope === "custom" && values.audience_roles.length === 0) {
@@ -183,6 +189,7 @@ export default function EventEditPage() {
           title: values.title,
           category: values.category,
           description: values.description,
+          session_id: Number(values.session_id),
           venue_id: Number(values.venue_id),
           capacity: Number(values.capacity),
           startDate: values.startDate,
@@ -269,6 +276,30 @@ export default function EventEditPage() {
               {...register("description", { required: "Description is required" })}
             />
             {errors.description && <p className="text-xs text-red-500">{errors.description.message}</p>}
+          </div>
+
+          <div className="space-y-2">
+            <Label>Academic Session</Label>
+            <Controller
+              name="session_id"
+              control={control}
+              rules={{ required: "Academic session is required" }}
+              render={({ field }) => (
+                <Select value={field.value} onValueChange={field.onChange}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select session" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {sessions.map((session) => (
+                      <SelectItem key={session.id} value={String(session.id)}>
+                        {session.code} {session.is_active ? "(Current)" : ""}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
+            />
+            {errors.session_id && <p className="text-xs text-red-500">{errors.session_id.message}</p>}
           </div>
         </CardContent>
       </Card>

@@ -16,10 +16,12 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { useEffect } from 'react';
+import { useCurrentAcademicSession } from '@/hooks/useAcademicData';
 
 export function DashboardSidebar({ navItems }: { navItems: NavItem[] }) {
   const location = useLocation();
   const { state, isMobile, setOpenMobile } = useSidebar();
+  const { data: currentSession } = useCurrentAcademicSession();
 
   /**
    * isRailMode is true ONLY when:
@@ -104,7 +106,9 @@ export function DashboardSidebar({ navItems }: { navItems: NavItem[] }) {
             <p className="text-white/60 text-[10px] uppercase tracking-tighter mb-1">
               Academic Session
             </p>
-            <p className="text-amber-500 font-bold text-sm">2025/2026</p>
+            <p className="text-amber-500 font-bold text-sm">
+              {currentSession?.code ?? "Not set"}
+            </p>
           </div>
         )}
       </SidebarFooter>

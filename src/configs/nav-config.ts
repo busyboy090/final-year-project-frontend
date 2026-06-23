@@ -1,6 +1,7 @@
 import {
     LayoutDashboard,
     CalendarDays,
+    CalendarCog,
     MapPin,
     UserRoundCheck,
     CalendarCheck,
@@ -30,6 +31,7 @@ export const superAdminNavItems: NavItem[] = [
     { icon: Building2, label: 'Faculties', path: '/dashboard/admin/faculties' },
     { icon: Layers3, label: 'Departments', path: '/dashboard/admin/departments' },
     { icon: Building2, label: 'Organisations', path: '/dashboard/admin/organisations' },
+    { icon: CalendarCog, label: 'Sessions', path: '/dashboard/admin/sessions' },
     { icon: GraduationCap, label: 'Levels', path: '/dashboard/admin/levels' },
     { icon: Wrench, label: 'Facilities', path: '/dashboard/admin/facilities' },
     { icon: UserRoundCheck, label: 'Attendance', path: '/dashboard/admin/attendance' },

@@ -1,14 +1,25 @@
 import { Controller } from 'react-hook-form';
+import { useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Info, Bold, Italic, List, ImageIcon, CloudUpload, ArrowRight, X } from 'lucide-react';
+import { useAcademicSessions, useCurrentAcademicSession } from '@/hooks/useAcademicData';
 
 export default function EventStepBasicDetails({ register, control, errors, watch, setValue, onNext }: any) {
+  const { data: sessions = [] } = useAcademicSessions();
+  const { data: currentSession } = useCurrentAcademicSession();
   // Watch the image field to generate a local preview URL instantly
   const imageFile = watch('thumbnail');
+  const selectedSessionId = watch('session_id');
   const previewUrl = imageFile && imageFile[0] ? URL.createObjectURL(imageFile[0]) : null;
+
+  useEffect(() => {
+    if (!selectedSessionId && currentSession?.id) {
+      setValue('session_id', String(currentSession.id), { shouldValidate: true });
+    }
+  }, [currentSession?.id, selectedSessionId, setValue]);
 
   const handleClearImage = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -63,6 +74,30 @@ export default function EventStepBasicDetails({ register, control, errors, watch
                 )}
               />
               {errors.category && <p className="text-xs text-red-500 font-medium">{errors.category.message}</p>}
+            </div>
+
+            <div className="space-y-2">
+              <Label className="text-[10px] font-bold uppercase tracking-widest text-[#001e40]">Academic Session</Label>
+              <Controller
+                name="session_id"
+                control={control}
+                rules={{ required: 'Please select an academic session' }}
+                render={({ field }) => (
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <SelectTrigger className="w-full h-10!">
+                      <SelectValue placeholder="Select Session" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {sessions.map((session) => (
+                        <SelectItem key={session.id} value={String(session.id)}>
+                          {session.code} {session.is_active ? '(Current)' : ''}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
+              />
+              {errors.session_id && <p className="text-xs text-red-500 font-medium">{errors.session_id.message}</p>}
             </div>
 
             {/* Event Description Markdown / Rich Area Editor */}

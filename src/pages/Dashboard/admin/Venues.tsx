@@ -3,8 +3,12 @@ import StatCard from "@/features/dashboard/components/StatCard";
 import VenueTable from '@/features/dashboard/admin/VenueTable';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
+import { useVenueStats } from '@/hooks/useVenue';
 
 export default function VenueManagement() {
+  const { data: venueStats, isLoading } = useVenueStats();
+  const metric = (value?: number) => isLoading ? "..." : String(value ?? 0).padStart(2, "0");
+
   return (
     <div>
       {/* Header Section */}
@@ -28,13 +32,13 @@ export default function VenueManagement() {
 
       {/* Stats Bar */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
-        <StatCard icon={DoorOpen} label="Total Venues" value="42" />
-        <StatCard icon={CheckCircle} label="Available Now" value="28" iconColor="bg-green-500" />
-        <StatCard icon={Construction} label="In Maintenance" value="04" />
+        <StatCard icon={DoorOpen} label="Total Venues" value={metric(venueStats?.total)} />
+        <StatCard icon={CheckCircle} label="Available Now" value={metric(venueStats?.available)} iconColor="bg-green-500" />
+        <StatCard icon={Construction} label="In Maintenance" value={metric(venueStats?.maintenance)} />
         <div className="bg-[#001e40] text-white p-6 rounded-xl shadow-xl overflow-hidden relative group">
           <div className="relative z-10">
             <p className="text-[10px] uppercase font-bold text-blue-200 tracking-wider">Current Occupancy</p>
-            <p className="text-2xl font-black">74%</p>
+            <p className="text-2xl font-black">{isLoading ? "..." : `${venueStats?.occupancyRate ?? 0}%`}</p>
           </div>
           <Users size={80} className="absolute -right-4 -bottom-4 opacity-10 group-hover:scale-110 transition-transform duration-700" />
         </div>
