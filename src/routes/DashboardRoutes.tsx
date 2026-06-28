@@ -74,10 +74,6 @@ function DashboardRoutes() {
               <Route path="admin/venues/add" element={<AddVenuePage />} />
               <Route path="admin/venues/edit/:id" element={<EditVenuePage />} />
               <Route path="admin/venues/:id" element={<VenueDetailsPage />} />
-              <Route
-                path="admin/events/create"
-                element={<EventCreationPage />}
-              />
               <Route path="admin/reports" element={<AdminReports />} />
               <Route path="admin/attendance" element={<Attendance />} />
               <Route path="admin/faculties" element={<Faculties />} />
