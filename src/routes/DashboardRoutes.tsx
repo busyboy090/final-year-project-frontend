@@ -40,12 +40,10 @@ import EventEditPage from "@/pages/Dashboard/event-organiser/EventEditPage";
 // Staff Pages
 import StaffDashboard from "@/pages/Dashboard/user/Dashboard";
 import StaffProfile from "@/pages/Dashboard/user/StaffProfileSettings";
-import StaffSettings from "@/pages/Dashboard/staff/Settings";
 
 // Student Pages
 import StudentDashboard from "@/pages/Dashboard/user/Dashboard";
 import StudentProfile from "@/pages/Dashboard/student/Profile";
-import StudentSettings from "@/pages/Dashboard/student/Settings";
 
 // Shared User Pages
 import UserEvents from "@/pages/Dashboard/user/Events";
@@ -89,7 +87,6 @@ function DashboardRoutes() {
               <Route path="admin/sessions" element={<Sessions />} />
               <Route path="admin/levels" element={<Levels />} />
               <Route path="admin/users" element={<UserManagement />} />
-              <Route path="admin/settings" element={<AdminDashboard />} />
             </Route>
 
             {/* ── Event Organiser ── */}
@@ -120,10 +117,6 @@ function DashboardRoutes() {
                 path="event-organiser/analytics"
                 element={<AdminReports />}
               />
-              <Route
-                path="event-organiser/settings"
-                element={<EventOrganiserProfile />}
-              />
             </Route>
 
             {/* ── Staff ── */}
@@ -134,7 +127,6 @@ function DashboardRoutes() {
               <Route path="staff/events/:id" element={<EventDetailsPage />} />
               <Route path="staff/my-events" element={<MyEvents />} />
               <Route path="staff/analytics" element={<StaffDashboard />} />
-              <Route path="staff/settings" element={<StaffSettings />} />
             </Route>
 
             {/* ── Student ── */}
@@ -145,7 +137,6 @@ function DashboardRoutes() {
               <Route path="student/events/:id" element={<EventDetailsPage />} />
               <Route path="student/my-events" element={<MyEvents />} />
               <Route path="student/analytics" element={<StudentDashboard />} />
-              <Route path="student/settings" element={<StudentSettings />} />
             </Route>
 
             {/* ── Student ── */}

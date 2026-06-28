@@ -12,7 +12,6 @@ import {
     GraduationCap,
     Layers3,
     Wrench,
-    Settings,
     type LucideIcon,
     User
 } from 'lucide-react';
@@ -37,7 +36,6 @@ export const superAdminNavItems: NavItem[] = [
     { icon: UserRoundCheck, label: 'Attendance', path: '/dashboard/admin/attendance' },
     { icon: Users, label: 'Users', path: '/dashboard/admin/users' },
     { icon: BarChart3, label: 'Reports', path: '/dashboard/admin/reports' },
-    { icon: Settings, label: 'Settings', path: '/dashboard/admin/settings' }
 ];
 
 export const studentNavItems = [
@@ -46,8 +44,7 @@ export const studentNavItems = [
     { icon: CalendarCheck, label: 'Events', path: '/dashboard/student/events' },
     { icon: UserRoundCheck, label: 'My Events', path: '/dashboard/student/my-events' },
     { icon: ChartNoAxesColumn, label: 'Analytics', path: '/dashboard/student/analytics' },
-    { icon: User, label: 'Profile', path: '/dashboard/student/profile' },
-    { icon: Settings, label: 'Settings', path: '/dashboard/student/settings' }
+    { icon: User, label: 'Profile', path: '/dashboard/student/profile' }
   ];
 
 export const staffNavItems = [
@@ -56,8 +53,7 @@ export const staffNavItems = [
     { icon: CalendarCheck, label: 'Events', path: '/dashboard/staff/events' },
     { icon: UserRoundCheck, label: 'My Events', path: '/dashboard/staff/my-events' },
     { icon: ChartNoAxesColumn, label: 'Analytics', path: '/dashboard/staff/analytics' },
-    { icon: User, label: 'Profile', path: '/dashboard/staff/profile' },
-    { icon: Settings, label: 'Settings', path: '/dashboard/staff/settings' }
+    { icon: User, label: 'Profile', path: '/dashboard/staff/profile' }
   ];
 
 export const eventOrganiserNavItems = [
@@ -65,6 +61,5 @@ export const eventOrganiserNavItems = [
     { icon: CalendarDays, label: 'Calendar', path: '/dashboard/calendar' },
     { icon: CalendarCheck, label: 'My Events', path: '/dashboard/event-organiser/my-events' },
     { icon: ChartNoAxesColumn, label: 'Analytics', path: '/dashboard/event-organiser/analytics' },
-    { icon: User, label: 'Profile', path: '/dashboard/event-organiser/profile' },
-    { icon: Settings, label: 'Settings', path: '/dashboard/event-organiser/settings' }
+    { icon: User, label: 'Profile', path: '/dashboard/event-organiser/profile' }
   ];
