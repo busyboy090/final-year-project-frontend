@@ -8,7 +8,7 @@ export default function Reports() {
   const { data: stats, isLoading } = useEventStats();
 
   return (
-    <div className="mx-auto max-w-6xl space-y-6">
+    <div className="space-y-6">
       <div>
         <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#7b5800]">
           Insights
