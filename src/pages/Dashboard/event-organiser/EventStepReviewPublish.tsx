@@ -220,7 +220,7 @@ export default function EventStepReviewPublish({
           
           <div className="relative pl-6 border-l-2 border-slate-100 dark:border-slate-800 space-y-6">
             <div className="relative">
-              <div className="absolute -left-[31px] top-1 w-4 h-4 rounded-full bg-[#7b5800] ring-4 ring-white dark:ring-slate-900"></div>
+              <div className="absolute -left-7.75 top-1 w-4 h-4 rounded-full bg-[#7b5800] ring-4 ring-white dark:ring-slate-900"></div>
               <p className="text-[10px] uppercase tracking-widest text-[#7b5800] font-bold">Start Activation Window</p>
               <p className="text-sm font-semibold text-slate-900 dark:text-slate-50 mt-0.5">
                 {currentValues.startDate || 'Unassigned Date'} @ {currentValues.startTime || '00:00'}
@@ -228,7 +228,7 @@ export default function EventStepReviewPublish({
             </div>
             
             <div className="relative">
-              <div className="absolute -left-[31px] top-1 w-4 h-4 rounded-full bg-[#001e40]/20 dark:bg-slate-800 ring-4 ring-white dark:ring-slate-900"></div>
+              <div className="absolute -left-7.75 top-1 w-4 h-4 rounded-full bg-[#001e40]/20 dark:bg-slate-800 ring-4 ring-white dark:ring-slate-900"></div>
               <p className="text-[10px] uppercase tracking-widest text-slate-400 font-bold">Projected Close Window</p>
               <p className="text-sm font-semibold text-slate-700 dark:text-slate-300 mt-0.5">
                 {currentValues.endDate || 'Unassigned Date'} @ {currentValues.endTime || '00:00'}

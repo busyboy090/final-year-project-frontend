@@ -114,7 +114,7 @@ export default function EventStepBasicDetails({ register, control, errors, watch
                     required: 'An explicit functional outline description is required',
                     minLength: { value: 30, message: 'Provide clear documentation (minimum 30 characters)' }
                   })}
-                  className="w-full bg-transparent p-4 outline-none resize-none text-sm min-h-[150px]"
+                  className="w-full bg-transparent p-4 outline-none resize-none text-sm min-h-37.5"
                   placeholder="Articulate purpose and scope..."
                 />
               </div>
