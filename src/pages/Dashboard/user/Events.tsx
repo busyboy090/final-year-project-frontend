@@ -11,6 +11,7 @@ import {
 import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -160,6 +161,7 @@ function EventCard({
 }
 
 export default function Events() {
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
   const { data, isLoading, isError } = useGetEvents({
     status: "approved",
@@ -206,6 +208,7 @@ export default function Events() {
     try {
       await joinEvent.mutateAsync(eventId);
       toast.success("You're registered! See you at the event.");
+      queryClient.invalidateQueries({ queryKey: ["myEnrollments"] });
     } catch (error: any) {
       toast.error(
         error?.response?.data?.message ?? "Could not register for event.",

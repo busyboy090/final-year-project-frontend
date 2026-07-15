@@ -15,11 +15,11 @@ export default function EventStepBasicDetails({ register, control, errors, watch
   const selectedSessionId = watch('session_id');
   const previewUrl = imageFile && imageFile[0] ? URL.createObjectURL(imageFile[0]) : null;
 
-  useEffect(() => {
-    if (!selectedSessionId && currentSession?.id) {
-      setValue('session_id', String(currentSession.id), { shouldValidate: true });
-    }
-  }, [currentSession?.id, selectedSessionId, setValue]);
+  // useEffect(() => {
+  //   if (!selectedSessionId && currentSession?.id) {
+  //     setValue('session_id', String(currentSession.id), { shouldValidate: true });
+  //   }
+  // }, [currentSession?.id, selectedSessionId, setValue]);
 
   const handleClearImage = (e: React.MouseEvent) => {
     e.preventDefault();
