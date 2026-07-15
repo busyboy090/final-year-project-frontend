@@ -208,7 +208,7 @@ export default function Events() {
     try {
       await joinEvent.mutateAsync(eventId);
       toast.success("You're registered! See you at the event.");
-      queryClient.invalidateQueries({ queryKey: ["myEnrollments"] });
+      queryClient.invalidateQueries({ queryKey: ["my-enrollments"] });
     } catch (error: any) {
       toast.error(
         error?.response?.data?.message ?? "Could not register for event.",
