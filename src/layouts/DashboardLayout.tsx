@@ -64,7 +64,7 @@ function DashboardLayout({ children }: { children?: ReactNode }) {
         </div>
         <button
           onClick={() => {
-            navigate(`/dashboard/${settingsSegment}/settings`);
+            navigate(`/dashboard/${settingsSegment}/profile`);
             toast.dismiss(PROFILE_TOAST_ID);
           }}
           className="ml-2 px-3 py-1 bg-blue-600 text-white text-xs font-medium rounded hover:bg-blue-700 transition-colors shrink-0"
