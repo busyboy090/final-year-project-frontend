@@ -29,6 +29,7 @@ import Attendance from "@/pages/Dashboard/admin/Attendance";
 import Levels from "@/pages/Dashboard/admin/Levels";
 import Organisations from "@/pages/Dashboard/admin/Organisations";
 import Sessions from "@/pages/Dashboard/admin/Sessions";
+import ScanCheckIn from "@/pages/Dashboard/ScanCheckIn";
 
 // Event Organiser Pages
 import EventOrganiserDashboard from "@/pages/Dashboard/event-organiser/Dashboard";
@@ -76,6 +77,7 @@ function DashboardRoutes() {
               <Route path="admin/venues/:id" element={<VenueDetailsPage />} />
               <Route path="admin/reports" element={<AdminReports />} />
               <Route path="admin/attendance" element={<Attendance />} />
+              <Route path="admin/scan" element={<ScanCheckIn />} />
               <Route path="admin/faculties" element={<Faculties />} />
               <Route path="admin/facilities" element={<Facilities />} />
               <Route path="admin/departments" element={<Departments />} />
@@ -113,6 +115,7 @@ function DashboardRoutes() {
                 path="event-organiser/analytics"
                 element={<AdminReports />}
               />
+              <Route path="event-organiser/scan" element={<ScanCheckIn />} />
             </Route>
 
             {/* ── Staff ── */}

@@ -12,6 +12,7 @@ import {
     GraduationCap,
     Layers3,
     Wrench,
+    ScanLine,
     type LucideIcon,
     User
 } from 'lucide-react';
@@ -34,6 +35,7 @@ export const superAdminNavItems: NavItem[] = [
     { icon: GraduationCap, label: 'Levels', path: '/dashboard/admin/levels' },
     { icon: Wrench, label: 'Facilities', path: '/dashboard/admin/facilities' },
     { icon: UserRoundCheck, label: 'Attendance', path: '/dashboard/admin/attendance' },
+    { icon: ScanLine, label: 'Scan Check-In', path: '/dashboard/admin/scan' },
     { icon: Users, label: 'Users', path: '/dashboard/admin/users' },
     { icon: BarChart3, label: 'Reports', path: '/dashboard/admin/reports' },
 ];
@@ -60,6 +62,7 @@ export const eventOrganiserNavItems = [
     { icon: LayoutDashboard, label: 'Dashboard', path: '/dashboard/event-organiser', active: true },
     { icon: CalendarDays, label: 'Calendar', path: '/dashboard/calendar' },
     { icon: CalendarCheck, label: 'My Events', path: '/dashboard/event-organiser/my-events' },
+    { icon: ScanLine, label: 'Scan Check-In', path: '/dashboard/event-organiser/scan' },
     { icon: ChartNoAxesColumn, label: 'Analytics', path: '/dashboard/event-organiser/analytics' },
     { icon: User, label: 'Profile', path: '/dashboard/event-organiser/profile' }
   ];

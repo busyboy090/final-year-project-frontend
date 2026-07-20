@@ -185,6 +185,30 @@ export const useCheckInEnrollment = () => {
     });
 };
 
+export interface CheckinWithTokenResult {
+    success: boolean;
+    message: string;
+    data?: {
+        id: number;
+        status: string;
+        check_in_time: string | null;
+        user?: { first_name?: string; last_name?: string; email?: string };
+        event?: { title?: string };
+    };
+}
+
+export const useCheckinWithToken = () => {
+    return useMutation({
+        mutationFn: async ({ token, scannerId }: { token: string; scannerId?: string }) => {
+            const response = await apiClient.post<CheckinWithTokenResult>(
+                `/v1/events/enrollments/checkin-with-token`,
+                { token, scanner_id: scannerId },
+            );
+            return response.data;
+        },
+    });
+};
+
 export const useEventAttendanceStats = (eventId?: number) => {
     return useQuery({
         queryKey: ["event-attendance-stats", eventId],
