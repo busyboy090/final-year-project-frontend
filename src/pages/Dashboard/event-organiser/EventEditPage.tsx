@@ -21,6 +21,8 @@ import { useGetEvent, useUpdateEvent } from "@/hooks/useEvent";
 import { useVenues } from "@/hooks/useVenue";
 import { useAcademicSessions, useCurrentAcademicSession } from "@/hooks/useAcademicData";
 import type { Event, EventAudienceRule } from "@/types/event";
+import type { Venue } from "@/types/venue";
+import type { AcademicSession } from "@/types/academic-session";
 
 type EditEventForm = {
   title: string;
@@ -126,7 +128,20 @@ export default function EventEditPage() {
   const { data: sessions = [] } = useAcademicSessions();
   const { data: currentSession } = useCurrentAcademicSession();
   const { data: venuesData } = useVenues({ limit: 100, status: "available" });
-  const venues = Array.isArray(venuesData) ? venuesData : venuesData?.items || [];
+  const fetchedVenues = Array.isArray(venuesData) ? venuesData : venuesData?.items || [];
+
+  // The venue/session dropdowns are fed by filtered/paginated lists (e.g. only
+  // "available" venues). If the event's currently-assigned venue or session
+  // has since fallen outside that filter (venue put into maintenance, etc.),
+  // it would silently disappear from the options — making the dropdown look
+  // empty even though the correct id is still stored in the form. Make sure
+  // the event's own venue/session is always present as an option.
+  const venues = event?.venue && !fetchedVenues.some((v: Venue) => v.id === event.venue?.id)
+    ? [...fetchedVenues, event.venue]
+    : fetchedVenues;
+  const sessionsList = event?.session && !sessions.some((s: AcademicSession) => s.id === event.session?.id)
+    ? [...sessions, event.session]
+    : sessions;
 
   const {
     register,
@@ -290,7 +305,7 @@ export default function EventEditPage() {
                     <SelectValue placeholder="Select session" />
                   </SelectTrigger>
                   <SelectContent>
-                    {sessions.map((session) => (
+                    {sessionsList.map((session: any) => (
                       <SelectItem key={session.id} value={String(session.id)}>
                         {session.code} {session.is_active ? "(Current)" : ""}
                       </SelectItem>
