@@ -275,7 +275,9 @@ export default function EventEditPage() {
               render={({ field }) => (
                 <Select value={field.value} onValueChange={field.onChange}>
                   <SelectTrigger className="w-full">
-                    <SelectValue />
+                    <SelectValue placeholder="Select category">
+                      {field.value}
+                    </SelectValue>
                   </SelectTrigger>
                   <SelectContent>
                     {categoryOptions.map((category) => (
@@ -307,7 +309,14 @@ export default function EventEditPage() {
               render={({ field }) => (
                 <Select value={field.value} onValueChange={field.onChange}>
                   <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Select session" />
+                    <SelectValue placeholder="Select session">
+                      {(() => {
+                        const selected = sessionsList.find(
+                          (s: AcademicSession) => String(s.id) === field.value,
+                        );
+                        return selected ? `${selected.code}${selected.is_active ? " (Current)" : ""}` : undefined;
+                      })()}
+                    </SelectValue>
                   </SelectTrigger>
                   <SelectContent>
                     {sessionsList.map((session: any) => (
@@ -338,7 +347,9 @@ export default function EventEditPage() {
               render={({ field }) => (
                 <Select value={field.value} onValueChange={field.onChange}>
                   <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Select venue" />
+                    <SelectValue placeholder="Select venue">
+                      {venues.find((v: Venue) => String(v.id) === field.value)?.name}
+                    </SelectValue>
                   </SelectTrigger>
                   <SelectContent>
                     {venues.map((venue: any) => (
