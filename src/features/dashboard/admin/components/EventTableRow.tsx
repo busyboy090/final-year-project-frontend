@@ -1,6 +1,17 @@
 import { TableCell, TableRow } from "@/components/ui/table";
 import StatusBadge from "./StatusBadge";
 import { Button } from "@/components/ui/button";
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Ban, Check, Eye, Pencil, Trash2, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Event } from "@/types/event";
@@ -197,17 +208,38 @@ function EventTableRow({ event, index }: EventTableRowProps) {
                                 <span className="sr-only">Cancel</span>
                             </Button>
 
-                            <Button
-                                variant="ghost"
-                                size="icon"
-                                className="size-8 text-red-700 hover:bg-red-50 hover:text-red-800"
-                                title="Delete Event"
-                                disabled={deleteEvent.isPending}
-                                onClick={handleDelete}
-                            >
-                                <Trash2 className="size-4" />
-                                <span className="sr-only">Delete</span>
-                            </Button>
+                            <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        className="size-8 text-red-700 hover:bg-red-50 hover:text-red-800"
+                                        title="Delete Event"
+                                        disabled={deleteEvent.isPending}
+                                    >
+                                        <Trash2 className="size-4" />
+                                        <span className="sr-only">Delete</span>
+                                    </Button>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                        <AlertDialogTitle>Delete "{event.title}"?</AlertDialogTitle>
+                                        <AlertDialogDescription>
+                                            This will permanently remove the event and its enrollment records. This action cannot be undone.
+                                        </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                        <AlertDialogAction
+                                            className="bg-red-700 text-white hover:bg-red-800"
+                                            onClick={handleDelete}
+                                            disabled={deleteEvent.isPending}
+                                        >
+                                            Delete
+                                        </AlertDialogAction>
+                                    </AlertDialogFooter>
+                                </AlertDialogContent>
+                            </AlertDialog>
                         </>
                     )}
                 </div>
