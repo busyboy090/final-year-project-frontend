@@ -61,7 +61,7 @@ export const staffNavItems = [
 export const eventOrganiserNavItems = [
     { icon: LayoutDashboard, label: 'Dashboard', path: '/dashboard/event-organiser', active: true },
     { icon: CalendarDays, label: 'Calendar', path: '/dashboard/calendar' },
-    { icon: CalendarCheck, label: 'My Events', path: '/dashboard/event-organiser/my-events' },
+    { icon: CalendarCheck, label: 'Events', path: '/dashboard/event-organiser/my-events' },
     { icon: ScanLine, label: 'Scan Check-In', path: '/dashboard/event-organiser/scan' },
     { icon: ChartNoAxesColumn, label: 'Analytics', path: '/dashboard/event-organiser/analytics' },
     { icon: User, label: 'Profile', path: '/dashboard/event-organiser/profile' }
