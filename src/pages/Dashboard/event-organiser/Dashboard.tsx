@@ -11,6 +11,7 @@ import {
   ChevronRight,
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useMemo } from 'react';
 import WelcomeBack from '@/components/ui/welcome-back';
 import StatCard from '@/features/dashboard/components/StatCard';
 import { useVenues } from '@/hooks/useVenue';
@@ -22,11 +23,14 @@ export default function CuratorDashboardMain() {
   const { user } = useAuth();
   const { data: stats } = useEventStats();
   const { data: recentEventsData } = useGetEvents({ limit: 4, created_by: user?.id });
+  // Computed once per mount — see admin Dashboard.tsx for why an inline
+  // `new Date()` here causes an infinite refetch loop.
+  const now = useMemo(() => new Date(), []);
   const { data: upcomingEventsData } = useGetEvents({
     limit: 3,
     status: "approved",
     created_by: user?.id,
-    start_date_from: new Date(),
+    start_date_from: now,
   });
   const recentEvents = recentEventsData?.events ?? [];
   const upcomingEvents = (upcomingEventsData?.events ?? [])

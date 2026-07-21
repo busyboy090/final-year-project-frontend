@@ -1,4 +1,5 @@
 import WelcomeBack from '@/components/ui/welcome-back';
+import { useMemo } from 'react';
 import StatCard from '@/features/dashboard/components/StatCard';
 import { Calendar, CalendarDays, Mail, Users, Clock, ChevronRight } from 'lucide-react';
 import { useEventStats, useGetEvents } from '@/hooks/useEvent';
@@ -19,10 +20,17 @@ import {
 function AdminDashboard() {
     const { data: stats } = useEventStats();
     const { data: recentEvents } = useGetEvents({ limit: 5 });
+    // Computed once per mount, not on every render — passing `new Date()`
+    // directly in the params object below made useGetEvents' query key
+    // (["events", params]) change on every render, since react-query
+    // serializes the Date and the timestamp differs by milliseconds each
+    // time. That made every render look like a brand-new query, which
+    // fetched, updated state, re-rendered, and fetched again forever.
+    const now = useMemo(() => new Date(), []);
     const { data: upcomingEventsData } = useGetEvents({
         limit: 3,
         status: "approved",
-        start_date_from: new Date(),
+        start_date_from: now,
     });
     const events = recentEvents?.events ?? [];
     const agendaEvents = (upcomingEventsData?.events ?? [])
@@ -31,7 +39,7 @@ function AdminDashboard() {
 
     const quickActions = [
         { label: "Create New Event", to: "/dashboard/events/create" },
-        { label: "View Calendar", to: "/dashboard/calendar" },
+        { label: "View Calendar", to: "/dashboard/admin/calendar" },
         { label: "Download Reports", to: "/dashboard/admin/reports" },
     ];
 
