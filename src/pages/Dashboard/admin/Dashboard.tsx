@@ -39,7 +39,7 @@ function AdminDashboard() {
 
     const quickActions = [
         { label: "Create New Event", to: "/dashboard/events/create" },
-        { label: "View Calendar", to: "/dashboard/admin/calendar" },
+        { label: "View Calendar", to: "/dashboard/calendar" },
         { label: "Download Reports", to: "/dashboard/admin/reports" },
     ];
 
