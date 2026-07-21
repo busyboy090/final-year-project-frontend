@@ -136,20 +136,29 @@ export function VenueForm({
                                 {isViewOnly ? (
                                     <p className="text-sm font-semibold text-slate-700 h-11 flex items-center px-4 bg-slate-50 rounded-lg border capitalize">{watch("type")}</p>
                                 ) : (
-                                    <Controller name="type" control={control} render={({ field }) => (
-                                        <Select onValueChange={field.onChange} value={field.value}>
-                                            <SelectTrigger className={cn("h-10! w-full", errors.type && "border-destructive")}>
-                                                <SelectValue />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                <SelectItem value="hall">Hall</SelectItem>
-                                                <SelectItem value="auditorium">Auditorium</SelectItem>
-                                                <SelectItem value="lab">Lab</SelectItem>
-                                                <SelectItem value="classroom">Classroom</SelectItem>
-                                                <SelectItem value="outdoor">Outdoor</SelectItem>
-                                            </SelectContent>
-                                        </Select>
-                                    )} />
+                                    <Controller name="type" control={control} render={({ field }) => {
+                                        const typeLabels: Record<string, string> = {
+                                            hall: "Hall",
+                                            auditorium: "Auditorium",
+                                            lab: "Lab",
+                                            classroom: "Classroom",
+                                            outdoor: "Outdoor",
+                                        };
+                                        return (
+                                            <Select onValueChange={field.onChange} value={field.value}>
+                                                <SelectTrigger className={cn("h-10! w-full", errors.type && "border-destructive")}>
+                                                    <SelectValue>{typeLabels[field.value]}</SelectValue>
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectItem value="hall">Hall</SelectItem>
+                                                    <SelectItem value="auditorium">Auditorium</SelectItem>
+                                                    <SelectItem value="lab">Lab</SelectItem>
+                                                    <SelectItem value="classroom">Classroom</SelectItem>
+                                                    <SelectItem value="outdoor">Outdoor</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                        );
+                                    }} />
                                 )}
                                 {errors.type && <p className="text-xs text-red-500 font-medium">{errors.type.message}</p>}
                             </div>
@@ -183,18 +192,25 @@ export function VenueForm({
                                     {isViewOnly ? (
                                         <p className="text-sm font-semibold text-slate-700 h-11 flex items-center px-4 bg-slate-50 rounded-lg border capitalize">{watch("status")}</p>
                                     ) : (
-                                        <Controller name="status" control={control} render={({ field }) => (
-                                            <Select onValueChange={field.onChange} value={field.value}>
-                                                <SelectTrigger className={cn("h-11 w-full", errors.status && "border-destructive")}>
-                                                    <SelectValue />
-                                                </SelectTrigger>
-                                                <SelectContent>
-                                                    <SelectItem value="available">Available</SelectItem>
-                                                    <SelectItem value="maintenance">Maintenance</SelectItem>
-                                                    <SelectItem value="occupied">Occupied</SelectItem>
-                                                </SelectContent>
-                                            </Select>
-                                        )} />
+                                        <Controller name="status" control={control} render={({ field }) => {
+                                            const statusLabels: Record<string, string> = {
+                                                available: "Available",
+                                                maintenance: "Maintenance",
+                                                occupied: "Occupied",
+                                            };
+                                            return (
+                                                <Select onValueChange={field.onChange} value={field.value}>
+                                                    <SelectTrigger className={cn("h-11 w-full", errors.status && "border-destructive")}>
+                                                        <SelectValue>{statusLabels[field.value]}</SelectValue>
+                                                    </SelectTrigger>
+                                                    <SelectContent>
+                                                        <SelectItem value="available">Available</SelectItem>
+                                                        <SelectItem value="maintenance">Maintenance</SelectItem>
+                                                        <SelectItem value="occupied">Occupied</SelectItem>
+                                                    </SelectContent>
+                                                </Select>
+                                            );
+                                        }} />
                                     )}
                                     {errors.status && <p className="text-xs text-red-500 font-medium">{errors.status.message}</p>}
                                 </div>
