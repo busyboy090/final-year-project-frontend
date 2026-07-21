@@ -57,8 +57,8 @@ function EventTableRow({ event, index }: EventTableRowProps) {
 
     const handleDelete = async () => {
         try {
-            await deleteEvent.mutateAsync(event.id);
-            toast.success("Event removed");
+            const result = await deleteEvent.mutateAsync(event.id);
+            toast.success(result?.message || "Event removed");
         } catch (error: any) {
             toast.error(error?.response?.data?.message || "Could not remove event");
         }
@@ -225,7 +225,7 @@ function EventTableRow({ event, index }: EventTableRowProps) {
                                     <AlertDialogHeader>
                                         <AlertDialogTitle>Delete "{event.title}"?</AlertDialogTitle>
                                         <AlertDialogDescription>
-                                            This will permanently remove the event and its enrollment records. This action cannot be undone.
+                                            If no one has enrolled, this permanently deletes the event. If attendees are already enrolled, the event will be cancelled instead so their enrollment records are preserved.
                                         </AlertDialogDescription>
                                     </AlertDialogHeader>
                                     <AlertDialogFooter>
