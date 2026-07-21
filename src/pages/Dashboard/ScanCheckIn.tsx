@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import { Html5Qrcode, Html5QrcodeSupportedFormats } from "html5-qrcode";
 import type { AxiosError } from "axios";
 import { toast } from "sonner";
-import { ScanLine, CircleCheck, CircleX, CameraOff, KeyRound } from "lucide-react";
+import { ScanLine, CircleCheck, CircleX, CameraOff, KeyRound, Loader2 } from "lucide-react";
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -181,11 +181,20 @@ export default function ScanCheckIn() {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div
-              id={READER_ELEMENT_ID}
-              className="mx-auto w-full max-w-sm overflow-hidden rounded-xl border border-slate-200 bg-slate-950"
-              style={{ minHeight: isScanning ? undefined : 260 }}
-            />
+            <div className="relative mx-auto w-full max-w-sm">
+              <div
+                id={READER_ELEMENT_ID}
+                className="overflow-hidden rounded-xl border border-slate-200 bg-slate-950"
+                style={{ minHeight: isScanning ? undefined : 260 }}
+              />
+
+              {checkin.isPending && (
+                <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 rounded-xl bg-slate-950/70 backdrop-blur-sm">
+                  <Loader2 className="size-8 animate-spin text-white" />
+                  <p className="text-sm font-medium text-white">Checking in…</p>
+                </div>
+              )}
+            </div>
 
             {!isScanning && (
               <div className="flex flex-col items-center justify-center gap-3 py-2 text-center text-sm text-slate-500">
