@@ -1,4 +1,3 @@
-
 import type { UserRole } from "@/types/user";
 
 type TimeUnit = 'minute' | 'hour' | 'day' | 'week';
@@ -77,6 +76,13 @@ export const formatRole = (role: UserRole): string => {
 }
 
 export function formatDate(date: Date) {
+    // The backend combines the organiser's date+time input as a naive string
+    // and stores it as UTC with no further conversion — it's effectively
+    // "civil time", not a true timezone-aware instant. Formatting with the
+    // browser's local timezone would show a different clock time depending
+    // on where the viewer is, and would disagree with the edit form (which
+    // must round-trip the exact stored value). Force UTC everywhere event
+    // times are shown so the whole app agrees on one value per event.
     return new Date(date).toLocaleDateString("en-US", {
         year: "numeric",
         month: "short",
@@ -84,6 +90,7 @@ export function formatDate(date: Date) {
         hour: "2-digit",
         minute: "2-digit",
         hour12: true,
+        timeZone: "UTC",
     })
 }
 

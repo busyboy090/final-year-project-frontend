@@ -54,16 +54,21 @@ const categoryOptions: Event["category"][] = [
 const dateInput = (value?: string | Date) => {
   if (!value) return "";
   const date = new Date(value);
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
+  // Use UTC getters, not local ones: the backend combines startDate+startTime
+  // as a naive string and treats it as UTC when reconstructing the Date. If
+  // we read it back with local getters, a browser in a non-UTC timezone
+  // (e.g. WAT, UTC+1) gets a shifted value, which then gets re-saved as if
+  // it were the true UTC time — adding an hour on every edit.
+  const year = date.getUTCFullYear();
+  const month = String(date.getUTCMonth() + 1).padStart(2, "0");
+  const day = String(date.getUTCDate()).padStart(2, "0");
   return `${year}-${month}-${day}`;
 };
 
 const timeInput = (value?: string | Date) => {
   if (!value) return "";
   const date = new Date(value);
-  return `${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
+  return `${String(date.getUTCHours()).padStart(2, "0")}:${String(date.getUTCMinutes()).padStart(2, "0")}`;
 };
 
 const formFromRules = (
