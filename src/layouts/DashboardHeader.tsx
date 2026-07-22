@@ -13,7 +13,6 @@ import { convertRoleToTitle, formatName } from "@/utils/format";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   PlusCircle,
-  Bell,
   Calendar as CalIcon,
   User,
   Settings,

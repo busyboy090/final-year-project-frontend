@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Info, Bold, Italic, List, ImageIcon, CloudUpload, ArrowRight, X } from 'lucide-react';
+import { Info, ImageIcon, CloudUpload, ArrowRight, X } from 'lucide-react';
 import { useAcademicSessions, useCurrentAcademicSession } from '@/hooks/useAcademicData';
 
 export default function EventStepBasicDetails({ register, control, errors, watch, setValue, onNext }: any) {
