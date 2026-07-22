@@ -104,11 +104,6 @@ export default function EventStepBasicDetails({ register, control, errors, watch
             <div className="space-y-2">
               <Label className="text-[10px] font-bold uppercase tracking-widest text-[#001e40]">Description</Label>
               <div className={`bg-slate-50 rounded-lg p-1 border ${errors.description ? 'border-red-500' : ''}`}>
-                <div className="flex gap-1 p-2 border-b">
-                  <button type="button" className="p-2 hover:bg-slate-200 rounded text-slate-600"><Bold className="w-4 h-4" /></button>
-                  <button type="button" className="p-2 hover:bg-slate-200 rounded text-slate-600"><Italic className="w-4 h-4" /></button>
-                  <button type="button" className="p-2 hover:bg-slate-200 rounded text-slate-600"><List className="w-4 h-4" /></button>
-                </div>
                 <textarea 
                   {...register('description', { 
                     required: 'An explicit functional outline description is required',
