@@ -30,6 +30,7 @@ import Levels from "@/pages/Dashboard/admin/Levels";
 import Organisations from "@/pages/Dashboard/admin/Organisations";
 import Sessions from "@/pages/Dashboard/admin/Sessions";
 import ScanCheckIn from "@/pages/Dashboard/ScanCheckIn";
+import AdminProfilePage from "@/pages/Dashboard/admin/Profile";
 
 // Event Organiser Pages
 import EventOrganiserDashboard from "@/pages/Dashboard/event-organiser/Dashboard";
@@ -85,6 +86,7 @@ function DashboardRoutes() {
               <Route path="admin/sessions" element={<Sessions />} />
               <Route path="admin/levels" element={<Levels />} />
               <Route path="admin/users" element={<UserManagement />} />
+              <Route path="admin/profile" element={<AdminProfilePage />} />
             </Route>
 
             {/* ── Event Organiser ── */}
