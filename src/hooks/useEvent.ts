@@ -73,6 +73,8 @@ export type UpdateEventPayload = {
     endTime?: string;
     audience_scope?: "all" | "custom";
     audience_rules?: EventAudienceRule[];
+    /** New thumbnail file to replace the current one. Omit to leave it unchanged. */
+    thumbnail?: File | null;
 };
 
 export const useUpdateEvent = () => {
@@ -80,7 +82,26 @@ export const useUpdateEvent = () => {
 
     return useMutation({
         mutationFn: async ({ id, payload }: { id: number; payload: UpdateEventPayload }) => {
-            const response = await apiClient.patch(`/v1/events/${id}`, payload);
+            const { thumbnail, ...rest } = payload;
+
+            // Only switch to multipart/form-data when a new thumbnail file is
+            // actually being uploaded; plain JSON keeps every other edit simple.
+            if (thumbnail) {
+                const formData = new FormData();
+                Object.entries(rest).forEach(([key, value]) => {
+                    if (value === undefined) return;
+                    formData.append(
+                        key,
+                        key === "audience_rules" ? JSON.stringify(value) : String(value),
+                    );
+                });
+                formData.append("thumbnail", thumbnail);
+
+                const response = await apiClient.patch(`/v1/events/${id}`, formData);
+                return response.data;
+            }
+
+            const response = await apiClient.patch(`/v1/events/${id}`, rest);
             return response.data;
         },
         onSuccess: (_data, variables) => {

@@ -1,7 +1,7 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
-import { Loader2, Save } from "lucide-react";
+import { CloudUpload, ImageIcon, Loader2, Save, X } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -130,6 +130,8 @@ export default function EventEditPage() {
   const navigate = useNavigate();
   const { data: event, isLoading } = useGetEvent(eventId);
   const updateEvent = useUpdateEvent();
+  const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
+  const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(null);
   const { data: sessions = [] } = useAcademicSessions();
   const { data: currentSession } = useCurrentAcademicSession();
   const { data: venuesData } = useVenues({ limit: 100, status: "available" });
@@ -194,7 +196,32 @@ export default function EventEditPage() {
       audience_scope: event.audience_scope ?? "all",
       ...audienceValues,
     });
+    setThumbnailFile(null);
   }, [currentSession?.id, event, reset]);
+
+  // Local file previews need their object URL released once we're done with
+  // them, otherwise they leak for the lifetime of the tab.
+  useEffect(() => {
+    if (!thumbnailFile) {
+      setThumbnailPreview(null);
+      return;
+    }
+    const url = URL.createObjectURL(thumbnailFile);
+    setThumbnailPreview(url);
+    return () => URL.revokeObjectURL(url);
+  }, [thumbnailFile]);
+
+  const handleThumbnailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) setThumbnailFile(file);
+    e.target.value = "";
+  };
+
+  const handleClearThumbnail = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setThumbnailFile(null);
+  };
 
   const onSubmit = async (values: EditEventForm) => {
     if (values.audience_scope === "custom" && values.audience_roles.length === 0) {
@@ -218,6 +245,7 @@ export default function EventEditPage() {
           endTime: values.endTime,
           audience_scope: values.audience_scope,
           audience_rules: buildAudienceRules(values),
+          thumbnail: thumbnailFile,
         },
       });
       toast.success("Event updated");
@@ -330,6 +358,57 @@ export default function EventEditPage() {
             />
             {errors.session_id && <p className="text-xs text-red-500">{errors.session_id.message}</p>}
           </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <ImageIcon className="size-5 text-[#7b5800]" /> Event Thumbnail
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Label className="block cursor-pointer group w-full max-w-sm">
+            <div className="w-full aspect-video rounded-lg border-2 border-dashed bg-slate-50 relative flex flex-col items-center justify-center gap-2 overflow-hidden border-slate-200 group-hover:border-slate-400 transition-colors">
+              {thumbnailPreview || event?.thumbnail ? (
+                <>
+                  <img
+                    src={thumbnailPreview ?? event?.thumbnail}
+                    alt="Event thumbnail"
+                    className="w-full h-full object-cover"
+                  />
+                  {thumbnailPreview && (
+                    <button
+                      type="button"
+                      onClick={handleClearThumbnail}
+                      className="absolute top-2 right-2 bg-slate-900/80 hover:bg-slate-900 text-white p-1.5 rounded-full transition-colors backdrop-blur-sm z-10"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  )}
+                </>
+              ) : (
+                <>
+                  <CloudUpload className="w-10 h-10 text-[#001e40]/70 group-hover:scale-105 transition-transform" />
+                  <div className="text-center px-4">
+                    <p className="text-xs font-bold text-[#001e40]">Upload Featured Image</p>
+                    <p className="text-[10px] text-slate-400 mt-0.5">PNG, JPG, or WEBP up to 5MB</p>
+                  </div>
+                </>
+              )}
+            </div>
+            <input
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={handleThumbnailChange}
+            />
+          </Label>
+          <p className="text-xs text-slate-400 mt-2">
+            {thumbnailPreview
+              ? "New thumbnail selected — it will replace the current one when you save."
+              : "Click the image to replace the current thumbnail."}
+          </p>
         </CardContent>
       </Card>
 
