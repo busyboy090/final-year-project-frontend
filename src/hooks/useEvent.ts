@@ -43,7 +43,7 @@ export const useUpdateEventStatus = () => {
             return response.data;
         },
         onSuccess: () => {
-            void queryClient.invalidateQueries({ queryKey: ["events"] });
+            void queryClient.invalidateQueries({ queryKey: ["events"], refetchType: "all" });
             void queryClient.invalidateQueries({ queryKey: ["event-stats"] });
         },
     });
@@ -105,7 +105,7 @@ export const useUpdateEvent = () => {
             return response.data;
         },
         onSuccess: (_data, variables) => {
-            void queryClient.invalidateQueries({ queryKey: ["events"] });
+            void queryClient.invalidateQueries({ queryKey: ["events"], refetchType: "all" });
             void queryClient.invalidateQueries({ queryKey: ["event", variables.id] });
             void queryClient.invalidateQueries({ queryKey: ["event-stats"] });
         },
@@ -121,7 +121,7 @@ export const useCancelEvent = () => {
             return response.data;
         },
         onSuccess: () => {
-            void queryClient.invalidateQueries({ queryKey: ["events"] });
+            void queryClient.invalidateQueries({ queryKey: ["events"], refetchType: "all" });
             void queryClient.invalidateQueries({ queryKey: ["event-stats"] });
         },
     });
@@ -136,7 +136,7 @@ export const useDeleteEvent = () => {
             return response.data;
         },
         onSuccess: () => {
-            void queryClient.invalidateQueries({ queryKey: ["events"] });
+            void queryClient.invalidateQueries({ queryKey: ["events"], refetchType: "all" });
             void queryClient.invalidateQueries({ queryKey: ["event-stats"] });
         },
     });
@@ -171,7 +171,7 @@ export const useJoinEvent = () => {
             return response.data;
         },
         onSuccess: () => {
-            void queryClient.invalidateQueries({ queryKey: ["events"] });
+            void queryClient.invalidateQueries({ queryKey: ["events"], refetchType: "all" });
             void queryClient.invalidateQueries({ queryKey: ["my-enrollments"] });
         },
     });
@@ -186,7 +186,7 @@ export const useCancelEnrollment = () => {
             return response.data;
         },
         onSuccess: () => {
-            void queryClient.invalidateQueries({ queryKey: ["events"] });
+            void queryClient.invalidateQueries({ queryKey: ["events"], refetchType: "all" });
             void queryClient.invalidateQueries({ queryKey: ["my-enrollments"] });
         },
     });
