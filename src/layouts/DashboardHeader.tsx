@@ -72,14 +72,6 @@ function DashboardHeader() {
         <div className="h-8 w-px bg-slate-200" />
 
         <div className="flex items-center gap-2">
-          <Link
-            to="/dashboard/notifications"
-            className="relative p-2 text-[#001e40] hover:bg-slate-100 rounded-full"
-          >
-            <Bell size={20} />
-            <span className="absolute top-2 right-2 w-2 h-2 bg-red-600 rounded-full border-2 border-white" />
-          </Link>
-
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <button className="flex items-center gap-3 pl-2 group outline-none">
