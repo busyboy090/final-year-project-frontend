@@ -1,4 +1,6 @@
-import { Calendar, CheckCircle2, Loader2, MapPin, QrCode, XCircle } from "lucide-react";
+import { Calendar,
+  //  CheckCircle2, 
+   Loader2, MapPin, QrCode, XCircle } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -6,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   useCancelEnrollment,
-  useCheckInEnrollment,
+  // useCheckInEnrollment,
   useMyEnrollments,
 } from "@/hooks/useEvent";
 import { formatDate } from "@/utils/format";
@@ -14,7 +16,7 @@ import { formatDate } from "@/utils/format";
 export default function MyEvents() {
   const { data: enrollments = [], isLoading, isError } = useMyEnrollments();
   const cancelEnrollment = useCancelEnrollment();
-  const checkInEnrollment = useCheckInEnrollment();
+  // const checkInEnrollment = useCheckInEnrollment();
 
   const handleCancel = async (id: number) => {
     try {
@@ -25,14 +27,14 @@ export default function MyEvents() {
     }
   };
 
-  const handleCheckIn = async (id: number) => {
-    try {
-      await checkInEnrollment.mutateAsync(id);
-      toast.success("Checked in successfully");
-    } catch (error: any) {
-      toast.error(error?.response?.data?.message || "Could not check in");
-    }
-  };
+  // const handleCheckIn = async (id: number) => {
+  //   try {
+  //     await checkInEnrollment.mutateAsync(id);
+  //     toast.success("Checked in successfully");
+  //   } catch (error: any) {
+  //     toast.error(error?.response?.data?.message || "Could not check in");
+  //   }
+  // };
 
   return (
     <div className="space-y-8">
@@ -140,7 +142,7 @@ export default function MyEvents() {
                     Copy QR Token
                   </Button>
 
-                  <Button
+                  {/* <Button
                     type="button"
                     variant="outline"
                     className="gap-2 text-emerald-700"
@@ -149,7 +151,7 @@ export default function MyEvents() {
                   >
                     <CheckCircle2 className="size-4" />
                     Check In
-                  </Button>
+                  </Button> */}
 
                   <Button
                     type="button"

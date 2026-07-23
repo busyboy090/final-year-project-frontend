@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import EventStepBasicDetails from './EventStepBasicDetails';
 import EventStepAudience from './EventStepAudience';
@@ -9,6 +9,17 @@ import { apiClient } from '@/apis/axios';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
 import useAuth from '@/hooks/useAuth';
+import { FileClock, X } from 'lucide-react';
+import {
+  readDraft,
+  writeDraft,
+  clearDraft,
+  fileToDataUrl,
+  dataUrlToFile,
+  fileToFileList,
+  formatRelativeTime,
+  type EventDraftPayload,
+} from '@/lib/eventDraft';
 
 // Declare type interface aligned directly with your backend keys
 export interface EventFormValues {
@@ -79,6 +90,9 @@ const buildAudienceRules = (data: EventFormValues): AudienceRule[] => {
 export default function EventCreationPage() {
   const [currentStep, setCurrentStep] = useState<number>(1);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [isSavingDraft, setIsSavingDraft] = useState<boolean>(false);
+  const [lastSavedAt, setLastSavedAt] = useState<number | null>(null);
+  const [pendingDraft, setPendingDraft] = useState<EventDraftPayload | null>(null);
   const navigate = useNavigate()
   const { user } = useAuth();
 
@@ -113,6 +127,49 @@ export default function EventCreationPage() {
       endTime: '',
     }
   });
+
+  // On mount, check whether this user already has a locally saved draft
+  // waiting to be resumed (e.g. they closed the tab mid-way last time).
+  useEffect(() => {
+    const existing = readDraft(user?.id);
+    if (existing) {
+      setPendingDraft(existing);
+    }
+    // Only run once per mount / once user id becomes available.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?.id]);
+
+  const handleResumeDraft = async () => {
+    if (!pendingDraft) return;
+
+    Object.entries(pendingDraft.values).forEach(([key, value]) => {
+      setValue(key as keyof EventFormValues, value as never, { shouldValidate: false });
+    });
+
+    if (pendingDraft.thumbnailMeta) {
+      try {
+        const file = dataUrlToFile(
+          pendingDraft.thumbnailMeta.dataUrl,
+          pendingDraft.thumbnailMeta.name,
+          pendingDraft.thumbnailMeta.type
+        );
+        setValue('thumbnail', fileToFileList(file), { shouldValidate: false });
+      } catch (error) {
+        console.error('DRAFT_THUMBNAIL_RESTORE_ERROR:', error);
+      }
+    }
+
+    setCurrentStep(pendingDraft.currentStep || 1);
+    setLastSavedAt(pendingDraft.savedAt);
+    setPendingDraft(null);
+    toast.success('Draft resumed. Pick up right where you left off.');
+  };
+
+  const handleDiscardDraft = () => {
+    clearDraft(user?.id);
+    setPendingDraft(null);
+    toast('Draft discarded.');
+  };
 
   // Step validation gatekeeper
   const handleNextStep = async () => {
@@ -165,6 +222,7 @@ export default function EventCreationPage() {
 
       await apiClient.post('/v1/events', formData);
 
+      clearDraft(user?.id);
       toast.success("Event created successfully");
 
       const eventsPath = user?.role === "super-admin"
@@ -180,10 +238,39 @@ export default function EventCreationPage() {
     }
   };
 
-  const handleSaveDraft = () => {
-    const currentValues = getValues();
-    console.log('Saving intermediate partial payload draft:', currentValues);
-    toast.success('Draft auto-cached successfully.');
+  const handleSaveDraft = async () => {
+    try {
+      setIsSavingDraft(true);
+      const { thumbnail, ...rest } = getValues();
+
+      let thumbnailMeta = null;
+      const file = thumbnail && thumbnail[0] ? thumbnail[0] : null;
+      if (file) {
+        // File objects can't be JSON-serialized, so stash a base64 copy instead.
+        const dataUrl = await fileToDataUrl(file);
+        thumbnailMeta = { name: file.name, type: file.type, dataUrl };
+      }
+
+      const saved = writeDraft(user?.id, {
+        values: rest,
+        thumbnailMeta,
+        currentStep,
+        savedAt: Date.now(),
+      });
+
+      if (!saved) {
+        toast.error('Could not save draft locally (storage may be full).');
+        return;
+      }
+
+      setLastSavedAt(Date.now());
+      toast.success('Draft saved to this browser.');
+    } catch (error) {
+      console.error('SAVE_DRAFT_ERROR:', error);
+      toast.error('Failed to save draft.');
+    } finally {
+      setIsSavingDraft(false);
+    }
   };
 
   return (
@@ -197,26 +284,68 @@ export default function EventCreationPage() {
             Create New Event
           </h2>
         </div>
-        <div className="flex items-center gap-4 w-full sm:w-auto">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={handleSaveDraft}
-            className="flex-1 sm:flex-none px-6 h-10 font-semibold text-[#001e40] hover:bg-slate-100 transition-all rounded-lg border"
-          >
-            Save Draft
-          </Button>
-          {currentStep < 4 && (
+        <div className="flex flex-col items-end gap-4 w-full sm:w-auto">
+          <div className="flex items-center gap-4 w-full sm:w-auto">
             <Button
               type="button"
-              onClick={handleNextStep}
-              className="flex-1 sm:flex-none px-8 h-10 bg-[#001e40] text-white font-bold shadow-lg shadow-blue-900/20 rounded-lg active:scale-95 transition-all"
+              variant="outline"
+              onClick={handleSaveDraft}
+              disabled={isSavingDraft}
+              className="flex-1 sm:flex-none px-6 h-10 font-semibold text-[#001e40] hover:bg-slate-100 transition-all rounded-lg border"
             >
-              Next Step
+              {isSavingDraft ? 'Saving...' : 'Save Draft'}
             </Button>
+            {currentStep < 4 && (
+              <Button
+                type="button"
+                onClick={handleNextStep}
+                className="flex-1 sm:flex-none px-8 h-10 bg-[#001e40] text-white font-bold shadow-lg shadow-blue-900/20 rounded-lg active:scale-95 transition-all"
+              >
+                Next Step
+              </Button>
+            )}
+          </div>
+          {lastSavedAt && (
+            <p className="text-[10px] text-slate-400 font-medium">
+              Draft saved {formatRelativeTime(lastSavedAt)}
+            </p>
           )}
         </div>
       </div>
+
+      {/* Resume Draft Banner */}
+      {pendingDraft && (
+        <div className="mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-xl border border-[#7b5800]/30 bg-[#7b5800]/5 px-5 py-4">
+          <div className="flex items-start gap-3">
+            <FileClock className="w-5 h-5 text-[#7b5800] mt-0.5 shrink-0" />
+            <div>
+              <p className="text-sm font-bold text-[#001e40]">
+                You have a saved draft ({formatRelativeTime(pendingDraft.savedAt)})
+              </p>
+              <p className="text-xs text-slate-500">
+                Resume where you left off, or discard it to start fresh.
+              </p>
+            </div>
+          </div>
+          <div className="flex items-center gap-3 shrink-0">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={handleDiscardDraft}
+              className="h-9 px-4 text-xs font-semibold"
+            >
+              <X className="w-3.5 h-3.5 mr-1" /> Discard
+            </Button>
+            <Button
+              type="button"
+              onClick={handleResumeDraft}
+              className="h-9 px-4 text-xs font-bold bg-[#7b5800] text-white hover:bg-[#7b5800]/90"
+            >
+              Resume Draft
+            </Button>
+          </div>
+        </div>
+      )}
 
       {/* Dynamic Progress Indicator */}
       <div className="mb-12 relative flex justify-between px-2 isolate overflow-hidden">
